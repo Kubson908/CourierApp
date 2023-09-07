@@ -1,0 +1,47 @@
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:CourierMobileApp"
+             x:Class="CourierMobileApp.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <!--Backgrounds-->
+            
+            <RadialGradientBrush x:Key="LoggedInBgDark" Center="0.5, -0.71"
+                                     Radius="1">
+                <GradientStop Color="#15ab54"
+                                  Offset="0.45" />
+                <GradientStop Color="#111516"
+                                  Offset="0.95" />
+            </RadialGradientBrush>
+
+            <LinearGradientBrush x:Key="NotLoggedInBgDark" EndPoint="0, 1">
+                <GradientStop Color="#111516"
+                              Offset="0.65" />
+                <GradientStop Color="#4d15ab54"
+                              Offset="1.0"/>
+            </LinearGradientBrush>
+
+            <RadialGradientBrush x:Key="LoggedInBgLight" Center="0.5, -0.71"
+                                     Radius="1">
+                <GradientStop Color="#15ab54"
+                                  Offset="0.7" />
+                <GradientStop Color="#0015ab54"
+                                  Offset="1.0" />
+            </RadialGradientBrush>
+
+            <LinearGradientBrush x:Key="NotLoggedInBgLight" EndPoint="0, 1">
+                <GradientStop Color="#FFFFFF"
+                              Offset="0.65" />
+                <GradientStop Color="#4d15ab54"
+                              Offset="1.0"/>
+            </LinearGradientBrush>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

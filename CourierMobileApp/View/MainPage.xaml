@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mct="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
+             xmlns:components="clr-namespace:CourierMobileApp.View.Components"
+             x:Class="CourierMobileApp.MainPage">
+
+    <ScrollView BackgroundColor="#111516">
+        <Grid   RowDefinitions="*,*,*,*"
+                Background="{StaticResource LoggedInBgDark}"
+                Padding="30,0"
+                VerticalOptions="FillAndExpand">
+
+            <components:NavBar Grid.Row="0"/>
+
+            <Frame Grid.Row="1"
+                   BackgroundColor="Transparent"
+                   BorderColor="Transparent">
+                <Grid RowDefinitions="*,*"
+                      VerticalOptions="Center">
+                    <Button Grid.RowSpan="2"
+                            BackgroundColor="#15AB54"
+                            CornerRadius="20"
+                            HeightRequest="170"
+                            Clicked="ScheduleClicked"/>
+                    <Image Source="package_icon.svg"
+                           HeightRequest="50"
+                           Grid.Row="0"
+                           VerticalOptions="End" />
+                    <Label Text="Harmonogram przesyłek"
+                           TextColor="White"
+                           FontSize="14"
+                           Grid.Row="1"
+                           HorizontalOptions="Center"
+                           WidthRequest="100"
+                           HorizontalTextAlignment="Center"/>
+                </Grid>
+            </Frame>
+
+            <Frame Grid.Row="2"
+                   BackgroundColor="Transparent"
+                   BorderColor="Transparent" >
+                <Grid RowDefinitions="*,*"
+                      VerticalOptions="Center">
+                    <Button Grid.RowSpan="2"
+                            BackgroundColor="#15AB54"
+                            CornerRadius="20"
+                            HeightRequest="170"/>
+                    <Image Source="history_icon.svg"
+                           HeightRequest="50"
+                           Grid.Row="0"
+                           VerticalOptions="End"/>
+                    <Label Text="Historia przesyłek"
+                           TextColor="White"
+                           FontSize="14"
+                           Grid.Row="1"
+                           HorizontalOptions="Center"
+                           WidthRequest="100"
+                           HorizontalTextAlignment="Center"/>
+                </Grid>
+            </Frame>
+
+        </Grid>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CourierMobileApp.View.Components.NavBar">
+
+    <Grid ColumnDefinitions="*,230,*"
+          RowDefinitions="30, 60"
+          HeightRequest="90"
+          VerticalOptions="Start">
+        <ImageButton Source="hamburger.svg"
+                     Grid.Column="0"
+                     Grid.Row="1"
+                     HorizontalOptions="Start"
+                     HeightRequest="40"
+                     WidthRequest="40"/>
+        <Label Text="CourierApp"
+               HorizontalTextAlignment="Center"
+               Grid.Column="1"
+               Grid.Row="1"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               TextColor="#BDBDBD"
+               FontSize="24"/>
+        <ImageButton Source="profile_circle.svg"
+                     Grid.Column="3"
+                     Grid.Row="1"
+                     HorizontalOptions="End"
+                     VerticalOptions="Center"
+                     HeightRequest="50"
+                     WidthRequest="50"
+                     Margin="0, 0, -4, 0"/>
+    </Grid>
+    
+</ContentView>

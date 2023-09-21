@@ -145,25 +145,25 @@ namespace CourierAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e1af6bee-fb4c-400b-bef8-bcd3558bf2e7",
+                            Id = "00000000-0000-0000-0000-000000000001",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "9e02c728-3488-4942-bc45-0cac11df4264",
+                            Id = "ea70c8f7-b9bc-42d3-9045-effc32178a7f",
                             Name = "Courier",
                             NormalizedName = "COURIER"
                         },
                         new
                         {
-                            Id = "5180e5eb-6a8d-443b-879a-f9a2e706203b",
+                            Id = "28a8f037-02a6-4753-b83d-43300a90ae4b",
                             Name = "Dispatcher",
                             NormalizedName = "DISPATCHER"
                         },
                         new
                         {
-                            Id = "ecdb689d-8163-4521-9aaa-7022e2dfef88",
+                            Id = "bdeda6ef-9a7d-445a-9f8a-91117c2df63f",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -263,15 +263,15 @@ namespace CourierAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8ae28e9e-95f3-4a21-a318-377f4e5ad643",
+                            Id = "00000000-0000-0000-0000-000000000001",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2ec14035-ae0e-4c53-b423-1c054ac2f325",
+                            ConcurrencyStamp = "e6159ed4-554e-475f-8353-496da2c99e24",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEL3Kew0qX97pOHtk09zFbVDeROJ1AFNdW/iPTRS0jSiK+fiQ23TewMeLNbIHH+coWA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE1ZMN0WyEd6TIfxxU/sHgZbnP2iYlm+Cx85QatmGUmDG06wXnlFVvrGnEyjka/SRQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c5545feb-4a43-4f08-8066-9c61c90f775e",
+                            SecurityStamp = "1e1869b7-c371-4df6-a474-6596c25b7ba2",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -343,8 +343,8 @@ namespace CourierAPI.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "8ae28e9e-95f3-4a21-a318-377f4e5ad643",
-                            RoleId = "e1af6bee-fb4c-400b-bef8-bcd3558bf2e7"
+                            UserId = "00000000-0000-0000-0000-000000000001",
+                            RoleId = "00000000-0000-0000-0000-000000000001"
                         });
                 });
 

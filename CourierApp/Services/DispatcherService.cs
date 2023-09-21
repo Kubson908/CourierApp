@@ -5,10 +5,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CourierAPI.Services;
 
-public class DispatcherService : IUserService<RegisterDto, LoginDto>
+public class DispatcherService : IUserService<AddDispatcherDto, LoginDto>
 {
     private readonly UserManager<Dispatcher> _userManager;
     private readonly IConfiguration _configuration;
@@ -20,7 +21,7 @@ public class DispatcherService : IUserService<RegisterDto, LoginDto>
         _configuration = configuration;
     }
 
-    public async Task<ApiUserResponse> RegisterAsync(RegisterDto dto)
+    public async Task<ApiUserResponse> RegisterAsync(AddDispatcherDto dto)
     {
         if (dto == null)
             throw new NullReferenceException("Object is null");
@@ -35,7 +36,7 @@ public class DispatcherService : IUserService<RegisterDto, LoginDto>
         var dispatcher = new Dispatcher
         {
             Email = dto.Email,
-            UserName = dto.Email,
+            UserName = dto.UserName,
             FirstName = dto.FirstName,
             LastName = dto.LastName,
             PhoneNumber = dto.PhoneNumber,
@@ -49,7 +50,7 @@ public class DispatcherService : IUserService<RegisterDto, LoginDto>
 
             return new ApiUserResponse
             {
-                Message = "Succes",
+                Message = "Success",
                 IsSuccess = true,
             };
 
@@ -63,17 +64,26 @@ public class DispatcherService : IUserService<RegisterDto, LoginDto>
         };
     }
 
+    private bool IsValidEmail(string email)
+    {
+        string regex = @"^[^@\s]+@[^@\s]+\.(com|net|org|gov)$";
+        return Regex.IsMatch(email, regex, RegexOptions.IgnoreCase);
+    }
+
     public async Task<ApiUserResponse> LoginAsync(LoginDto dto)
     {
         if (dto == null)
             throw new NullReferenceException("Object is null");
-
-        var user = await _userManager.FindByEmailAsync(dto.Login);
+        Dispatcher? user;    
+        if (IsValidEmail(dto.Login))
+            user = await _userManager.FindByEmailAsync(dto.Login);
+        else
+            user = await _userManager.FindByNameAsync(dto.Login);
 
         if (user == null)
             return new ApiUserResponse
             {
-                Message = "User not found",
+                Message = "Invalid login or password",
                 IsSuccess = false
             };
 
@@ -82,15 +92,16 @@ public class DispatcherService : IUserService<RegisterDto, LoginDto>
         if (!result)
             return new ApiUserResponse
             {
-                Message = "Invalid password",
+                Message = "Invalid login or password",
                 IsSuccess = false
             };
         ApiUserResponse response = GenerateToken(dto.Login, user.Id);
         response.Roles = await _userManager.GetRolesAsync(user);
+        response.User = user.FirstName + " " + user.LastName;
         return response;
     }
 
-    public ApiUserResponse GenerateToken(string login, string id)
+    private ApiUserResponse GenerateToken(string login, string id)
     {
         var claims = new[]
         {

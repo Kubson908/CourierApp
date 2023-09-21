@@ -25,7 +25,7 @@ public class ShipmentController : ControllerBase
         return Ok(shipments);
     }
 
-    [HttpPost("register-shipment")]
+    /*[HttpPost("register-shipment")]
     public async Task<IActionResult> RegisterShipment([FromBody] Shipment shipment)
     {
         if (shipment == null)
@@ -35,6 +35,40 @@ public class ShipmentController : ControllerBase
         await _context.Shipments.AddAsync(shipment);
         await _context.SaveChangesAsync();
         return StatusCode(StatusCodes.Status201Created, "Shipment registered");
+    }*/
+
+    [HttpPost("register-shipments")]
+    public async Task<IActionResult> RegisterShipments([FromBody] IEnumerable<Shipment> shipments)
+    {
+        
+        if (shipments.Count() == 0 || shipments is null)
+        {
+            return BadRequest();
+        }
+        string id = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        try
+        {
+            foreach (Shipment shipment in shipments)
+            {
+                shipment.CustomerId = id;
+                await _context.Shipments.AddAsync(shipment);
+            }
+            await _context.SaveChangesAsync();
+            return StatusCode(StatusCodes.Status201Created, new ApiUserResponse
+            {
+                Message = "Shipments registered",
+                IsSuccess = true,
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ApiUserResponse
+            {
+                Message = ex.Message,
+                IsSuccess = false,
+                Exception = true
+            });
+        }
     }
 
     [HttpGet("get-shipments-by-user")]
@@ -98,7 +132,7 @@ public class ShipmentController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new ApiUserResponse
+            return StatusCode(StatusCodes.Status500InternalServerError, new ApiUserResponse
             {
                 Message = ex.Message,
                 IsSuccess = false,

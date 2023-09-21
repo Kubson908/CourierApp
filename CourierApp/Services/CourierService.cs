@@ -8,7 +8,7 @@ using System.Text;
 
 namespace CourierAPI.Services;
 
-public class CourierService : IUserService<RegisterDto, LoginDto>
+public class CourierService : IUserService<AddCourierDto, LoginDto>
 {
     private readonly UserManager<Courier> _userManager;
     private readonly IConfiguration _configuration;
@@ -20,7 +20,7 @@ public class CourierService : IUserService<RegisterDto, LoginDto>
         _configuration = configuration;
     }
 
-    public async Task<ApiUserResponse> RegisterAsync(RegisterDto dto)
+    public async Task<ApiUserResponse> RegisterAsync(AddCourierDto dto)
     {
         if (dto == null)
             throw new NullReferenceException("Object is null");
@@ -49,7 +49,7 @@ public class CourierService : IUserService<RegisterDto, LoginDto>
 
             return new ApiUserResponse
             {
-                Message = "Succes",
+                Message = "Success",
                 IsSuccess = true,
             };
 
@@ -73,7 +73,7 @@ public class CourierService : IUserService<RegisterDto, LoginDto>
         if (user == null)
             return new ApiUserResponse
             {
-                Message = "User not found",
+                Message = "Invalid login or password",
                 IsSuccess = false
             };
 
@@ -82,7 +82,7 @@ public class CourierService : IUserService<RegisterDto, LoginDto>
         if (!result)
             return new ApiUserResponse
             {
-                Message = "Invalid password",
+                Message = "Invalid login or password",
                 IsSuccess = false
             };
 

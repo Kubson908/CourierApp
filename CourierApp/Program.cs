@@ -11,6 +11,15 @@ using CourierAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "_myAllowSpecificOrigins",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+        });
+});
+
 // Add services to the container.
 
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -27,7 +36,7 @@ var connectionString = builder.Configuration.GetConnectionString("CourierDB")
 builder.Services.AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(connectionString));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedEmail = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddIdentityCore<Courier>().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddIdentityCore<Dispatcher>().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
@@ -78,9 +87,11 @@ builder.Services.AddAuthentication(auth =>
 });
 
 // dokonczyc dalej (services)
-builder.Services.AddScoped<IUserService<RegisterDto, LoginDto>, CourierService>();
-builder.Services.AddScoped<IUserService<RegisterDto, LoginDto>, DispatcherService>();
+builder.Services.AddScoped<IUserService<AddCourierDto, LoginDto>, CourierService>();
+builder.Services.AddScoped<IUserService<AddDispatcherDto, LoginDto>, DispatcherService>();
 builder.Services.AddScoped<IUserService<RegisterDto, LoginDto>, CustomerService>();
+builder.Services.AddScoped<AdminService, AdminService>();
+
 
 var app = builder.Build();
 
@@ -90,6 +101,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+app.UseCors("_myAllowSpecificOrigins");
 
 app.UseHttpsRedirection();
 

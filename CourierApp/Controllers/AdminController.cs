@@ -29,6 +29,7 @@ public class AdminController : ControllerBase
     {
         var dispatchers = _dispatcherManager.Users.ToList().Select(d => new
         {
+            d.Id,
             d.FirstName,
             d.LastName,
             d.UserName,
@@ -43,6 +44,7 @@ public class AdminController : ControllerBase
     {
         var dispatchers = _courierManager.Users.ToList().Select(d => new
         {
+            d.Id,
             d.FirstName,
             d.LastName,
             d.UserName,

@@ -69,7 +69,7 @@ public class AdminService
             issuer: _configuration["AuthSettings:Issuer"],
             audience: _configuration["AuthSettings:Audience"],
             claims: claims,
-            expires: DateTime.Now.AddHours(2),
+            expires: DateTime.UtcNow.AddHours(4),
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
 
         string tokenString = new JwtSecurityTokenHandler().WriteToken(token);

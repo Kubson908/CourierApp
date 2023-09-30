@@ -86,7 +86,6 @@ builder.Services.AddAuthentication(auth =>
     };
 });
 
-// dokonczyc dalej (services)
 builder.Services.AddScoped<IUserService<AddCourierDto, LoginDto>, CourierService>();
 builder.Services.AddScoped<IUserService<AddDispatcherDto, LoginDto>, DispatcherService>();
 builder.Services.AddScoped<IUserService<RegisterDto, LoginDto>, CustomerService>();

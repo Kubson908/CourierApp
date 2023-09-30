@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from "vue";
-import { router, unauthorized, user } from "../main";
+import { router, unauthorized, user, loading } from "../main";
 
 const login = ref("");
 const password = ref("");
@@ -12,16 +12,18 @@ onBeforeMount(() => {
 
 const signIn = async () => {
   try {
+    loading.value = true;
     const res = await unauthorized.post("/auth/login", {
       login: login.value,
       password: password.value,
     });
     await localStorage.setItem("token", res.data.accessToken);
-    if (remember_me.value)
+    if (remember_me.value) {
       localStorage.setItem("expireDate", res.data.expireDate);
-    else {
+      console.log("coś");
+    } else {
       let time = new Date(Date.now());
-      time.setTime(time.getTime() + 60 * 60 * 1000);
+      time.setTime(time.getTime() + 2 * 60 * 60 * 1000);
       localStorage.setItem("expireDate", time.toString());
     }
     localStorage.setItem("user", res.data.user);
@@ -29,11 +31,13 @@ const signIn = async () => {
     user.name = res.data.user;
     user.isLoggedIn = true;
     user.roles = res.data.roles;
+    loading.value = false;
     if (user.roles.includes("Admin")) {
       router.push("/administration");
     } else router.push("/");
   } catch (error: any) {
     console.log(error);
+    loading.value = false;
   }
 };
 </script>

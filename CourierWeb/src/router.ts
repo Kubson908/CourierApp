@@ -1,6 +1,6 @@
 import { Route } from "./typings";
-
-import { HomePage, AdminPage, LoginForm } from "./components";
+import { AdminPage } from "./components/Admin";
+import { HomePage, LoginForm } from "./components";
 
 export const routes: Array<Route> = [
   { path: "/", component: HomePage, meta: { roles: null } },

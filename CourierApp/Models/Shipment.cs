@@ -10,18 +10,25 @@ public class Shipment
     [Required]
     public Status Status { get; set; } = Status.Registered;
     [Required]
+    public required string PickupAddress { get; set; }
+    public int? PickupApartmentNumber { get; set; }
+    [Required]
+    public required string PickupCity { get; set; }
+    [Required]
+    public required string PickupPostalCode { get; set; }
+    [Required]
     public Size Size { get; set; }
     [Required]
     public required string RecipientName { get; set; }
     [Required]
     public required string RecipientPhoneNumber { get; set; }
     [Required]
-    public required string Address { get; set; }
-    public string? ApartmentNumber { get; set; }
+    public required string RecipientAddress { get; set; }
+    public int? RecipientApartmentNumber { get; set; }
     [Required]
-    public required string City { get; set; }
+    public required string RecipientCity { get; set; }
     [Required]
-    public required string PostalCode { get; set; }
+    public required string RecipientPostalCode { get; set; }
     public string? RecipientEmail { get; set; }
     public DateTime? PickupDate { get; set; }
     public DateTime? StoreDate { get; set; }
@@ -30,7 +37,7 @@ public class Shipment
 
     //Navigation properties
     [ForeignKey(nameof(Customer))]
-    public required string CustomerId { get; set; }
+    public string? CustomerId { get; set; }
     public Customer? Customer { get; set; } // skasowałem virtual i zobaczymy czy będzie działać tak samo
 
 }

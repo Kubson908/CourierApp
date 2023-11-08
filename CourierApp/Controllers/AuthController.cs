@@ -68,7 +68,7 @@ public class AuthController : ControllerBase
         return Unauthorized(result);
     }
 
-    [HttpPost("add-courier")]
+    [HttpPost("add-courier"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddCourierAsync([FromBody] AddCourierDto model)
     {
         if (!ModelState.IsValid)
@@ -97,7 +97,7 @@ public class AuthController : ControllerBase
         return Unauthorized(result);
     }
 
-    [HttpPost("add-dispatcher")]
+    [HttpPost("add-dispatcher"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddDispatcher([FromBody] AddDispatcherDto dto)
     {
         if (!ModelState.IsValid)

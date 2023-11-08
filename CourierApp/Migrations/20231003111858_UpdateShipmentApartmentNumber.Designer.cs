@@ -4,6 +4,7 @@ using CourierAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourierAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231003111858_UpdateShipmentApartmentNumber")]
+    partial class UpdateShipmentApartmentNumber
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,6 +67,17 @@ namespace CourierAPI.Migrations
                     b.Property<string>("AdditionalDetails")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ApartmentNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -71,32 +85,10 @@ namespace CourierAPI.Migrations
                     b.Property<DateTime?>("DeliveryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("PickupAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PickupApartmentNumber")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PickupCity")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("PickupDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("PickupPostalCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RecipientAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("RecipientApartmentNumber")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RecipientCity")
+                    b.Property<string>("PostalCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -108,10 +100,6 @@ namespace CourierAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RecipientPhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RecipientPostalCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -166,19 +154,19 @@ namespace CourierAPI.Migrations
                         },
                         new
                         {
-                            Id = "dcef555b-4961-4d12-b5bd-03cc1a541b5a",
+                            Id = "f0ac2e34-6c85-4000-8da9-dda89c183b91",
                             Name = "Courier",
                             NormalizedName = "COURIER"
                         },
                         new
                         {
-                            Id = "9d93a4b9-19ca-44b1-af05-bc6419f6d177",
+                            Id = "6f682bec-085f-473a-a063-928ad2955d6e",
                             Name = "Dispatcher",
                             NormalizedName = "DISPATCHER"
                         },
                         new
                         {
-                            Id = "0c7f0d54-39b9-4835-bf77-9e5dfbf436e2",
+                            Id = "b50524e4-bc10-4016-b2cd-f752d664c444",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -280,13 +268,13 @@ namespace CourierAPI.Migrations
                         {
                             Id = "00000000-0000-0000-0000-000000000001",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e76c7312-d06f-43b2-bcd8-c357d6c59517",
+                            ConcurrencyStamp = "87b17d8f-9787-4433-8281-c967a7123cae",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBcBj3LMANu8eUakoowTsXSSMES3VqF7VmvtZxHHrd3FEhWvguzM+7ZY/5nURS0s8A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKBA+QrhUQp1tj5dYm1VWUbZ8IhT108+Jj0MvQ+FkYOg/sfZm3MzUZm22fwtgdQQ7w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "aded3590-f259-4399-9c67-68a7d032de80",
+                            SecurityStamp = "21a23689-a9f3-4bf0-a2d8-0f131e3d574b",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });

@@ -12,26 +12,29 @@ onBeforeMount(() => {
     user.roles = [];
   }
 });
+
+const sidebar: boolean =
+  user.roles.includes("Admin") || user.roles.includes("Dispatcher");
 </script>
 
 <template width="100%">
   <NavBar />
-  <SideBar id="sidebar" v-if="user.roles.includes('Admin')" />
+  <SideBar id="sidebar" v-if="sidebar" />
   <LoadingPage v-if="loading" id="loading" />
-  <div :class="{ content: user.roles.includes('Admin') }">
+  <div
+    :class="{
+      content:
+        user.roles.includes('Admin') || user.roles.includes('Dispatcher'),
+      center: true,
+    }"
+  >
     <router-view v-slot="{ Component }">
-      <component class="mt-12" :is="Component" />
+      <component :is="Component" />
     </router-view>
   </div>
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
 #loading {
   z-index: 99;
   position: fixed;
@@ -47,5 +50,10 @@ onBeforeMount(() => {
 }
 .content {
   margin-left: 3%;
+}
+
+.center {
+  text-align: center;
+  min-height: 94.5vh;
 }
 </style>

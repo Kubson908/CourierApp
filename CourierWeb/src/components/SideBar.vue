@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { sidelinks } from "../structures/sidelinks";
+import { user } from "../main";
 
 const hover = ref(false);
+
+const links = user.roles.includes("Admin")
+  ? sidelinks.admin
+  : sidelinks.dispatcher;
 </script>
 
 <template>
@@ -10,8 +16,12 @@ const hover = ref(false);
     @mouseleave="hover = false"
     :class="{ active: hover }"
   >
+    <li v-for="item in links">
+      <a :href="item.link">{{ item.title }}</a>
+    </li>
+    <!-- <li><a href="/">Home</a></li>
     <li><a href="/">Home</a></li>
-    <li><a href="/">Home</a></li>
+    -->
   </ul>
 </template>
 

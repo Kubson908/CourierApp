@@ -21,7 +21,7 @@ public class ShipmentController : ControllerBase
     [HttpGet("get-registered-shipments")]
     public IActionResult GetRegisteredShipments()
     {
-        IEnumerable<Shipment> shipments = _context.Shipments.Where(s => s.Status == Status.Registered);
+        IEnumerable<Shipment> shipments = _context.Shipments.Where(s => s.Status == Status.Registered || s.Status == Status.Stored);
         return Ok(shipments);
     }
 
@@ -38,17 +38,17 @@ public class ShipmentController : ControllerBase
     }*/
 
     [HttpPost("register-shipments")]
-    public async Task<IActionResult> RegisterShipments([FromBody] IEnumerable<Shipment> shipments)
+    public async Task<IActionResult> RegisterShipments([FromBody] RegisterShipmentsDto dto)
     {
         
-        if (shipments.Count() == 0 || shipments is null)
+        if (dto.Shipments.Count() == 0 || dto.Shipments is null)
         {
             return BadRequest();
         }
         string id = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
         try
         {
-            foreach (Shipment shipment in shipments)
+            foreach (Shipment shipment in dto.Shipments)
             {
                 shipment.CustomerId = id;
                 await _context.Shipments.AddAsync(shipment);

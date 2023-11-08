@@ -12,8 +12,13 @@ const logout = () => {
 <template>
   <ul>
     <li v-if="!user.roles.includes('Admin')"><a href="/">Home</a></li>
-    <li v-if="!user.isLoggedIn"><a href="/login">Zaloguj</a></li>
-    <li v-if="user.isLoggedIn" id="logout">
+    <li v-if="!user.isLoggedIn" class="float-right">
+      <a href="/login">Logowanie</a>
+    </li>
+    <li v-if="!user.isLoggedIn" class="float-right">
+      <a href="/register">Rejestracja</a>
+    </li>
+    <li v-if="user.isLoggedIn" class="float-right">
       <a href="#" @click="logout">Wyloguj</a>
     </li>
   </ul>
@@ -25,7 +30,7 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333;
+  background-color: #848c8e;
   width: 100%;
 }
 
@@ -44,7 +49,7 @@ li a:hover {
   background-color: #111;
 }
 
-#logout {
+.float-right {
   float: right;
 }
 </style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from "vue";
-import { router, unauthorized, user, loading } from "../main";
+import { router, unauthorized, user, loading } from "../../main";
 
 const login = ref("");
 const password = ref("");

@@ -4,7 +4,8 @@ import { authorized } from "../../main";
 import { UserCard, EditUser, AddUser } from ".";
 
 const dispatchers = ref<any>(null);
-onBeforeMount(async () => {
+
+const fetchData = async () => {
   const getDispatchers = await authorized.get("/admin/get-dispatchers");
   dispatchers.value = getDispatchers.data.map((dispatcher: any) => {
     return {
@@ -17,9 +18,10 @@ onBeforeMount(async () => {
       role: "Dispatcher",
     };
   });
-  dispatchers.value = dispatchers.value.concat(dispatchers.value); // do wyjebania
-  dispatchers.value = dispatchers.value.concat(dispatchers.value);
-  dispatchers.value = dispatchers.value.concat(dispatchers.value);
+};
+
+onBeforeMount(async () => {
+  await fetchData();
 });
 
 const selectedUser = ref(null);
@@ -46,7 +48,11 @@ const add = () => (showAdd.value = true);
         v-if="showEdit"
         @closeModal="showEdit = false"
       />
-      <AddUser v-if="showAdd" @closeModal="showAdd = false" />
+      <AddUser
+        v-if="showAdd"
+        @closeModal="showAdd = false"
+        @fetchData="fetchData"
+      />
     </teleport>
     <br />
     <button id="addButton" @click="add">Dodaj</button>

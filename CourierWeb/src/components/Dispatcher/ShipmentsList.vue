@@ -2,14 +2,22 @@
 import { onBeforeMount, ref } from "vue";
 import { authorized } from "../../main.ts";
 import { Shipment } from "../../typings/shipment";
+import { MapView } from ".";
+import { manageCoordinates } from "../../geocoding";
+import { LocalCoords } from "../../typings";
 
+const showMap = ref<boolean>(false);
 const shipments = ref<Array<Shipment>>();
+const localCoords = ref<Array<LocalCoords>>([]);
 
 onBeforeMount(async () => {
   const getShipments = await authorized.get(
     "/shipment/get-registered-shipments"
   );
   shipments.value = getShipments.data;
+  await manageCoordinates(shipments.value!);
+  const stringCoords = localStorage.getItem("localCoords");
+  localCoords.value = stringCoords ? JSON.parse(stringCoords) : [];
 });
 
 const iconSource = (shipment: Shipment) => {
@@ -35,6 +43,13 @@ const size: Array<string> = ["Bardzo mały", "Mały", "Średni", "Duży"];
         {{ size[shipment.size!] }}
         <hr />
       </div>
+      <button @click="showMap = true">Pokaż mapę</button>
+      <MapView
+        v-if="showMap"
+        @closeMap="showMap = false"
+        :localCoords="localCoords"
+        :shipments="shipments"
+      />
     </div>
   </div>
 </template>

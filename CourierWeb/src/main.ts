@@ -6,6 +6,9 @@ import App from "./App.vue";
 import { User } from "./typings";
 import * as VueRouter from "vue-router";
 import { routes } from "./router";
+import OpenLayersMap, {
+  type Vue3OpenlayersGlobalOptions,
+} from "vue3-openlayers";
 
 export const loading = ref(false);
 
@@ -57,4 +60,8 @@ router.beforeEach((to, from) => {
   }
 });
 
-createApp(App).use(router).mount("#app");
+const mapOptions: Vue3OpenlayersGlobalOptions = {
+  debug: true,
+};
+
+createApp(App).use(router).use(OpenLayersMap, mapOptions).mount("#app");

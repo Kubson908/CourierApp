@@ -18,16 +18,6 @@ const close = () => {
 </template>
 
 <style scoped>
-.fog {
-  background-color: rgba(83, 83, 83, 0.789);
-  position: fixed;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
 .modal {
   width: 40vw;
   height: fit-content;

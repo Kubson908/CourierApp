@@ -1,4 +1,5 @@
 export type Shipment = {
+  id: number | undefined;
   pickupAddress: string;
   pickupApartmentNumber: number | null;
   pickupCity: string;

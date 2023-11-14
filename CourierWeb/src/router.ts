@@ -3,7 +3,7 @@ import { AdminPage } from "./components/Admin";
 import { HomePage } from "./components";
 import { LoginForm, RegisterForm } from "./components/Guest";
 import { OrderShipments } from "./components/Customer";
-import { ShipmentsList } from "./components/Dispatcher";
+import { MapView, ShipmentsList } from "./components/Dispatcher";
 
 export const routes: Array<Route> = [
   { path: "/", component: HomePage, meta: { roles: null } },
@@ -11,5 +11,10 @@ export const routes: Array<Route> = [
   { path: "/login", component: LoginForm, meta: { roles: null } },
   { path: "/register", component: RegisterForm, meta: { roles: null } },
   { path: "/order", component: OrderShipments, meta: { roles: ["Customer"] } },
-  { path: "/shipments", component: ShipmentsList, meta: { roles: ["Dispatcher"] } },
+  {
+    path: "/shipments",
+    component: ShipmentsList,
+    meta: { roles: ["Dispatcher"] },
+  },
+  { path: "/map", component: MapView, meta: { roles: ["Dispatcher"] } },
 ];

@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import { Feature, Map, Overlay, View } from "ol";
-import { Point } from "ol/geom";
-import TileLayer from "ol/layer/Tile";
-import VectorLayer from "ol/layer/Vector";
-import { OSM } from "ol/source";
-import VectorSource from "ol/source/Vector";
-import { Icon, Style } from "ol/style";
-import { onMounted, ref } from "vue";
+import { Map } from "ol";
+import { title, titleClass, city, address, postalCode, closePopup } from "./map";
+import { onMounted } from "vue";
 import { LocalCoords } from "../../typings";
 import { Shipment } from "../../typings/shipment";
+import { createMap } from "./map";
 
 const emit = defineEmits(["closeMap"]);
 const props = defineProps({
@@ -16,160 +12,81 @@ const props = defineProps({
   shipments: Array<Shipment>,
 });
 
-const center = ref([20.46, 53.76]);
-const projection = ref("EPSG:4326");
-const zoom = ref(13.5);
-const rotation = ref(0);
-
-console.log(props.localCoords);
-
 let map: Map;
-let popup: Overlay;
 
-let container: HTMLElement;
-// let content: HTMLElement;
-let closer: HTMLElement;
-
-const title = ref<string>();
-const titleClass = ref<string>();
-const address = ref<string>();
-const city = ref<string>();
-const postalCode = ref<string>();
 onMounted(() => {
-  map = new Map({
-    target: "map",
-    layers: [
-      new TileLayer({
-        source: new OSM(),
-      }),
-    ],
-    view: new View({
-      center: center.value,
-      projection: projection.value,
-      zoom: zoom.value,
-      rotation: rotation.value,
-    }),
-  });
-
-  const vectorLayer = new VectorLayer({
-    source: new VectorSource(),
-  });
-  map.addLayer(vectorLayer);
-  props.localCoords?.forEach((localCoord) => {
-    const marker = new Feature({
-      geometry: new Point(localCoord.coordinates),
-      name: localCoord.id,
-    });
-    marker.setStyle(
-      new Style({
-        image: new Icon({
-          src:
-            localCoord.status == 0
-              ? "/src/assets/pickup.svg"
-              : "/src/assets/delivery.svg",
-          anchor: [0.5, 1],
-        }),
-      })
-    );
-    vectorLayer.getSource()!.addFeature(marker);
-  });
-
-  container = document.getElementById("popup")!;
-  // content = document.getElementById("popup-content")!;
-  closer = document.getElementById("popup-closer")!;
-
-  popup = new Overlay({
-    element: container,
-    positioning: "bottom-center",
-    stopEvent: false,
-    offset: [0, -50],
-  });
-  map.addOverlay(popup);
-  // event kliknięcia w znacznik
-  map.on("click", (event) => {
-    map.forEachFeatureAtPixel(event.pixel, (feature) => {
-      const name = feature.get("name") as number;
-      const geometry = feature.getGeometry();
-      if (geometry instanceof Point) {
-        const coordinates = geometry.getCoordinates();
-        popup.set("popupId", name);
-        popup.getElement()!.hidden = false;
-        // content.innerHTML = props.shipments?.find(s => s.id == popup.get("popupId"));
-        var shipment = props.shipments?.find((s) => s.id == name);
-        titleClass.value =
-          shipment?.status == 0 ? "grey-text" : "pigment-green-text";
-        title.value = shipment?.status == 0 ? "Odbiór" : "Dostawa";
-        address.value =
-          shipment?.status == 0
-            ? shipment?.pickupAddress +
-              (shipment?.pickupApartmentNumber
-                ? "/" + shipment?.pickupApartmentNumber
-                : "")
-            : shipment?.recipientAddress +
-              (shipment?.recipientApartmentNumber
-                ? "/" + shipment?.recipientApartmentNumber
-                : "");
-        city.value =
-          shipment?.status == 0
-            ? shipment?.pickupCity
-            : shipment?.recipientCity;
-        postalCode.value =
-          shipment?.status == 0
-            ? shipment?.pickupPostalCode
-            : shipment?.recipientPostalCode;
-        popup.setPosition(coordinates);
-      }
-    });
-  });
-  // event najechania kursorem na znacznik
-  map.on("pointermove", (event) => {
-    const pixel = map.getEventPixel(event.originalEvent);
-    const hit = map.hasFeatureAtPixel(pixel);
-    map.getTargetElement().style.cursor = hit ? "pointer" : "";
-  });
+  map = createMap(props.localCoords!, props.shipments!);
 });
 
-const closePopup = () => {
-  popup.setPosition(undefined);
-  closer.blur();
-  return false;
-};
 </script>
 
 <template>
   <div class="fog" @click.self="emit('closeMap')">
-    <div id="map" class="map"></div>
-    <div id="popup">
-      <button id="popup-closer" @click="closePopup()"></button>
-      <div id="popup-content">
-        <h2 :class="titleClass">{{ title }}</h2>
-        <table>
-          <tr>
-            <td>Adres:</td>
-            <td>{{ address }}</td>
-          </tr>
-          <tr>
-            <td>Kod pocztowy:</td>
-            <td>{{ postalCode }}</td>
-          </tr>
-          <tr>
-            <td>Miasto:</td>
-            <td>{{ city }}</td>
-          </tr>
-        </table>
+    <div id="fullscreen">
+      <div id="map" class="map" ></div>
+      <div id="popup">
+        <button id="popup-closer" @click="closePopup()"></button>
+        <div id="popup-content">
+          <h2 :class="titleClass">{{ title }}</h2>
+          <table>
+            <tr>
+              <td>Adres:</td>
+              <td>{{ address }}</td>
+            </tr>
+            <tr>
+              <td>Kod pocztowy:</td>
+              <td>{{ postalCode }}</td>
+            </tr>
+            <tr>
+              <td>Miasto:</td>
+              <td>{{ city }}</td>
+            </tr>
+          </table>
+        </div>
       </div>
+      <div id="drop-container"></div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .map {
+  height: 100%;
+  width: 100%;
+  margin: auto;
+}
+.map:fullscreen,
+.map:-webkit-full-screen {
+  height: 100%;
+  width: 100%;
+}
+#fullscreen:-webkit-full-screen {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+#fullscreen:fullscreen {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+#fullscreen {
   height: 80vh;
   width: 80vw;
   margin: auto;
   margin-top: 5%;
+  padding: 0;
 }
-
+#drop-container {
+  background: rgba(245, 245, 245, 0.69);
+  width: 20%;
+  height: 40%;
+  float: right;
+  margin: 40px -4px;
+  border: 2px solid black;
+  border-radius: 15px 0 0 15px;
+  z-index: 1;
+}
 #popup {
   position: absolute;
   background-color: white;

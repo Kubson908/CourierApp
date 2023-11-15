@@ -32,17 +32,25 @@ ul {
   overflow: hidden;
   background-color: #848c8e;
   width: 100%;
+  height: 5.5vh;
+  font-size: 2vh;
 }
 
 li {
   float: left;
+  height: 100%;
+  width: fit-content;
+  
 }
 
 li a {
-  display: block;
+  display: flex;
+  padding: 0 1vw;
   color: white;
-  text-align: center;
-  padding: 14px 16px;
+  line-height: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
   text-decoration: none;
 }
 li a:hover {

@@ -4,11 +4,13 @@ import { authorized } from "../../main.ts";
 import { Shipment } from "../../typings/shipment";
 import { MapView } from ".";
 import { manageCoordinates } from "../../geocoding";
-import { LocalCoords } from "../../typings";
+import { Courier, LocalCoords } from "../../typings";
 
 const showMap = ref<boolean>(false);
-const shipments = ref<Array<Shipment>>();
+const shipments = ref<Array<Shipment>>([]);
 const localCoords = ref<Array<LocalCoords>>([]);
+const couriers = ref<Array<Courier>>();
+const selectedCourier = ref<Courier | null>(null);
 
 onBeforeMount(async () => {
   const getShipments = await authorized.get(
@@ -18,6 +20,10 @@ onBeforeMount(async () => {
   await manageCoordinates(shipments.value!);
   const stringCoords = localStorage.getItem("localCoords");
   localCoords.value = stringCoords ? JSON.parse(stringCoords) : [];
+
+  const getCouriers = await authorized.get("/admin/get-couriers");
+  couriers.value = getCouriers.data;
+  console.log(couriers.value);
 });
 
 const iconSource = (shipment: Shipment) => {
@@ -30,9 +36,20 @@ const size: Array<string> = ["Bardzo mały", "Mały", "Średni", "Duży"];
 </script>
 
 <template>
-  <div id="adminDiv">
+  <div>
     <h1 class="pigment-green-text">Przesyłki do przypisania</h1>
-    <div class="shipments-list">
+    <button @click="showMap = true" v-if="!showMap">Widok mapy</button>
+    <button @click="showMap = false" v-else>Widok listy</button>
+    <select
+      v-model="selectedCourier"
+      :class="selectedCourier == null ? 'gray' : 'white'"
+    >
+      <option value="null" selected hidden>Wybierz kuriera</option>
+      <option v-for="courier in couriers" :key="courier.id" :value="courier">
+        {{ courier.firstName + " " + courier.lastName }}
+      </option>
+    </select>
+    <div class="shipments-list" v-if="!showMap">
       <div v-for="shipment in shipments">
         <img :src="iconSource(shipment)" />
         {{
@@ -43,12 +60,13 @@ const size: Array<string> = ["Bardzo mały", "Mały", "Średni", "Duży"];
         {{ size[shipment.size!] }}
         <hr />
       </div>
-      <button @click="showMap = true">Pokaż mapę</button>
+    </div>
+    <div v-if="showMap">
       <MapView
-        v-if="showMap"
         @closeMap="showMap = false"
         :localCoords="localCoords"
         :shipments="shipments"
+        :courier="selectedCourier"
       />
     </div>
   </div>
@@ -57,7 +75,7 @@ const size: Array<string> = ["Bardzo mały", "Mały", "Średni", "Duży"];
 <style scoped>
 .shipments-list {
   color: black;
-  width: 80%;
+  width: 90%;
   margin: auto;
 }
 </style>

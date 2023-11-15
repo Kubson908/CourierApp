@@ -32,17 +32,24 @@ ul {
   padding: 0;
   overflow: hidden;
   background-color: #1b1919;
-  height: 100%;
+  height: 94.5vh;
   width: 3%;
   display: inline-block;
   transition: width 0.2s;
+  font-size: 2vh;
+}
+li {
+  height: 5.5vh;
 }
 
 li a {
-  display: block;
+  display: flex;
+  padding: 0 1vw;
   color: white;
-  text-align: center;
-  padding: 14px 0;
+  line-height: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
   text-decoration: none;
 }
 li a:hover {

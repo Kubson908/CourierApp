@@ -1,50 +1,64 @@
 <script setup lang="ts">
 import { Map } from "ol";
-import { title, titleClass, city, address, postalCode, closePopup } from "./map";
+import {
+  title,
+  titleClass,
+  city,
+  address,
+  postalCode,
+  closePopup,
+} from "./map";
 import { onMounted } from "vue";
-import { LocalCoords } from "../../typings";
+import { Courier, LocalCoords } from "../../typings";
 import { Shipment } from "../../typings/shipment";
 import { createMap } from "./map";
 
-const emit = defineEmits(["closeMap"]);
-const props = defineProps({
-  localCoords: Array<LocalCoords>,
-  shipments: Array<Shipment>,
-});
+const props = defineProps<{
+  localCoords: Array<LocalCoords>;
+  shipments: Array<Shipment>;
+  courier: Courier | null;
+}>();
 
 let map: Map;
 
 onMounted(() => {
   map = createMap(props.localCoords!, props.shipments!);
+  if (map) console.log("Mapa wczytana");
 });
-
 </script>
 
 <template>
-  <div class="fog" @click.self="emit('closeMap')">
-    <div id="fullscreen">
-      <div id="map" class="map" ></div>
-      <div id="popup">
-        <button id="popup-closer" @click="closePopup()"></button>
-        <div id="popup-content">
-          <h2 :class="titleClass">{{ title }}</h2>
-          <table>
-            <tr>
-              <td>Adres:</td>
-              <td>{{ address }}</td>
-            </tr>
-            <tr>
-              <td>Kod pocztowy:</td>
-              <td>{{ postalCode }}</td>
-            </tr>
-            <tr>
-              <td>Miasto:</td>
-              <td>{{ city }}</td>
-            </tr>
-          </table>
-        </div>
+  <div id="fullscreen">
+    <div id="map" class="map"></div>
+    <div id="popup">
+      <button id="popup-closer" @click="closePopup()"></button>
+      <div id="popup-content">
+        <h2 :class="titleClass">{{ title }}</h2>
+        <table>
+          <tr>
+            <td>Adres:</td>
+            <td>{{ address }}</td>
+          </tr>
+          <tr>
+            <td>Kod pocztowy:</td>
+            <td>{{ postalCode }}</td>
+          </tr>
+          <tr>
+            <td>Miasto:</td>
+            <td>{{ city }}</td>
+          </tr>
+        </table>
       </div>
-      <div id="drop-container"></div>
+    </div>
+    <div
+      id="drop-container"
+      :class="
+        courier ? ' blockdrop-container-active' : 'drop-container-inactive'
+      "
+    >
+      <h3 class="pigment-green-text">
+        Kurier {{ courier?.firstName + " " + courier?.lastName }}
+      </h3>
     </div>
   </div>
 </template>
@@ -54,6 +68,7 @@ onMounted(() => {
   height: 100%;
   width: 100%;
   margin: auto;
+  margin-top: 0;
 }
 .map:fullscreen,
 .map:-webkit-full-screen {
@@ -74,18 +89,26 @@ onMounted(() => {
   height: 80vh;
   width: 80vw;
   margin: auto;
-  margin-top: 5%;
   padding: 0;
 }
 #drop-container {
   background: rgba(245, 245, 245, 0.69);
-  width: 20%;
   height: 40%;
   float: right;
   margin: 40px -4px;
   border: 2px solid black;
   border-radius: 15px 0 0 15px;
   z-index: 1;
+  transition: transform 0.3s ease-in-out;
+  padding: 0 10px;
+}
+.drop-container-inactive {
+  transform: translateX(100%);
+  width: 0%;
+}
+.drop-container-active {
+  transform: translateX(0);
+  width: 20%;
 }
 #popup {
   position: absolute;

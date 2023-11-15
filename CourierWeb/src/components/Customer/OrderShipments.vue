@@ -19,6 +19,7 @@ let shipments: Array<Shipment> = new Array<Shipment>(1).fill({
   recipientEmail: "",
   additionalDetails: "",
   status: undefined,
+  id: undefined,
 });
 
 const activeShipment = ref<Shipment>(shipments[0]);
@@ -101,6 +102,7 @@ const addToList: () => boolean = () => {
     recipientEmail: "",
     additionalDetails: "",
     status: undefined,
+    id: undefined,
   });
   activeShipment.value = shipments[shipments.length - 1];
   console.log(shipments);

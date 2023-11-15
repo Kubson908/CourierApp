@@ -42,7 +42,7 @@ public class AdminController : ControllerBase
     [HttpGet("get-couriers")]
     public ActionResult GetCouriers()
     {
-        var dispatchers = _courierManager.Users.ToList().Select(d => new
+        var couriers = _courierManager.Users.ToList().Select(d => new
         {
             d.Id,
             d.FirstName,
@@ -51,7 +51,7 @@ public class AdminController : ControllerBase
             d.Email,
             d.PhoneNumber,
         });
-        return Ok(dispatchers);
+        return Ok(couriers);
     }
 
 

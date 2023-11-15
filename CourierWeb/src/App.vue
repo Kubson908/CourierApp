@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { NavBar, SideBar, LoadingPage } from "./components";
 import { user, loading } from "./main";
 
@@ -13,12 +13,13 @@ onBeforeMount(() => {
   }
 });
 
-const sidebar: boolean =
-  user.roles.includes("Admin") || user.roles.includes("Dispatcher");
+const sidebar = ref<boolean>(
+  user.roles.includes("Admin") || user.roles.includes("Dispatcher")
+);
 </script>
 
 <template width="100%">
-  <NavBar />
+  <NavBar id="navbar" />
   <SideBar id="sidebar" v-if="sidebar" />
   <LoadingPage v-if="loading" id="loading" />
   <div
@@ -45,7 +46,13 @@ const sidebar: boolean =
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
 }
+#navbar {
+  z-index: 1000;
+  position: fixed;
+}
 #sidebar {
+  z-index: 900;
+  top: 5.5vh;
   position: fixed;
 }
 .content {
@@ -55,5 +62,6 @@ const sidebar: boolean =
 .center {
   text-align: center;
   min-height: 94.5vh;
+  margin-top: 5.5vh;
 }
 </style>

@@ -112,6 +112,10 @@ button:focus-visible {
 .black-text {
   color: black;
 }
+.gray-text {
+  color: #848C8E
+}
+
 .gray-placeholder::placeholder {
   color: #bdbdbd;
   opacity: 1;

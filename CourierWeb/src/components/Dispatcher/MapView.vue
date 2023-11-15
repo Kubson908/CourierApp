@@ -7,16 +7,19 @@ import {
   address,
   postalCode,
   closePopup,
+  routes,
 } from "./map";
 import { onMounted } from "vue";
 import { Courier, LocalCoords } from "../../typings";
 import { Shipment } from "../../typings/shipment";
 import { createMap } from "./map";
+import { VueDraggableNext as draggable } from "vue-draggable-next";
 
 const props = defineProps<{
   localCoords: Array<LocalCoords>;
   shipments: Array<Shipment>;
   courier: Courier | null;
+  date: string;
 }>();
 
 let map: Map;
@@ -59,6 +62,13 @@ onMounted(() => {
       <h3 class="pigment-green-text">
         Kurier {{ courier?.firstName + " " + courier?.lastName }}
       </h3>
+      <draggable class="dragArea list-group w-full" :list="routes">
+        <transition-group>
+          <div v-for="shipment in routes" :key="shipment.id" class="draggable">
+            {{ shipment.pickupAddress }}
+          </div>
+        </transition-group>
+      </draggable>
     </div>
   </div>
 </template>
@@ -99,15 +109,15 @@ onMounted(() => {
   border: 2px solid black;
   border-radius: 15px 0 0 15px;
   z-index: 1;
-  transition: transform 0.3s ease-in-out;
-  padding: 0 10px;
+  transition: transform 0.3s ease-in-out, box-shadow 0.1s ease-in-out,
+    padding-right 0.1s ease-in-out;
+  padding: 0 20px 0 10px;
 }
 .drop-container-inactive {
   transform: translateX(100%);
   width: 0%;
 }
 .drop-container-active {
-  transform: translateX(0);
   width: 20%;
 }
 #popup {
@@ -155,9 +165,16 @@ onMounted(() => {
 }
 #popup-content {
   display: block;
+  color: black;
 }
 td {
   text-align: start;
   padding: 0 5px;
+}
+.draggable {
+  background-color: white;
+  color: black;
+  font-size: 2vh;
+  margin-bottom: 5px;
 }
 </style>

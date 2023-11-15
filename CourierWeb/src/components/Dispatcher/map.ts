@@ -20,11 +20,13 @@ export const titleClass = ref<string>();
 export const address = ref<string>();
 export const city = ref<string>();
 export const postalCode = ref<string>();
+export const routes = ref<Array<Shipment>>([]);
 
 let popup: Overlay;
 
-let container: HTMLElement;
-let closer: HTMLElement;
+let container: HTMLElement | null;
+let closer: HTMLElement | null;
+let dropContainer: HTMLElement | null;
 
 const isDragging = ref<boolean>(false);
 
@@ -86,6 +88,7 @@ export const createMap = (
 
   container = document.getElementById("popup")!;
   closer = document.getElementById("popup-closer")!;
+  dropContainer = document.getElementById("drop-container");
 
   popup = new Overlay({
     element: container,
@@ -115,7 +118,7 @@ const addEventListeners = (map: Map, shipments: Array<Shipment>) => {
         popup.getElement()!.hidden = false;
         var shipment = shipments?.find((s) => s.id == name);
         titleClass.value =
-          shipment?.status == 0 ? "grey-text" : "pigment-green-text";
+          shipment?.status == 0 ? "gray-text" : "pigment-green-text";
         title.value = shipment?.status == 0 ? "Odbiór" : "Dostawa";
         address.value =
           shipment?.status == 0
@@ -156,9 +159,8 @@ const addEventListeners = (map: Map, shipments: Array<Shipment>) => {
 
   map.getTargetElement().addEventListener("mousemove", (event) => {
     if (isDragging.value && !draggedElement) {
-      let status = map
-        .getFeaturesAtPixel(map.getEventPixel(event))[0]
-        .get("status");
+      let feature = map.getFeaturesAtPixel(map.getEventPixel(event))[0];
+      let status = feature.get("status");
       draggedElement = document.createElement("img");
       draggedElement.src =
         status == 0 ? "/src/assets/pickup.svg" : "/src/assets/delivery.svg";
@@ -166,22 +168,13 @@ const addEventListeners = (map: Map, shipments: Array<Shipment>) => {
       draggedElement.style.height = "50px";
       draggedElement!.style.left = "-100px";
       draggedElement!.style.top = "-100px";
+      draggedElement.id = feature.get("name");
       document.getElementById("map")!.appendChild(draggedElement);
     } else if (isDragging.value) {
       draggedElement!.style.left = event.clientX - 25 + "px";
       draggedElement!.style.top = event.clientY - 25 + "px";
-    }
-  });
 
-  map.getTargetElement().addEventListener("mouseup", (event) => {
-    if (draggedElement) {
-      map.getInteractions().forEach((x) => x.setActive(true));
-      document.getElementById("map")!.removeChild(draggedElement);
-      draggedElement = undefined;
-
-      const containerExtent = document
-        .getElementById("drop-container")
-        ?.getBoundingClientRect()!;
+      const containerExtent = dropContainer?.getBoundingClientRect()!;
       const dropCoordinate = [event.clientX, event.clientY];
 
       if (
@@ -191,6 +184,35 @@ const addEventListeners = (map: Map, shipments: Array<Shipment>) => {
         dropCoordinate[1] <= containerExtent.bottom &&
         isDragging.value
       ) {
+        dropContainer!.style.boxShadow = "0px 0px 10px 10px #AFAFAF";
+        dropContainer!.style.paddingRight = "30px";
+      } else {
+        dropContainer!.style.removeProperty("box-shadow");
+        dropContainer!.style.removeProperty("padding-right");
+      }
+    }
+  });
+
+  map.getTargetElement().addEventListener("mouseup", (event) => {
+    if (draggedElement) {
+      map.getInteractions().forEach((x) => x.setActive(true));
+      document.getElementById("map")!.removeChild(draggedElement);
+      let id = draggedElement.id;
+      draggedElement = undefined;
+      const containerExtent = dropContainer?.getBoundingClientRect()!;
+      const dropCoordinate = [event.clientX, event.clientY];
+      if (
+        dropCoordinate[0] >= containerExtent.left &&
+        dropCoordinate[0] <= containerExtent.right &&
+        dropCoordinate[1] >= containerExtent.top &&
+        dropCoordinate[1] <= containerExtent.bottom &&
+        isDragging.value
+      ) {
+        dropContainer!.style.removeProperty("box-shadow");
+        dropContainer!.style.removeProperty("padding-right");
+        routes.value.push(
+          shipments.find((s) => s.id == (id as unknown as number)) as Shipment
+        );
         console.log("Znacznik upuszczony w kontenerze");
         isDragging.value = false;
       } else {
@@ -202,6 +224,6 @@ const addEventListeners = (map: Map, shipments: Array<Shipment>) => {
 
 export const closePopup = () => {
   popup.setPosition(undefined);
-  closer.blur();
+  closer?.blur();
   return false;
 };

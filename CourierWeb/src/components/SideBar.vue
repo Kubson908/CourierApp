@@ -17,7 +17,14 @@ const links = user.roles.includes("Admin")
     :class="{ active: hover }"
   >
     <li v-for="item in links">
-      <a :href="item.link">{{ item.title }}</a>
+      <div :class="hover ? 'visible' : 'hidden'">
+        <a :href="item.link">
+          {{ item.title }}
+        </a>
+      </div>
+      <div :class="hover ? 'hidden' : 'visible'">
+        <a :href="item.link"><img :src="item.icon" class="icon" /> </a>
+      </div>
     </li>
     <!-- <li><a href="/">Home</a></li>
     <li><a href="/">Home</a></li>
@@ -58,5 +65,18 @@ li a:hover {
 .active {
   width: 8%;
   transition: width 0.2s;
+}
+.visible {
+  height: 100%;
+  transition: transform 0.2s ease-in-out;
+  z-index: 9;
+}
+.hidden {
+  transform: translateX(-300%);
+}
+.icon {
+  height: 100%;
+  margin: 0;
+  transform: translateY(-35%);
 }
 </style>

@@ -1,22 +1,38 @@
 ﻿using CourierMobileApp.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CourierMobileApp.ViewModels;
 
-public class ScheduleViewModel : BaseViewModel
+public partial class ScheduleViewModel : BaseViewModel
 {
-    ConnectionService connectionService;
+    readonly ShipmentService shipmentService;
+    [ObservableProperty]
+    public DateTime date;
+    [ObservableProperty]
+    public DateTime minimumDate;
 
-    
+    public ObservableCollection<RouteElement> Route { get; set; }
 
-    // lista przesyłek
-
-    public ScheduleViewModel(ConnectionService connectionService)
+    public ScheduleViewModel(ShipmentService shipmentService)
     {
-        this.connectionService = connectionService;
+        Title = "Harmonogram";
+        Route = new ObservableCollection<RouteElement>();
+        this.shipmentService = shipmentService;
+        foreach (RouteElement routeElement in this.shipmentService.route)
+        {
+            Route.Add(routeElement);
+        }
+        MinimumDate = DateTime.Today;
+        Date = DateTime.Today;
+    }
+
+    [RelayCommand]
+    public async Task GetRouteAsync()
+    {
+        Route.Clear();
+        var temp = await shipmentService.GetRouteAsync(Date);
+        foreach (var route in temp)
+        {
+            Route.Add(route);
+        }
     }
 }

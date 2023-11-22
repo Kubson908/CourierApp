@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Map } from "ol";
 import {
   title,
   titleClass,
@@ -9,7 +8,7 @@ import {
   closePopup,
   routes,
 } from "./map";
-import { onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { Courier, LocalCoords } from "../../typings";
 import { Shipment } from "../../typings/shipment";
 import { createMap } from "./map";
@@ -22,12 +21,22 @@ const props = defineProps<{
   date: string;
 }>();
 
-let map: Map;
-
 onMounted(() => {
-  map = createMap(props.localCoords!, props.shipments!);
-  if (map) console.log("Mapa wczytana");
+  createMap(props.localCoords!, props.shipments!);
 });
+
+const dragOptions = computed<{
+  animation: 0;
+  group: "description";
+  disabled: false;
+  ghostClass: "ghost";
+}>;
+
+const remove = (shipmentId: number) => {
+  routes.value = routes.value.filter((s) => s.id != shipmentId);
+};
+
+const emit = defineEmits(["submit"]);
 </script>
 
 <template>
@@ -62,13 +71,46 @@ onMounted(() => {
       <h3 class="pigment-green-text">
         Kurier {{ courier?.firstName + " " + courier?.lastName }}
       </h3>
-      <draggable class="dragArea list-group w-full" :list="routes">
-        <transition-group>
+      <div class="top">
+        <draggable
+          class="list-group"
+          item-key="order"
+          tag="transition-group"
+          :component-data="{
+            tag: 'div',
+            name: 'shipment-route',
+            type: 'transition',
+          }"
+          v-model="routes"
+          v-bind="dragOptions"
+        >
           <div v-for="shipment in routes" :key="shipment.id" class="draggable">
-            {{ shipment.pickupAddress }}
+            <img
+              :src="
+                shipment.status == 0
+                  ? '/src/assets/pickup.svg'
+                  : '/src/assets/delivery.svg'
+              "
+            />
+            <div class="flex">
+              {{
+                shipment.status == 0
+                  ? shipment.pickupAddress
+                  : shipment.recipientAddress
+              }},
+              {{
+                shipment.status == 0
+                  ? shipment.pickupCity
+                  : shipment.recipientCity
+              }}
+            </div>
+            <button @click="remove(shipment.id!)"></button>
           </div>
-        </transition-group>
-      </draggable>
+        </draggable>
+      </div>
+      <button v-if="routes.length >= 2" class="submit" @click="emit('submit')">
+        Zatwierdź
+      </button>
     </div>
   </div>
 </template>
@@ -102,8 +144,10 @@ onMounted(() => {
   padding: 0;
 }
 #drop-container {
+  display: flex;
+  flex-direction: column;
   background: rgba(245, 245, 245, 0.69);
-  height: 40%;
+  min-height: 40%;
   float: right;
   margin: 40px -4px;
   border: 2px solid black;
@@ -174,7 +218,49 @@ td {
 .draggable {
   background-color: white;
   color: black;
-  font-size: 2vh;
+
   margin-bottom: 5px;
+  border: solid 1px black;
+  border-radius: 3px;
+  padding: 3px 0;
+  display: flex;
+}
+.sortable-ghost {
+  background-color: rgb(171, 195, 224);
+}
+.flex {
+  display: flex;
+  vertical-align: center;
+  width: 85%;
+  height: 100%;
+  padding-left: 3px;
+  font-size: 110%;
+  line-height: 110%;
+}
+
+.draggable img {
+  height: 25px;
+  margin: 0 5px;
+}
+
+.draggable button {
+  width: 30px;
+  height: 25px;
+  padding: 2px;
+  float: right;
+  margin: 0 5px;
+  font-size: 100%;
+  line-height: 100%;
+}
+
+.draggable button::after {
+  content: "✖";
+}
+
+.bottom {
+  height: 100%;
+}
+.top {
+  min-height: 40%;
 }
 </style>

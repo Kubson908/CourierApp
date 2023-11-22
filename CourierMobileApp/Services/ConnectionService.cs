@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Web;
 
 namespace CourierMobileApp.Services;
 
@@ -38,11 +39,20 @@ public class ConnectionService
         SetTokenAsync();
     }
 
-    public async Task<HttpResponseMessage> SendAsync(HttpMethod method, string url, object body = null) // dodać query params
+    private string setQuery(object parameters)
+    {
+        var properties = parameters.GetType().GetProperties();
+        var notNull = properties.Where(prop => prop.GetValue(parameters, null) != null);
+        var values = notNull.Select(prop => $"{HttpUtility.UrlEncode(prop.Name)}={HttpUtility.UrlEncode(prop.GetValue(parameters).ToString())}");
+        var queryParams = $"?{string.Join("&", values)}";
+        return queryParams;
+    }
+
+    public async Task<HttpResponseMessage> SendAsync(HttpMethod method, string url, object body = null, object queryParams = null) // dodać query params
     {
         var content = body != null ? new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json") : null;
         url = url.StartsWith("/") ? url : "/" + url;
-
+        url = queryParams is not null ? url + setQuery(queryParams) : url;
         switch (method.Method)
         {
             case "POST":

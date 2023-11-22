@@ -1,11 +1,11 @@
 export const sidelinks: {
   [key: string]: Array<link>;
 } = {
-  admin: [{ link: "/administration", title: "Administracja" }],
+  admin: [{ link: "/administration", title: "Administracja", icon: "" }],
   dispatcher: [
-    { link: "/shipments", title: "Przesyłki" },
-    { link: "/couriers", title: "Kurierzy" },
+    { link: "/shipments", title: "Przesyłki", icon: "/src/assets/package.svg" },
+    { link: "/couriers", title: "Kurierzy", icon: "/src/assets/people.svg" },
   ],
 };
 
-type link = { link: string; title: string };
+type link = { link: string; title: string; icon: string };

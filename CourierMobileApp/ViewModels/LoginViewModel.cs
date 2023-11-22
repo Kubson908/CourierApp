@@ -23,11 +23,12 @@ public partial class LoginViewModel : BaseViewModel
     [RelayCommand]
     async Task LoginAsync()
     {
-        if (Loading) return;
+        if (IsBusy) return;
 
         try
         {
-            Loading = true;
+            Platforms.KeyboardHelper.HideKeyboard();
+            IsBusy = true;
             ApiUserResponse response = await loginService.LoginAsync(new LoginDto
             {
                 Login = Login,
@@ -45,12 +46,12 @@ public partial class LoginViewModel : BaseViewModel
         }
         finally
         {
-            Loading = false;
             var authenticated = await SecureStorage.Default.GetAsync("access_token");
             if (authenticated is not null)
             {
-                await Shell.Current.GoToAsync($"/{nameof(LoadingPage)}");
+                await Shell.Current.GoToAsync($"/{nameof(MainPage)}");
             }
+            IsBusy = false;
         }
     }
 }

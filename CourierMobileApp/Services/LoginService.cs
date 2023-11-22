@@ -11,7 +11,6 @@ namespace CourierMobileApp.Services;
 public class LoginService
 {
     ConnectionService connectionService;
-
     public LoginService(ConnectionService connectionService)
     {
         this.connectionService = connectionService;
@@ -32,7 +31,7 @@ public class LoginService
             };
         }
 
-        var response = await connectionService.SendAsync(HttpMethod.Post, "api/auth/login-courier", loginDto);
+        var response = await connectionService.SendAsync(HttpMethod.Post, "api/auth/login-courier", body: loginDto);
         if (!response.IsSuccessStatusCode)
             throw new Exception(await response.Content.ReadAsStringAsync());
         ApiUserResponse responseData = JsonConvert.DeserializeObject<ApiUserResponse>(await response.Content.ReadAsStringAsync());

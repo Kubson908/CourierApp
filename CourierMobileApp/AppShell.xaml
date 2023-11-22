@@ -22,7 +22,13 @@
     <ShellContent
         Shell.NavBarIsVisible="False"
         Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
+        ContentTemplate="{DataTemplate view:MainPage}"
         Route="MainPage" />
+
+    <ShellContent
+        Shell.NavBarIsVisible="False"
+        Title="Schedule"
+        ContentTemplate="{DataTemplate view:SchedulePage}"
+        Route="Schedule" />
 
 </Shell>

@@ -1,15 +1,18 @@
-﻿namespace CourierMobileApp
-{
-    public partial class MainPage : ContentPage
-    {
-        public MainPage()
-        {
-            InitializeComponent();
-        }
+﻿using CourierMobileApp.Services;
+using Maui.Plugins.PageResolver;
 
-        private async void ScheduleClicked(object sender, EventArgs e)
-        {
-            /*await Shell.Current.GoToAsync();*/
-        }
+namespace CourierMobileApp.View;
+
+public partial class MainPage : ContentPage
+{
+    public MainPage(MainPageViewModel mainPageViewModel)
+    {
+        InitializeComponent();
+        BindingContext = mainPageViewModel;
+    }
+
+    protected override bool OnBackButtonPressed()
+    {
+        return true;
     }
 }

@@ -1,12 +1,48 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewmodel="clr-namespace:CourierMobileApp.ViewModels"
+             xmlns:model="clr-namespace:CourierMobileApp.Models"
+             xmlns:controls="clr-namespace:CourierMobileApp.Controls"
+             xmlns:components="clr-namespace:CourierMobileApp.View.Components"
+             x:DataType="viewmodel:ScheduleViewModel"
              x:Class="CourierMobileApp.View.SchedulePage"
-             Title="SchedulePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="{Binding Title}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*" 
+          Background="{StaticResource LoggedInBgDark}">
+        <components:NavBar Grid.Row="0" Margin="20, 0"/>
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout VerticalOptions="Fill" >
+                <controls:BorderDatePicker MinimumDate="{Binding MinimumDate}"
+                                           Date="{Binding Date}"
+                                           DateSelected="DateSelected"
+                                           TextColor="White"
+                                           CornerRadius="10"
+                                           BorderColor="#E8E8E8"
+                                           BorderWidth="1"
+                                           HeightRequest="50"
+                                           Padding="10"
+                                           FontSize="16"
+                                           BackgroundColor="#848C8E"
+                                           Margin="10, 40, 10, 0"
+                                           Format="dd.MM.yyyy"/>
+                <CollectionView ItemsSource="{Binding Route}" Margin="0, 0">
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:RouteElement">
+                            <VerticalStackLayout Spacing="5">
+                                <Label TextColor="White" Text="{Binding Shipment.PickupAddress}" />
+                                <Label TextColor="White" Text="{Binding Shipment.PickupCity}" />
+                                <Label TextColor="White" Text="{Binding Shipment.PickupPostalCode}" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+        
+    </Grid>
 </ContentPage>

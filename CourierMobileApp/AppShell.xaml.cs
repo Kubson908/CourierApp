@@ -9,8 +9,9 @@ namespace CourierMobileApp
             InitializeComponent();
 
             Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
-            Routing.RegisterRoute(nameof(LoadingPage), typeof(LoadingPage));
+            /*Routing.RegisterRoute(nameof(LoadingPage), typeof(LoadingPage));*/
             Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
+            Routing.RegisterRoute(nameof(SchedulePage), typeof(SchedulePage));
         }
     }
 }

@@ -3,6 +3,7 @@ using CourierMobileApp.Controls;
 using CourierMobileApp.Platforms;
 using CourierMobileApp.Services;
 using CourierMobileApp.View;
+using Maui.Plugins.PageResolver;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 
@@ -22,12 +23,19 @@ namespace CourierMobileApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("IBMPlexSans-Regular.otf", "IBMPlexSans");
                 });
-            
+
+            builder.Services.AddSingleton<MainPage>();
+            builder.Services.AddSingleton<MainPageViewModel>();
             builder.Services.AddSingleton<ConnectionService>();
 
             builder.Services.AddSingleton<LoginPage>();
             builder.Services.AddSingleton<LoginViewModel>();
             builder.Services.AddSingleton<LoginService>();
+            builder.Services.AddSingleton<ShipmentService>();
+            builder.Services.AddSingleton<SchedulePage>();
+            builder.Services.AddSingleton<ScheduleViewModel>();
+
+            builder.Services.UsePageResolver();
             
 #if DEBUG
 		builder.Logging.AddDebug();
@@ -38,6 +46,10 @@ namespace CourierMobileApp
             if (view is BorderEntry)
             {
                 BorderEntryMapper.Map(handler, view);
+            }
+            if (view is BorderDatePicker)
+            {
+                BorderDatePickerMapper.Map(handler, view);
             }
         });
             builder.ConfigureLifecycleEvents(events =>

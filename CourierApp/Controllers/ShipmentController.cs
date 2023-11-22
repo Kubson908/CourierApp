@@ -3,6 +3,7 @@ using CourierAPI.Models;
 using CourierAPI.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace CourierAPI.Controllers;
@@ -110,7 +111,7 @@ public class ShipmentController : ControllerBase
         
     }
     // TODO: dodać endpoint do przypisywania paczek do kuriera i zmiany statusu na Accepted dla nowych paczek <-- chyba zrobione ale przetestować
-    [HttpPatch("set-route")]
+    [HttpPost("set-route")]
     public async Task<IActionResult> SetRoute([FromBody] RouteDto dto)
     {
         try
@@ -123,11 +124,20 @@ public class ShipmentController : ControllerBase
                     RouteDate = dto.Date.ToString(),
                     Order = order,
                     CourierId = dto.CourierId,
-                    ShipmentId = shipment.Id
+                    ShipmentId = shipment.Id,
+                    Type = shipment.Status == 0 ? Models.Type.Pickup : Models.Type.Delivery
                 };
                 order++;
                 await _context.RouteElements.AddAsync(element);
+                var updateResult = await UpdateShipmentStatus(shipment.Id, shipment.Status == Status.Registered ? Status.Accepted : Status.InDelivery);
+                if (!updateResult.IsSuccess) return StatusCode(StatusCodes.Status500InternalServerError, new ApiUserResponse
+                {
+                    Message = updateResult.Message,
+                    IsSuccess = updateResult.IsSuccess,
+                    Exception = updateResult.Exception,
+                });
             }
+            await _context.SaveChangesAsync();
             return Ok("Route created");
         }
         catch (Exception ex)
@@ -166,5 +176,67 @@ public class ShipmentController : ControllerBase
         if (!result.IsSuccess) return BadRequest(result);
         else if (result.Exception) return StatusCode(StatusCodes.Status500InternalServerError, result);
         return Ok(result);
+    }
+
+    [HttpGet("get-unavailable-dates")]
+    public async Task<IActionResult> GetUnavailableDates()
+    {
+        List<string> courierIds = _context.Couriers.Select(c => c.Id).ToList();
+        DateOnly today = new();
+        Dictionary<string, List<string>> dates = new();
+        foreach (string id in courierIds)
+        {
+            dates.Add(id, new List<string>());
+            await _context.RouteElements
+                .ForEachAsync((element) =>
+                {
+                    Console.WriteLine(element.RouteDate);
+                    if (DateOnly.Parse(element.RouteDate.ToString()).CompareTo(today) > 0 && !dates[id].Contains(element.RouteDate))
+                        dates[id].Add(element.RouteDate);
+                }, CancellationToken.None);
+        }
+        return Ok(dates);
+    }
+
+    [HttpGet("get-courier-route"), Authorize(Roles = "Courier")]
+    public async Task<IActionResult> GetCourierRoute([FromQuery] DateOnly date)
+    {
+        string courierId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        string dateString = date.ToString("dd.MM.yyyy");
+
+        var route = await _context.RouteElements.Where(r => r.RouteDate == dateString).Select(r => new
+        {
+            r.Id,
+            r.RouteDate,
+            r.Order,
+            Shipment = new
+            {
+                r.Shipment!.Id,
+                r.Shipment!.Status,
+                r.Shipment!.PickupAddress,
+                r.Shipment!.PickupApartmentNumber,
+                r.Shipment!.PickupCity,
+                r.Shipment!.PickupPostalCode,
+                r.Shipment!.Size,
+                r.Shipment!.RecipientName,
+                r.Shipment!.RecipientPhoneNumber,
+                r.Shipment!.RecipientAddress,
+                r.Shipment!.RecipientApartmentNumber,
+                r.Shipment!.RecipientCity,
+                r.Shipment!.RecipientPostalCode,
+                r.Shipment!.RecipientEmail,
+                r.Shipment!.PickupDate,
+                r.Shipment!.StoreDate,
+                r.Shipment!.DeliveryDate,
+                r.Shipment!.AdditionalDetails,
+                Customer = new
+                {
+                    r.Shipment.Customer!.FirstName,
+                    r.Shipment.Customer!.LastName,
+                    r.Shipment.Customer!.PhoneNumber
+                }
+            }
+        }).ToListAsync();
+        return Ok(route);
     }
 }

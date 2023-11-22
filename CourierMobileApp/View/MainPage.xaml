@@ -3,7 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:mct="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
              xmlns:components="clr-namespace:CourierMobileApp.View.Components"
-             x:Class="CourierMobileApp.MainPage">
+             xmlns:viewmodel="clr-namespace:CourierMobileApp.ViewModels"
+             x:DataType="viewmodel:MainPageViewModel"
+             x:Class="CourierMobileApp.View.MainPage"
+             Shell.NavBarIsVisible="False"
+             Shell.BackButtonBehavior="{Binding }">
 
     <ScrollView BackgroundColor="#111516">
         <Grid   RowDefinitions="*,*,*,*"
@@ -12,17 +16,18 @@
                 VerticalOptions="FillAndExpand">
 
             <components:NavBar Grid.Row="0"/>
-
+            <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="True" Grid.Row="1" Grid.RowSpan="2" HeightRequest="100" Color="#15AB54"/>
             <Frame Grid.Row="1"
                    BackgroundColor="Transparent"
-                   BorderColor="Transparent">
+                   BorderColor="Transparent"
+                   IsVisible="{Binding IsNotBusy}">
                 <Grid RowDefinitions="*,*"
                       VerticalOptions="Center">
                     <Button Grid.RowSpan="2"
                             BackgroundColor="#15AB54"
                             CornerRadius="20"
                             HeightRequest="170"
-                            Clicked="ScheduleClicked"/>
+                            Command="{Binding ScheduleClickedCommand}"/>
                     <Image Source="package_icon.svg"
                            HeightRequest="50"
                            Grid.Row="0"
@@ -39,7 +44,8 @@
 
             <Frame Grid.Row="2"
                    BackgroundColor="Transparent"
-                   BorderColor="Transparent" >
+                   BorderColor="Transparent" 
+                   IsVisible="{Binding IsNotBusy}">
                 <Grid RowDefinitions="*,*"
                       VerticalOptions="Center">
                     <Button Grid.RowSpan="2"

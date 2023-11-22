@@ -11,67 +11,79 @@
     <ContentPage.Behaviors>
         <mct:StatusBarBehavior StatusBarColor="#111516" />
     </ContentPage.Behaviors>
-    <VerticalStackLayout VerticalOptions="Fill"
-                         Margin="0, 0, 0, 0"
-                         Spacing="15">
-        <VerticalStackLayout.Background>
+    <Grid VerticalOptions="Fill"
+          Margin="0, 0, 0, 0"
+          RowDefinitions="2*,1*">
+        <Grid.Background>
             <LinearGradientBrush EndPoint="0, 1">
                 <GradientStop Color="#111516"
                               Offset="0.65" />
                 <GradientStop Color="#4d15ab54"
                               Offset="1.0"/>
             </LinearGradientBrush>
-        </VerticalStackLayout.Background>
-        <Label Text="Witaj!"
+        </Grid.Background>
+        <VerticalStackLayout VerticalOptions="Fill"
+                             Margin="0, 0, 0, 0"
+                             Spacing="15"
+                             IsVisible="{Binding IsNotBusy}"
+                             Grid.Row="0">
+            
+            <Label Text="Witaj!"
                TextColor="#15AB54"
                HorizontalTextAlignment="Center"
                FontSize="36"
                FontAttributes="Bold"
                Margin="0, 80, 0, 0"/>
-        <Label Text="Podaj dane logowania"
+            <Label Text="Podaj dane logowania"
                TextColor="#BDBDBD"
                HorizontalTextAlignment="Center" 
                FontSize="16" />
-        <controls:BorderEntry Placeholder="Email" 
-                              Text="{Binding Login}"
-                              TextColor="White"
-                              CornerRadius="10"
-                              BorderColor="#E8E8E8"
-                              BorderWidth="1"
-                              HeightRequest="50"
-                              WidthRequest="300"
-                              Padding="10"
-                              BackgroundColor="#848C8E"
-                              PlaceholderColor="#BDBDBD"
-                              FontSize="16"
-                              Margin="0, 40, 0, 0" />
+            <controls:BorderEntry x:Name="LoginEntry"
+                                  Placeholder="Email" 
+                                  Text="{Binding Login}"
+                                  TextColor="White"
+                                  CornerRadius="10"
+                                  BorderColor="#E8E8E8"
+                                  BorderWidth="1"
+                                  HeightRequest="50"
+                                  WidthRequest="300"
+                                  Padding="10"
+                                  BackgroundColor="#848C8E"
+                                  PlaceholderColor="#BDBDBD"
+                                  FontSize="16"
+                                  Margin="0, 40, 0, 0" />
 
-        <controls:BorderEntry Placeholder="Hasło" 
-                              Text="{Binding Password}"
-                              TextColor="White"
-                              IsPassword="True"
-                              CornerRadius="10"
-                              BorderColor="#E8E8E8"
-                              BorderWidth="1"
-                              HeightRequest="50"
-                              WidthRequest="300"
-                              Padding="10"
-                              BackgroundColor="#848C8E"
-                              PlaceholderColor="#BDBDBD" 
-                              FontSize="16"/>
+            <controls:BorderEntry x:Name="PasswordEntry"
+                                  Placeholder="Hasło" 
+                                  Text="{Binding Password}"
+                                  TextColor="White"
+                                  IsPassword="True"
+                                  CornerRadius="10"
+                                  BorderColor="#E8E8E8"
+                                  BorderWidth="1"
+                                  HeightRequest="50"
+                                  WidthRequest="300"
+                                  Padding="10"
+                                  BackgroundColor="#848C8E"
+                                  PlaceholderColor="#BDBDBD" 
+                                  FontSize="16"/>
 
-        <Button Text="Zaloguj się"
+            <Button Text="Zaloguj się"
                 BackgroundColor="#15AB54"
                 TextColor="White"
                 FontSize="16"
                 WidthRequest="264"
                 Margin="0, 20, 0, 0"
                 Command="{Binding LoginCommand}"/>
-        <Label Text="Nie pamiętam hasła"
+            <Label Text="Nie pamiętam hasła"
                TextColor="#15AB54"
                TextDecorations="Underline"
                FontSize="16"
                HorizontalTextAlignment="Center"
                Margin="0, 15, 0, 0" />
-    </VerticalStackLayout>
+        </VerticalStackLayout>
+        <StackLayout IsVisible="{Binding IsBusy}" Grid.Row="0" Grid.RowSpan="2">
+            <ActivityIndicator Grid.Row="0" IsVisible="{Binding IsBusy}" IsRunning="True" VerticalOptions="CenterAndExpand" HeightRequest="100" Color="#15AB54"/>
+        </StackLayout>
+    </Grid>
 </ContentPage>

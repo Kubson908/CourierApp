@@ -11,6 +11,8 @@ public class RouteElement
     public required string RouteDate { get; set; }
     [Required]
     public int Order { get; set; }
+    [Required]
+    public Type Type { get; set; }
 
     //Navigation properties
     [Required]
@@ -20,4 +22,9 @@ public class RouteElement
     [ForeignKey(nameof(Shipment))]
     public int? ShipmentId { get; set; }
     public Shipment? Shipment { get; set; }
+}
+
+public enum Type
+{
+    Pickup, Delivery
 }

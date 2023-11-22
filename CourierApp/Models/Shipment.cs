@@ -38,8 +38,7 @@ public class Shipment
     //Navigation properties
     [ForeignKey(nameof(Customer))]
     public string? CustomerId { get; set; }
-    public Customer? Customer { get; set; } // skasowałem virtual i zobaczymy czy będzie działać tak samo
-
+    public Customer? Customer { get; set; }
 }
 
 public enum Status
@@ -48,6 +47,7 @@ public enum Status
     Accepted,
     PickedUp,
     Stored,
+    InDelivery,
     Delivered
 }
 

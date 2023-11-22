@@ -32,11 +32,13 @@ const isDragging = ref<boolean>(false);
 
 let draggedElement: HTMLImageElement | undefined;
 
+let map: Map;
+let vectorLayer: VectorLayer<VectorSource>;
 export const createMap = (
   localCoords: Array<LocalCoords>,
   shipments: Array<Shipment>
-): Map => {
-  const map = new Map({
+) => {
+  map = new Map({
     controls: defaultControls().extend([
       new FullScreen({ source: "fullscreen" }),
     ]),
@@ -53,7 +55,7 @@ export const createMap = (
       rotation: rotation.value,
     }),
   });
-  const vectorLayer = new VectorLayer({
+  vectorLayer = new VectorLayer({
     source: new VectorSource(),
     zIndex: 10,
   });
@@ -65,6 +67,7 @@ export const createMap = (
       name: localCoord.id,
       status: localCoord.status,
     });
+    marker.setId(localCoord.id);
     marker.setStyle(
       new Style({
         image: new Icon({
@@ -99,8 +102,6 @@ export const createMap = (
   map.addOverlay(popup);
 
   addEventListeners(map, shipments);
-
-  return map;
 };
 
 const addEventListeners = (map: Map, shipments: Array<Shipment>) => {
@@ -197,7 +198,7 @@ const addEventListeners = (map: Map, shipments: Array<Shipment>) => {
     if (draggedElement) {
       map.getInteractions().forEach((x) => x.setActive(true));
       document.getElementById("map")!.removeChild(draggedElement);
-      let id = draggedElement.id;
+      let id = draggedElement.id as unknown as number;
       draggedElement = undefined;
       const containerExtent = dropContainer?.getBoundingClientRect()!;
       const dropCoordinate = [event.clientX, event.clientY];
@@ -210,10 +211,8 @@ const addEventListeners = (map: Map, shipments: Array<Shipment>) => {
       ) {
         dropContainer!.style.removeProperty("box-shadow");
         dropContainer!.style.removeProperty("padding-right");
-        routes.value.push(
-          shipments.find((s) => s.id == (id as unknown as number)) as Shipment
-        );
-        console.log("Znacznik upuszczony w kontenerze");
+        if (routes.value.find((s) => s.id == id) == null)
+          routes.value.push(shipments.find((s) => s.id == id) as Shipment);
         isDragging.value = false;
       } else {
         isDragging.value = false;
@@ -226,4 +225,12 @@ export const closePopup = () => {
   popup.setPosition(undefined);
   closer?.blur();
   return false;
+};
+
+export const removeFeatures = (featureIds: Array<number>) => {
+  const source = vectorLayer.getSource();
+  featureIds.forEach((element) => {
+    console.log(source?.getFeatureById(element)!);
+    source?.removeFeature(source.getFeatureById(element)!);
+  });
 };

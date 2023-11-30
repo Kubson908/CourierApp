@@ -12,9 +12,9 @@ public partial class ShipmentPage : ContentPage
 
     private void FinishButtonClicked(object sender, EventArgs e)
     {
-        /*MainThread.InvokeOnMainThreadAsync(async () =>
+        MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            await Shell.Current.Navigation.PushAsync(new Scanner());
-        });*/
+            await Shell.Current.Navigation.PushAsync(new Scanner(new ScannerViewModel()));
+        });
     }
 }

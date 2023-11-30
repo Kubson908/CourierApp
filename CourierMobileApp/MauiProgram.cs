@@ -8,6 +8,7 @@ using CourierMobileApp.View;
 using Maui.Plugins.PageResolver;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
+using ZXing.Net.Maui.Controls;
 
 namespace CourierMobileApp
 {
@@ -24,7 +25,7 @@ namespace CourierMobileApp
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("IBMPlexSans-Regular.otf", "IBMPlexSans");
-                });
+                }).UseBarcodeReader();
 
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<MainPageViewModel>();
@@ -39,6 +40,9 @@ namespace CourierMobileApp
 
             builder.Services.AddTransient<ShipmentPage>();
             builder.Services.AddTransient<ShipmentViewModel>();
+
+            builder.Services.AddTransient<Scanner>();
+            builder.Services.AddTransient<ScannerViewModel>();
 
             builder.Services.AddSingleton<LocationService>();
 

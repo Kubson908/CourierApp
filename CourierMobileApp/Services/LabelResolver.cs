@@ -9,7 +9,7 @@ public static class LabelResolver
         Regex regex = new Regex(Config.LabelRegex);
         Match match = regex.Match(label);
 
-        int shipmentId = Convert.ToInt32(match.Groups["shipmentId"].Value);
+        int shipmentId = Convert.ToInt32(match.Groups[Config.MatchFieldName].Value);
         return shipmentId;
     }
 }

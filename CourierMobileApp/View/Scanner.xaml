@@ -5,11 +5,21 @@
              xmlns:viewmodel="clr-namespace:CourierMobileApp.ViewModels"
              x:DataType="viewmodel:ScannerViewModel"
              x:Class="CourierMobileApp.View.Scanner"
+             Shell.NavBarIsVisible="False"
              Title="Scanner">
-    <VerticalStackLayout>
-        <zxing:CameraBarcodeReaderView
-          x:Name="cameraBarcodeReaderView"
-          BarcodesDetected="BarcodesDetected" />
-        <Label Text="{Binding Label}" />
-    </VerticalStackLayout>
+    <ScrollView Background="{StaticResource LoggedInBgDark}">
+        <Grid RowDefinitions="*, 500, *" Padding="0,0" VerticalOptions="Center">
+            <zxing:CameraBarcodeReaderView
+                Grid.Row="1"
+                x:Name="cameraBarcodeReaderView"
+                BarcodesDetected="BarcodesDetected" HeightRequest="500" />
+            <Label TextColor="White" Grid.Row="2" Text="{Binding Label}" />
+            <Frame HeightRequest="200" BackgroundColor="#4dffffff" 
+                   BorderColor="Black" Grid.Row="1" x:Name="scanFrame" Padding="10, 2">
+                <BoxView HeightRequest="2" x:Name="scanLine" VerticalOptions="Start"
+                         HorizontalOptions="Center" BackgroundColor="Black" />
+            </Frame>
+        </Grid>
+    </ScrollView>
+    
 </ContentPage>

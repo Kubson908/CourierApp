@@ -35,6 +35,9 @@ namespace CourierMobileApp
             builder.Services.AddSingleton<SchedulePage>();
             builder.Services.AddSingleton<ScheduleViewModel>();
 
+            builder.Services.AddTransient<ShipmentPage>();
+            builder.Services.AddTransient<ShipmentViewModel>();
+
             builder.Services.UsePageResolver();
             
 #if DEBUG

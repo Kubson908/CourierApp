@@ -74,7 +74,11 @@ public class CourierService : IUserService<AddCourierDto, LoginDto>
             return new ApiUserResponse
             {
                 Message = "Invalid login or password",
-                IsSuccess = false
+                IsSuccess = false,
+                Errors = new List<string>()
+                {
+                    "InvalidCredentials"
+                }
             };
 
         var result = await _userManager.CheckPasswordAsync(user, dto.Password);
@@ -83,7 +87,11 @@ public class CourierService : IUserService<AddCourierDto, LoginDto>
             return new ApiUserResponse
             {
                 Message = "Invalid login or password",
-                IsSuccess = false
+                IsSuccess = false,
+                Errors = new List<string>()
+                {
+                    "InvalidCredentials"
+                }
             };
 
         var claims = new[]

@@ -1,6 +1,8 @@
 using CourierMobileApp.Models.Dto;
 using CourierMobileApp.Services;
 using CourierMobileApp.View;
+using IntelliJ.Lang.Annotations;
+using System.Net.Mail;
 
 namespace CourierMobileApp.ViewModels;
 
@@ -11,24 +13,29 @@ public partial class LoginViewModel : BaseViewModel
     public string login;
     [ObservableProperty]
     public string password;
+    [ObservableProperty]
+    public string loginValidator;
 
     public LoginViewModel(LoginService loginService)
-	{
-		Title = "Logowanie";
+    {
+        Title = "Logowanie";
         this.loginService = loginService;
         Login = string.Empty;
         Password = string.Empty;
-	}
+    }
 
     [RelayCommand]
     async Task LoginAsync()
     {
-        if (IsBusy) return;
+        await ValidateEmail();
+        if (IsBusy || LoginValidator is not null) return;
 
         try
         {
             Platforms.KeyboardHelper.HideKeyboard();
             IsBusy = true;
+            if (Password.Length < 8)
+                throw new Exception("Niepoprawne dane logowania", null);
             ApiUserResponse response = await loginService.LoginAsync(new LoginDto
             {
                 Login = Login,
@@ -36,10 +43,11 @@ public partial class LoginViewModel : BaseViewModel
             });
             if (!response.IsSuccess)
             {
-                throw new Exception(response.Message, new Exception(response.Errors.First()));
+                throw new Exception(response.Errors.Contains("InvalidCredentials") ? "Niepoprawne dane logowania" : "Wyst¹pi³ b³¹d serwera", null);
             }
             await SecureStorage.Default.SetAsync("access_token", response.AccessToken);
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             Debug.WriteLine(ex);
             await Shell.Current.DisplayAlert("B³¹d logowania", ex.Message, "OK");
@@ -53,5 +61,38 @@ public partial class LoginViewModel : BaseViewModel
             }
             IsBusy = false;
         }
+    }
+    [RelayCommand]
+    Task ValidateEmail()
+    {
+        if (Login == string.Empty)
+        {
+            LoginValidator = "Podaj e-mail";
+            return Task.CompletedTask;
+        }
+        try
+        {
+            _ = new MailAddress(Login);
+            LoginValidator = null;
+            return Task.CompletedTask;
+        }
+        catch (FormatException)
+        {
+            LoginValidator = "Niepoprawny adres e-mail";
+            return Task.CompletedTask;
+        }
+    }
+
+    // TODO: Dodaæ funkcjê "Nie pamiêtam has³a"
+
+    public async Task VerifyOnAppearing()
+    {
+        IsBusy = true;
+        var authenticated = await SecureStorage.Default.GetAsync("access_token");
+        if (authenticated is not null)
+        {
+            await Shell.Current.GoToAsync($"/{nameof(MainPage)}");
+        }
+        IsBusy = false;
     }
 }

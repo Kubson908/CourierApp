@@ -19,6 +19,8 @@ public class Shipment
     [Required]
     public Size Size { get; set; }
     [Required]
+    public float Weight { get; set; }
+    [Required]
     public required string RecipientName { get; set; }
     [Required]
     public required string RecipientPhoneNumber { get; set; }

@@ -5,7 +5,7 @@ import { Shipment } from "../../typings/shipment";
 import { MapView, SubmitRoute } from ".";
 import { manageCoordinates } from "../../geocoding";
 import { Courier, LocalCoords } from "../../typings";
-import { routes, removeFeatures } from "./map";
+import { route, removeFeatures } from "./map";
 
 const showMap = ref<boolean>(false);
 const shipments = ref<Array<Shipment>>([]);
@@ -18,6 +18,9 @@ const selectedDate = ref<string>();
 onBeforeMount(async () => {
   let tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
+  if (tomorrow.getDay() === 0) {
+    tomorrow.setDate(tomorrow.getDate() + 1);
+  }
   selectedDate.value = formatDate(tomorrow);
 
   const getShipments = await authorized.get(
@@ -29,7 +32,6 @@ onBeforeMount(async () => {
     "/shipment/get-unavailable-dates"
   );
   unavailableDates.value = getUnavailableDates.data;
-  console.log(unavailableDates.value);
 
   await manageCoordinates(shipments.value!);
   const stringCoords = localStorage.getItem("localCoords");
@@ -50,11 +52,15 @@ const validateDate = (event: Event) => {
   const date = new Date((event.target as HTMLInputElement).value);
   let tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
+  if (tomorrow.getDay() === 0) {
+    tomorrow.setDate(tomorrow.getDate() + 1);
+  }
   if (date.getDay() === 0) {
     selectedDate.value = tomorrow.toISOString().split("T")[0];
     alert("Niedziela jest niedostępna. Wybierz inny dzień");
   } else if (date < new Date()) {
     selectedDate.value = tomorrow.toISOString().split("T")[0];
+
     alert("Nie można wybrać przeszłej daty");
   } else {
     selectedDate.value = (event.target as HTMLInputElement).value;
@@ -70,10 +76,10 @@ const iconSource = (shipment: Shipment) => {
 // const size: Array<string> = ["Bardzo mały", "Mały", "Średni", "Duży"];
 
 const routesClearConfirmation = () => {
-  if (routes.value.length > 0) {
+  if (route.value.length > 0) {
     if (confirm("Niezatwierdzone zmiany zostaną utracone")) {
       showMap.value = false;
-      routes.value = [];
+      route.value = [];
     }
   } else showMap.value = false;
 };
@@ -84,16 +90,16 @@ const submit = async () => {
   const res = await authorized.post("/shipment/set-route", {
     courierId: selectedCourier.value!.id,
     date: selectedDate.value,
-    shipments: routes.value,
+    shipments: route.value,
   });
   if (res.status < 300) {
     confirmSubmit.value = false;
     removeFeatures(
-      routes.value.map((r) => {
+      route.value.map((r) => {
         return r.id!;
       })
     );
-    routes.value = [];
+    route.value = [];
   }
   console.log(res);
 };

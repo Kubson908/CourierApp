@@ -8,11 +8,6 @@
     Shell.FlyoutBehavior="Disabled"
     BackgroundColor="#111516">
     
-    <ShellContent Title="Loading"
-                  Shell.NavBarIsVisible="False" 
-                  ContentTemplate="{DataTemplate view:LoadingPage}" 
-                  Route="Loading" />
-    
     <ShellContent
         Shell.NavBarIsVisible="False"
         Title="Login"

@@ -1,17 +1,8 @@
 <script setup lang="ts">
-import {
-  title,
-  titleClass,
-  city,
-  address,
-  postalCode,
-  closePopup,
-  routes,
-} from "./map";
+import { closePopup, route, createMap, sortRoute, popupList } from "./map";
 import { computed, onMounted } from "vue";
 import { Courier, LocalCoords } from "../../typings";
 import { Shipment } from "../../typings/shipment";
-import { createMap } from "./map";
 import { VueDraggableNext as draggable } from "vue-draggable-next";
 
 const props = defineProps<{
@@ -33,7 +24,11 @@ const dragOptions = computed<{
 }>;
 
 const remove = (shipmentId: number) => {
-  routes.value = routes.value.filter((s) => s.id != shipmentId);
+  route.value = route.value.filter((s) => s.id != shipmentId);
+};
+
+const sort = async () => {
+  await sortRoute(props.localCoords);
 };
 
 const emit = defineEmits(["submit"]);
@@ -44,22 +39,29 @@ const emit = defineEmits(["submit"]);
     <div id="map" class="map"></div>
     <div id="popup">
       <button id="popup-closer" @click="closePopup()"></button>
-      <div id="popup-content">
-        <h2 :class="titleClass">{{ title }}</h2>
+      <div id="popup-content" v-for="info in popupList">
+        <img
+          :src="info.imgSrc"
+          class="popup-img"
+          :id="info.id.toString()"
+          draggable="false"
+        />
+        <h2 :class="info.titleClass">{{ info.title }}</h2>
         <table>
           <tr>
             <td>Adres:</td>
-            <td>{{ address }}</td>
+            <td>{{ info.address }}</td>
           </tr>
           <tr>
             <td>Kod pocztowy:</td>
-            <td>{{ postalCode }}</td>
+            <td>{{ info.postalCode }}</td>
           </tr>
           <tr>
             <td>Miasto:</td>
-            <td>{{ city }}</td>
+            <td>{{ info.city }}</td>
           </tr>
         </table>
+        <hr v-if="popupList[popupList.length - 1] != info" />
       </div>
     </div>
     <div
@@ -81,10 +83,10 @@ const emit = defineEmits(["submit"]);
             name: 'shipment-route',
             type: 'transition',
           }"
-          v-model="routes"
+          v-model="route"
           v-bind="dragOptions"
         >
-          <div v-for="shipment in routes" :key="shipment.id" class="draggable">
+          <div v-for="shipment in route" :key="shipment.id" class="draggable">
             <img
               :src="
                 shipment.status == 0
@@ -95,7 +97,15 @@ const emit = defineEmits(["submit"]);
             <div class="flex">
               {{
                 shipment.status == 0
-                  ? shipment.pickupAddress
+                  ? shipment.pickupApartmentNumber
+                    ? shipment.pickupAddress +
+                      "/" +
+                      shipment.pickupApartmentNumber
+                    : shipment.pickupAddress
+                  : shipment.recipientApartmentNumber
+                  ? shipment.recipientAddress +
+                    "/" +
+                    shipment.recipientApartmentNumber
                   : shipment.recipientAddress
               }},
               {{
@@ -108,8 +118,11 @@ const emit = defineEmits(["submit"]);
           </div>
         </draggable>
       </div>
-      <button v-if="routes.length >= 2" class="submit" @click="emit('submit')">
+      <button v-if="route.length >= 2" class="submit" @click="emit('submit')">
         Zatwierdź
+      </button>
+      <button v-if="route.length >= 2" class="submit" @click="sort">
+        Sortuj
       </button>
     </div>
   </div>
@@ -206,6 +219,11 @@ const emit = defineEmits(["submit"]);
 }
 #popup-closer:after {
   content: "✖";
+}
+.popup-img {
+  float: left;
+  position: absolute;
+  left: 5%;
 }
 #popup-content {
   display: block;

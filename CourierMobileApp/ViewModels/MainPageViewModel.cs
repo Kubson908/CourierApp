@@ -4,9 +4,9 @@ using Maui.Plugins.PageResolver;
 
 namespace CourierMobileApp.ViewModels;
 
-public partial  class MainPageViewModel : BaseViewModel
+public partial class MainPageViewModel : BaseViewModel
 {
-    readonly ShipmentService shipmentService;
+    public readonly ShipmentService shipmentService;
     public MainPageViewModel(ShipmentService shipmentService)
     {
         this.shipmentService = shipmentService;

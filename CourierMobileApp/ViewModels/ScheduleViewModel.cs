@@ -1,4 +1,7 @@
 ﻿using CourierMobileApp.Services;
+using CourierMobileApp.View;
+using IntelliJ.Lang.Annotations;
+using Maui.Plugins.PageResolver;
 
 namespace CourierMobileApp.ViewModels;
 
@@ -6,10 +9,11 @@ public partial class ScheduleViewModel : BaseViewModel
 {
     readonly ShipmentService shipmentService;
     [ObservableProperty]
-    public DateTime date;
+    DateTime date;
     [ObservableProperty]
-    public DateTime minimumDate;
-
+    DateTime minimumDate;
+    [ObservableProperty]
+    bool listEmpty;
     public ObservableCollection<RouteElement> Route { get; set; }
 
     public ScheduleViewModel(ShipmentService shipmentService)
@@ -21,6 +25,7 @@ public partial class ScheduleViewModel : BaseViewModel
         {
             Route.Add(routeElement);
         }
+        ListEmpty = Route.Count == 0;
         MinimumDate = DateTime.Today;
         Date = DateTime.Today;
     }
@@ -28,11 +33,23 @@ public partial class ScheduleViewModel : BaseViewModel
     [RelayCommand]
     public async Task GetRouteAsync()
     {
+        ListEmpty = false;
+        IsBusy = true;
         Route.Clear();
         var temp = await shipmentService.GetRouteAsync(Date);
         foreach (var route in temp)
         {
             Route.Add(route);
         }
+        IsBusy = false;
+        ListEmpty = Route.Count == 0;
+    }
+    [RelayCommand]
+    public void GoToDetailsAsync(RouteElement element)
+    {
+        MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            await Shell.Current.Navigation.PushAsync(new ShipmentPage(new ShipmentViewModel(shipmentService, element)));
+        });
     }
 }

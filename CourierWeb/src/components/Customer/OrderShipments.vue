@@ -10,6 +10,7 @@ let shipments: Array<Shipment> = new Array<Shipment>(1).fill({
   pickupCity: "",
   pickupPostalCode: "",
   size: null,
+  weight: null,
   recipientName: "",
   recipientPhoneNumber: "",
   recipientAddress: "",
@@ -74,7 +75,8 @@ const activePage = ref<number>(1);
 // const additionalDetails = ref<string | undefined>(undefined);
 
 const addToList: () => boolean = () => {
-  if (!activeShipment.value?.size) return false;
+  if (!activeShipment.value?.size || !activeShipment.value?.weight)
+    return false;
   shipments.push({
     pickupAddress:
       activeShipment.value.pickupAddress != ""
@@ -103,6 +105,7 @@ const addToList: () => boolean = () => {
     additionalDetails: "",
     status: undefined,
     id: undefined,
+    weight: null,
   });
   activeShipment.value = shipments[shipments.length - 1];
   console.log(shipments);
@@ -253,12 +256,17 @@ const submitOrder = async () => {
           required
           :class="activeShipment!.size == null ? 'gray' : 'white'"
         >
-          <option value="null" selected hidden>Rozmiar</option>
+          <option value="null" selected hidden>Rozmiar</option>  
           <option value="0">Bardzo mały</option>
           <option value="1">Mały</option>
           <option value="2">Średni</option>
           <option value="3">Duży</option>
         </select>
+        <input
+          type="number"
+          v-model="activeShipment!.weight"
+          placeholder="Waga"
+        />
         <textarea
           type="text"
           v-model="activeShipment!.additionalDetails"

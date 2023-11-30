@@ -54,7 +54,7 @@ public class AuthController : ControllerBase
         ApiUserResponse result;
         if (loginDto.Login == AdminHelper.AdminLogin)
         {
-            result = await _adminService.LoginAsync(loginDto); // przetestować
+            result = await _adminService.LoginAsync(loginDto);
         }
         else
         {

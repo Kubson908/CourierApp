@@ -4,6 +4,7 @@ using CourierAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourierAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231123212124_AddedWeightToShipment")]
+    partial class AddedWeightToShipment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,7 +129,7 @@ namespace CourierAPI.Migrations
                     b.Property<DateTime?>("StoreDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("Weight")
+                    b.Property<float?>("Weight")
                         .HasColumnType("real");
 
                     b.HasKey("Id");
@@ -171,19 +174,19 @@ namespace CourierAPI.Migrations
                         },
                         new
                         {
-                            Id = "ec4337f1-d3eb-40f4-a4b9-6cde9cb39836",
+                            Id = "6c1cb799-efb5-4818-b2b6-656d20d408f6",
                             Name = "Courier",
                             NormalizedName = "COURIER"
                         },
                         new
                         {
-                            Id = "2d17c804-019f-44a9-8f93-9b3048513710",
+                            Id = "12f15465-c988-4de2-854c-e24e6c461075",
                             Name = "Dispatcher",
                             NormalizedName = "DISPATCHER"
                         },
                         new
                         {
-                            Id = "02744fef-6e20-4438-b3dd-3b3c605b8283",
+                            Id = "76e51571-a913-4c4b-a90a-e8a6cf19d448",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -285,13 +288,13 @@ namespace CourierAPI.Migrations
                         {
                             Id = "00000000-0000-0000-0000-000000000001",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2e0453e0-bea9-4afb-82c5-63817c91ee90",
+                            ConcurrencyStamp = "ccb5eb05-3d68-4e5f-97a4-33c16cfed6cd",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKqSwIg9jE0xzr3J/fQWdxpZN21ow23KnfrEI3rTeUI1TQvm2w2erS5C36yIrHxe8g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDXkbSdDDhlTWSTma53Rlt2paTXyVLOHZqR+N9Nkac1f9ty6cl5uymxN1V418TfK9A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0c69211f-1aab-4a6a-baa3-2214da9431d0",
+                            SecurityStamp = "3169a0d2-d9f5-4312-afa3-6317ada3ca8d",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });

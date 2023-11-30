@@ -5,10 +5,11 @@ public class Shipment
     public int Id { get; set; }
     public Status Status { get; set; }
     public string PickupAddress { get; set; }
-    public string PickupApartmentNumber{ get; set; }
+    public string PickupApartmentNumber { get; set; }
     public string PickupCity { get; set; }
     public string PickupPostalCode { get; set; }
     public Size Size { get; set; }
+    public float Weight { get; set; }
     public string RecipientName { get; set; }
     public string RecipientPhoneNumber { get; set; }
     public string RecipientAddress { get; set; }

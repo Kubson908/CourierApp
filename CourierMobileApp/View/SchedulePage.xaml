@@ -8,14 +8,15 @@
              xmlns:components="clr-namespace:CourierMobileApp.View.Components"
              x:DataType="viewmodel:ScheduleViewModel"
              x:Class="CourierMobileApp.View.SchedulePage"
+             x:Name="Schedule"
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto,*" 
+    <Grid RowDefinitions="Auto, *, Auto" 
           Background="{StaticResource LoggedInBgDark}">
         <components:NavBar Grid.Row="0" Margin="20, 0"/>
-        <ScrollView Grid.Row="1">
-            <VerticalStackLayout VerticalOptions="Fill" >
+        <VerticalStackLayout VerticalOptions="Fill" Grid.Row="1">
+            <Grid ColumnDefinitions="*, 50">
                 <controls:BorderDatePicker MinimumDate="{Binding MinimumDate}"
                                            Date="{Binding Date}"
                                            DateSelected="DateSelected"
@@ -28,21 +29,86 @@
                                            FontSize="16"
                                            BackgroundColor="#848C8E"
                                            Margin="10, 40, 10, 0"
-                                           Format="dd.MM.yyyy"/>
-                <CollectionView ItemsSource="{Binding Route}" Margin="0, 0">
+                                           Format="dd.MM.yyyy" 
+                                           Grid.ColumnSpan="2"/>
+                <Image Source="calendar" Grid.Column="1" Margin="0, 40, 20, 0" />
+            </Grid>
 
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="model:RouteElement">
-                            <VerticalStackLayout Spacing="5">
-                                <Label TextColor="White" Text="{Binding Shipment.PickupAddress}" />
-                                <Label TextColor="White" Text="{Binding Shipment.PickupCity}" />
-                                <Label TextColor="White" Text="{Binding Shipment.PickupPostalCode}" />
-                            </VerticalStackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </VerticalStackLayout>
-        </ScrollView>
-        
+            <BoxView HeightRequest="1"
+                     Color="{AppThemeBinding {StaticResource BattleshipGray}}"
+                     Margin="0, 16, 0, 0"
+                     IsVisible="{Binding Route.Count}" />
+            <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="True" Margin="100" HeightRequest="100" Color="#15AB54"/>
+            <CollectionView ItemsSource="{Binding Route}" Margin="0, 0" IsVisible="{Binding Route.Count}" >
+
+                <CollectionView.ItemTemplate >
+                    <DataTemplate x:DataType="model:RouteElement">
+                        <StackLayout >
+                            <Grid ColumnDefinitions="Auto, *, 40">
+                                <Button Grid.ColumnSpan="3"
+                                        Grid.RowSpan="2"
+                                        BackgroundColor="Transparent"
+                                        CornerRadius="0"
+                                        HeightRequest="60"
+                                        Command="{Binding Path=GoToDetailsAsyncCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ScheduleViewModel}}}" 
+                                        CommandParameter="{Binding .}"/>
+                                <Image Source="delivery.svg" Margin="10, 0, 0, 0" Grid.Column="0" >
+                                    <Image.Triggers>
+                                        <DataTrigger TargetType="Image" Binding="{Binding Shipment.Status}" Value="Accepted">
+                                            <Setter Property="Source" Value="pickup.svg" />
+                                        </DataTrigger>
+                                    </Image.Triggers>
+                                </Image>
+                                <FlexLayout HorizontalOptions="Center" Grid.Column="1">
+                                    <Label TextColor="White" Text="{Binding Shipment.PickupCity, StringFormat='{0},'}" VerticalOptions="Center" FontSize="18" LineBreakMode="TailTruncation" >
+                                        <Label.Triggers>
+                                            <!--<DataTrigger TargetType="Label" Binding="{Binding Shipment.Status}" Value="Accepted">
+                                                <Setter Property="Text" Value="{Binding Shipment.PickupCity, StringFormat='{0},'}" />
+                                            </DataTrigger>-->
+                                            <DataTrigger TargetType="Label" Binding="{Binding Shipment.Status}" Value="InDelivery">
+                                                <Setter Property="Text" Value="{Binding Shipment.RecipientCity, StringFormat='{0}, '}" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Label Text=" " VerticalOptions="Center" FontSize="18" LineBreakMode="TailTruncation" />
+                                    <Label TextColor="White" Text="{Binding Shipment.PickupAddress}" VerticalOptions="Center" FontSize="18" LineBreakMode="TailTruncation">
+                                        <Label.Triggers>
+                                            <!--<DataTrigger TargetType="Label" Binding="{Binding Shipment.Status}" Value="Accepted">
+                                                <Setter Property="Text" Value="{Binding Shipment.PickupAddress}" />
+                                            </DataTrigger>-->
+                                            <DataTrigger TargetType="Label" Binding="{Binding Shipment.Status}" Value="InDelivery">
+                                                <Setter Property="Text" Value="{Binding Shipment.RecipientAddress}" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+
+                                </FlexLayout>
+                                <Image Source="arrow_right" Grid.Column="2" HeightRequest="20" Margin="10, 0"/>
+                            </Grid>
+                            <BoxView HeightRequest="1"
+                                     Grid.Row="1"
+                                     Grid.ColumnSpan="3"
+                                     Color="{AppThemeBinding {StaticResource BattleshipGray}}"
+                                     Margin="0, 0, 0, 0"></BoxView>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Label HorizontalTextAlignment="Center" 
+                   Margin="20" 
+                   FontSize="20"
+                   TextColor="White" 
+                   Text="Brak przesyłek na ten dzień" 
+                   IsVisible="{Binding ListEmpty}" />
+
+        </VerticalStackLayout>
+        <Frame CornerRadius="30" Grid.Row="2" HeightRequest="50" Margin="10, 70" Padding="0">
+            <Grid Padding="0" Margin="0">
+                <Button Text="Rozpocznij trasę" BackgroundColor="{StaticResource PigmentGreen}" 
+                        Margin="0" Pressed="btn_Pressed" Released="btn_Released"/>
+                <ProgressBar x:Name="progressBar" Progress="0" ScaleY="20" ProgressColor="#4dffffff"/>
+            </Grid>
+        </Frame>
+
     </Grid>
 </ContentPage>

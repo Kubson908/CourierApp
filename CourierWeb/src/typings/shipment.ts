@@ -5,6 +5,7 @@ export type Shipment = {
   pickupCity: string;
   pickupPostalCode: string;
   size: number | null;
+  weight: number | null;
   recipientName: string;
   recipientPhoneNumber: string;
   recipientAddress: string;

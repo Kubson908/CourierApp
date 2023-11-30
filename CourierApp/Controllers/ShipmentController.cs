@@ -1,9 +1,11 @@
 ﻿using CourierAPI.Data;
+using CourierAPI.Helpers;
 using CourierAPI.Models;
 using CourierAPI.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PdfSharp.Pdf;
 using System.Security.Claims;
 
 namespace CourierAPI.Controllers;
@@ -218,6 +220,7 @@ public class ShipmentController : ControllerBase
                 r.Shipment!.PickupCity,
                 r.Shipment!.PickupPostalCode,
                 r.Shipment!.Size,
+                r.Shipment!.Weight,
                 r.Shipment!.RecipientName,
                 r.Shipment!.RecipientPhoneNumber,
                 r.Shipment!.RecipientAddress,
@@ -238,5 +241,20 @@ public class ShipmentController : ControllerBase
             }
         }).ToListAsync();
         return Ok(route);
+    }
+
+    [HttpGet("generate-label")]
+    public IActionResult GeneratePDF()
+    {
+        PdfDocument document = PDFLabelHelper.GeneratePDF();
+
+        byte[]? response = null;
+        using(MemoryStream ms = new())
+        {
+            document.Save(ms);
+            response = ms.ToArray();
+        }
+        string Filename = "Label.pdf";
+        return File(response, "application/pdf", Filename);
     }
 }

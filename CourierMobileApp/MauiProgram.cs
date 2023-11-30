@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Maui;
 using CourierMobileApp.Controls;
+using CourierMobileApp.Interfaces;
 using CourierMobileApp.Platforms;
+using CourierMobileApp.Platforms.Android;
 using CourierMobileApp.Services;
 using CourierMobileApp.View;
 using Maui.Plugins.PageResolver;
@@ -37,6 +39,12 @@ namespace CourierMobileApp
 
             builder.Services.AddTransient<ShipmentPage>();
             builder.Services.AddTransient<ShipmentViewModel>();
+
+            builder.Services.AddSingleton<LocationService>();
+
+#if ANDROID
+            builder.Services.AddSingleton<IBackgroundService, ForegroundServiceHandler>();
+#endif
 
             builder.Services.UsePageResolver();
             

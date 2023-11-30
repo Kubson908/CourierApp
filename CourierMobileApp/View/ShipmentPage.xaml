@@ -35,13 +35,7 @@
             <Label Grid.Row="0" Grid.Column="0" TextColor="White" Text="Adres:" FontSize="20" HorizontalTextAlignment="Start"/>
             <VerticalStackLayout Grid.Column="1" Grid.Row="0">
                 <Label Grid.Row="0" Grid.Column="1" TextColor="White" Text="{Binding City, StringFormat='{0}, '}" FontSize="20" HorizontalTextAlignment="Start"/>
-                <Label Grid.Row="0" Grid.Column="1" TextColor="White" Text="{Binding Address}" FontSize="20" >
-                    <!--<Label.Triggers>
-                        <DataTrigger TargetType="Label" Binding="{Binding StatusValue}" Value="Accepted">
-                            <Setter Property="Text" Value="{Binding PickupAddress}" />
-                        </DataTrigger>
-                    </Label.Triggers>-->
-                </Label>
+                <Label Grid.Row="0" Grid.Column="1" TextColor="White" Text="{Binding Address}" FontSize="20" />
             </VerticalStackLayout>
             <Label Grid.Row="1" Grid.Column="0" TextColor="White" Text="Odbiorca:" FontSize="20" Margin="0, 5" />
             <Label Grid.Row="1" Grid.Column="1" TextColor="White" Text="{Binding RouteElement.Shipment.RecipientName}" FontSize="20" Margin="0, 5" />

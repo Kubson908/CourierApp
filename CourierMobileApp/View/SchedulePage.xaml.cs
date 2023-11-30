@@ -47,7 +47,7 @@ public partial class SchedulePage : ContentPage
         }
         else
         {
-
+            // 
         }
 
     }

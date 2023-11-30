@@ -59,9 +59,6 @@ public partial class ShipmentViewModel : BaseViewModel
         }
         Address = StatusValue == Status.Accepted ? RouteElement.Shipment.PickupAddress : RouteElement.Shipment.RecipientAddress;
         City = StatusValue == Status.Accepted ? RouteElement.Shipment.PickupCity : RouteElement.Shipment.RecipientCity;
-        /*RecipientName = routeElement.Shipment.RecipientName;
-        RecipientPhoneNumber = routeElement.Shipment.RecipientPhoneNumber;
-        Weight = routeElement.Shipment.Weight;*/
         Size = sizes[(int)RouteElement.Shipment.Size];
         FinishIconPath = RouteElement.Shipment.Status == Status.Accepted ? "pickup_button.svg" : "delivery_button.svg";
     }

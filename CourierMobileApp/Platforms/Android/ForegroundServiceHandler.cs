@@ -1,0 +1,66 @@
+﻿using Android.Content;
+using CourierMobileApp.Interfaces;
+using CourierMobileApp.Services;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace CourierMobileApp.Platforms.Android;
+
+public class ForegroundServiceHandler : IBackgroundService
+{
+    bool _isStarted = false;
+    static Context context = Platform.CurrentActivity.ApplicationContext;
+    public event EventHandler ServiceStopped;
+    public event EventHandler ServiceStarted;
+    public ServiceConnection conn;
+    public LocationService locationService;
+
+    public ForegroundServiceHandler(LocationService locationService)
+    {
+        this.locationService = locationService;
+    }
+
+    public void InvokeServiceStoppedEvent(AndroidBackgroundService sender)
+    {
+        ServiceStopped?.Invoke(sender, EventArgs.Empty);
+        Stop();
+    }
+    public void InvokeServiceStartedEvent(AndroidBackgroundService sender)
+    {
+        ServiceStarted?.Invoke(sender, EventArgs.Empty);
+    }
+    public void Start()
+    {
+        if (context == null)
+        {
+            return;
+        }
+
+        Intent intent = new Intent(context, typeof(AndroidBackgroundService));
+        conn = new ServiceConnection(this, intent);
+        if (_isStarted)
+        {
+            return;
+        }
+        if (OperatingSystem.IsAndroidVersionAtLeast(26))
+        {
+            _isStarted = context.BindService(intent, conn, Bind.AutoCreate);
+            _ = context.StartForegroundService(intent);
+        }
+        else
+        {
+            _isStarted = context.BindService(intent, conn, Bind.AutoCreate);
+            _ = context.StartService(intent);
+        }
+    }
+    public void Stop()
+    {
+        if (context == null || !_isStarted)
+        {
+            return;
+        }
+        Intent intent = new(context, typeof(AndroidBackgroundService));
+        _ = context.StopService(intent);
+        context.UnbindService(conn);
+        _isStarted = false;
+    }
+}

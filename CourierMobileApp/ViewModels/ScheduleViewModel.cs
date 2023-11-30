@@ -1,7 +1,5 @@
 ﻿using CourierMobileApp.Services;
 using CourierMobileApp.View;
-using IntelliJ.Lang.Annotations;
-using Maui.Plugins.PageResolver;
 
 namespace CourierMobileApp.ViewModels;
 

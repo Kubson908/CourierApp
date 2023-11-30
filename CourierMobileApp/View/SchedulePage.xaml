@@ -62,9 +62,6 @@
                                 <FlexLayout HorizontalOptions="Center" Grid.Column="1">
                                     <Label TextColor="White" Text="{Binding Shipment.PickupCity, StringFormat='{0},'}" VerticalOptions="Center" FontSize="18" LineBreakMode="TailTruncation" >
                                         <Label.Triggers>
-                                            <!--<DataTrigger TargetType="Label" Binding="{Binding Shipment.Status}" Value="Accepted">
-                                                <Setter Property="Text" Value="{Binding Shipment.PickupCity, StringFormat='{0},'}" />
-                                            </DataTrigger>-->
                                             <DataTrigger TargetType="Label" Binding="{Binding Shipment.Status}" Value="InDelivery">
                                                 <Setter Property="Text" Value="{Binding Shipment.RecipientCity, StringFormat='{0}, '}" />
                                             </DataTrigger>
@@ -73,9 +70,6 @@
                                     <Label Text=" " VerticalOptions="Center" FontSize="18" LineBreakMode="TailTruncation" />
                                     <Label TextColor="White" Text="{Binding Shipment.PickupAddress}" VerticalOptions="Center" FontSize="18" LineBreakMode="TailTruncation">
                                         <Label.Triggers>
-                                            <!--<DataTrigger TargetType="Label" Binding="{Binding Shipment.Status}" Value="Accepted">
-                                                <Setter Property="Text" Value="{Binding Shipment.PickupAddress}" />
-                                            </DataTrigger>-->
                                             <DataTrigger TargetType="Label" Binding="{Binding Shipment.Status}" Value="InDelivery">
                                                 <Setter Property="Text" Value="{Binding Shipment.RecipientAddress}" />
                                             </DataTrigger>

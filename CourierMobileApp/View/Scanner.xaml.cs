@@ -17,7 +17,6 @@ public partial class Scanner : ContentPage
             AutoRotate = true,
             Multiple = false
         };
-        /*AnimateScanner();*/
     }
 
     protected void BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
@@ -43,14 +42,5 @@ public partial class Scanner : ContentPage
                 return false;
         }
         return true;
-    }
-
-    private async void AnimateScanner()
-    {
-        while (true)
-        {
-            await scanLine.TranslateTo(0, 190, 1000);
-            await scanLine.TranslateTo(0, 0, 1000);
-        }
     }
 }

@@ -3,10 +3,10 @@
 public partial class ScannerViewModel : BaseViewModel
 {
     [ObservableProperty]
-    int label;
+    int? label;
 
     public ScannerViewModel()
     {
-        Label = 0;
+        Label = null;
     }
 }

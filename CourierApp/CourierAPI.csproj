@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BarcodeLib" Version="3.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.9" />
@@ -27,7 +28,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="StaticResources\Fonts\" />
   </ItemGroup>
 
 </Project>

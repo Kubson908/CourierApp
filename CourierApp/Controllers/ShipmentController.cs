@@ -244,9 +244,19 @@ public class ShipmentController : ControllerBase
     }
 
     [HttpGet("generate-label")]
-    public IActionResult GeneratePDF()
+    public IActionResult GeneratePDF([FromQuery] int[] idList)
     {
-        PdfDocument document = PDFLabelHelper.GeneratePDF();
+        List<LabelShipmentDto> shipments = _context.Shipments.Where(s => idList.Contains(s.Id)).Select(s => new LabelShipmentDto
+        {
+            Id = s.Id,
+            Size = s.Size,
+            Weight = s.Weight,
+            CustomerEmail = s.Customer!.Email,
+            CustomerPhone = s.Customer!.PhoneNumber,
+            RecipientEmail = s.RecipientEmail,
+            RecipientPhone = s.RecipientPhoneNumber,
+        }).ToList();
+        PdfDocument document = PDFLabelHelper.GeneratePDF(shipments);
 
         byte[]? response = null;
         using(MemoryStream ms = new())

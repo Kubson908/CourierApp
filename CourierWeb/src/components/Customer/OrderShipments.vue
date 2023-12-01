@@ -25,54 +25,9 @@ let shipments: Array<Shipment> = new Array<Shipment>(1).fill({
 
 const activeShipment = ref<Shipment>(shipments[0]);
 
-// function clearActiveShipment() {
-//   var s: Shipment = {
-//     pickupAddress: "",
-//     pickupApartmentNumber: null,
-//     pickupCity: "",
-//     pickupPostalCode: "",
-//     size: null,
-//     recipientName: "",
-//     recipientPhoneNumber: "",
-//     recipientAddress: "",
-//     recipientApartmentNumber: null,
-//     recipientCity: "",
-//     recipientPostalCode: "",
-//     recipientEmail: "",
-//     additionalDetails: "",
-//   };
-//   activeShipment.value = s;
-// }
-
-// function clearRecipientData() {
-//   activeShipment.value!.size = null;
-//   activeShipment.value!.recipientName = "";
-//   activeShipment.value!.recipientPhoneNumber = "";
-//   activeShipment.value!.recipientAddress = "";
-//   activeShipment.value!.recipientApartmentNumber = null;
-//   activeShipment.value!.recipientCity = "";
-//   activeShipment.value!.recipientPostalCode = "";
-//   activeShipment.value!.recipientEmail = "";
-//   activeShipment.value!.additionalDetails = "";
-// }
-
 const pageCount = ref<number>(1);
 
 const activePage = ref<number>(1);
-
-// const pickupAddress = ref<string>("");
-// const pickupApartmentNumber = ref<number | null>(null);
-// const pickupCity = ref<string>("");
-// const pickupPostalCode = ref<string>("");
-// const size = ref<number | null>(null);
-// const recipientName = ref<string>("");
-// const recipientPhoneNumber = ref<string>("");
-// const recipientAddress = ref<string>("");
-// const recipientApartmentNumber = ref<number | null>(null);
-// const recipientCity = ref<string>("");
-// const recipientPostalCode = ref<string>("");
-// const recipientEmail = ref<string>("");
-// const additionalDetails = ref<string | undefined>(undefined);
 
 const addToList: () => boolean = () => {
   if (!activeShipment.value?.size || !activeShipment.value?.weight)
@@ -123,44 +78,35 @@ const submitShipments = () => {
   }
   shipments = shipments.map((x) => {
     x.size = parseInt(x.size!.toString(), 10);
+    switch (x.size) {
+      case 0:
+        xs.value++;
+        break;
+      case 1:
+        s.value++;
+        break;
+      case 2:
+        m.value++;
+        break;
+      case 3:
+        l.value++;
+        break;
+    }
     return x;
   });
-  xs.value = shipments.filter((shipment) => {
-    return shipment.size == 0;
-  }).length;
-  s.value = shipments.filter((shipment) => {
-    return shipment.size == 1;
-  }).length;
-  m.value = shipments.filter((shipment) => {
-    return shipment.size == 2;
-  }).length;
-  l.value = shipments.filter((shipment) => {
-    return shipment.size == 3;
-  }).length;
+  console.log(xs, " ", s, " ", m, " ", l);
   submitPage.value = true;
-  console.log(shipments); // console log do wyjebania
 };
 
 const addShipment = () => {
   if (!addToList()) return;
   pageCount.value++;
   activePage.value = pageCount.value;
-  // clearRecipientData();
 };
 
 const changePage = (n: number) => {
   activePage.value = n;
   activeShipment.value = shipments[n - 1];
-  // if (shipments[n - 1]) {
-  //   activeShipment.value = { ...shipments[n - 1] };
-  //   console.log(shipments[n - 1]);
-  // } else if (activeShipment.value?.pickupAddress != "") {
-  //   shipments[n - 1] = { ...activeShipment.value };
-  //   clearRecipientData();
-  //   console.log("ssdfsddsfdsfgdgfdgfdhfgf");
-  // } else clearActiveShipment();
-  // console.log(activeShipment.value);
-  // console.log(shipments[n - 1]);
 };
 
 const submitOrder = async () => {
@@ -168,7 +114,12 @@ const submitOrder = async () => {
     const res = await authorized.post("/shipment/register-shipments", {
       shipments: shipments,
     });
-    if (res.status < 300) router.push("/");
+    const shipmentsIds = res.data;
+    console.log(shipmentsIds);
+    if (res.status < 300) {
+      submitPage.value = false;
+      router.push({ path: "/order-registered", query: { id: shipmentsIds } });
+    }
   } catch (error: any) {
     console.log(error);
   }
@@ -189,84 +140,136 @@ const submitOrder = async () => {
     <div>
       <form class="flex-col">
         <h2 class="pigment-green-text">Dane nadawcy</h2>
-        <input
-          type="text"
-          v-model="activeShipment!.pickupAddress"
-          placeholder="Adres odbioru"
-        />
-        <input
-          type="number"
-          v-model="activeShipment!.pickupApartmentNumber"
-          placeholder="Numer mieszkania"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.pickupCity"
-          placeholder="Miejscowość"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.pickupPostalCode"
-          placeholder="Kod pocztowy"
-        />
+        <table>
+          <tr>
+            <td>
+              <input
+                type="text"
+                v-model="activeShipment!.pickupAddress"
+                placeholder="Adres odbioru"
+                class="rounded-input"
+              />
+            </td>
+            <td>
+              <input
+                type="number"
+                v-model="activeShipment!.pickupApartmentNumber"
+                placeholder="Numer mieszkania"
+                class="rounded-input"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input
+                type="text"
+                v-model="activeShipment!.pickupCity"
+                placeholder="Miejscowość"
+                class="rounded-input"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                v-model="activeShipment!.pickupPostalCode"
+                placeholder="Kod pocztowy"
+                class="rounded-input"
+              />
+            </td>
+          </tr>
+        </table>
         <h2 class="pigment-green-text">Dane odbiorcy</h2>
-        <input
-          class="test"
-          type="text"
-          v-model="activeShipment!.recipientName"
-          placeholder="Odbiorca"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.recipientPhoneNumber"
-          placeholder="Telefon"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.recipientAddress"
-          placeholder="Adres"
-        />
-        <input
-          type="number"
-          v-model="activeShipment!.recipientApartmentNumber"
-          placeholder="Numer mieszkania"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.recipientCity"
-          placeholder="Miejscowość"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.recipientPostalCode"
-          placeholder="Kod pocztowy"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.recipientEmail"
-          placeholder="Email"
-        />
-        <!-- <input
-          type="number"
-          v-model="activeShipment!.size"
-          placeholder="Rozmiar"
-        /> -->
-        <select
-          v-model="activeShipment!.size"
-          required
-          :class="activeShipment!.size == null ? 'gray' : 'white'"
-        >
-          <option value="null" selected hidden>Rozmiar</option>  
-          <option value="0">Bardzo mały</option>
-          <option value="1">Mały</option>
-          <option value="2">Średni</option>
-          <option value="3">Duży</option>
-        </select>
-        <input
-          type="number"
-          v-model="activeShipment!.weight"
-          placeholder="Waga"
-        />
+        <table>
+          <tr>
+            <td>
+              <input
+                type="text"
+                v-model="activeShipment!.recipientName"
+                placeholder="Odbiorca"
+                class="rounded-input"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                v-model="activeShipment!.recipientPhoneNumber"
+                placeholder="Telefon"
+                class="rounded-input"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input
+                type="text"
+                v-model="activeShipment!.recipientAddress"
+                placeholder="Adres"
+                class="rounded-input"
+              />
+            </td>
+            <td>
+              <input
+                type="number"
+                v-model="activeShipment!.recipientApartmentNumber"
+                placeholder="Numer mieszkania"
+                class="rounded-input"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input
+                type="text"
+                v-model="activeShipment!.recipientCity"
+                placeholder="Miejscowość"
+                class="rounded-input"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                v-model="activeShipment!.recipientPostalCode"
+                placeholder="Kod pocztowy"
+                class="rounded-input"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <input
+                type="text"
+                v-model="activeShipment!.recipientEmail"
+                placeholder="Email"
+                class="rounded-input"
+              />
+            </td>
+          </tr>
+          <tr></tr>
+          <tr>
+            <td>
+              <select
+                v-model="activeShipment!.size"
+                required
+                :class="activeShipment!.size == null ? 'gray' : 'black'"
+              >
+                <option value="null" selected hidden>Rozmiar przesyłki</option>
+                <option value="0" class="option">Bardzo mały</option>
+                <option value="1" class="option">Mały</option>
+                <option value="2" class="option">Średni</option>
+                <option value="3" class="option">Duży</option>
+              </select>
+            </td>
+            <td>
+              <input
+                type="number"
+                v-model="activeShipment!.weight"
+                placeholder="Waga przesyłki"
+                class="rounded-input"
+              />
+            </td>
+          </tr>
+        </table>
+
         <textarea
           type="text"
           v-model="activeShipment!.additionalDetails"
@@ -274,76 +277,6 @@ const submitOrder = async () => {
           class="textarea"
         ></textarea>
       </form>
-      <!-- <div class="flex-col" v-else>
-        <h2 class="pigment-green-text">Dane nadawcy</h2>
-        <input
-          type="text"
-          v-model="activeShipment!.pickupAddress"
-          placeholder="Adres odbioru"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.pickupApartmentNumber"
-          placeholder="Numer mieszkania"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.pickupCity"
-          placeholder="Miejscowość"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.pickupPostalCode"
-          placeholder="Kod pocztowy"
-        />
-        <h2 class="pigment-green-text">Dane odbiorcy</h2>
-        <input
-          type="text"
-          v-model="activeShipment!.recipientName"
-          placeholder="Odbiorca"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.recipientPhoneNumber"
-          placeholder="Telefon"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.recipientAddress"
-          placeholder="Adres"
-        />
-        <input
-          type="number"
-          v-model="activeShipment!.recipientApartmentNumber"
-          placeholder="Numer mieszkania"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.recipientCity"
-          placeholder="Miejscowość"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.recipientPostalCode"
-          placeholder="Kod pocztowy"
-        />
-        <input
-          type="text"
-          v-model="activeShipment!.recipientEmail"
-          placeholder="Email"
-        />
-        <input
-          type="number"
-          v-model="activeShipment!.size"
-          placeholder="Rozmiar"
-        />
-        <textarea
-          type="text"
-          v-model="activeShipment!.additionalDetails"
-          placeholder="Dodatkowe informacje"
-          class="textarea"
-        ></textarea>
-      </div> -->
       <button @click="addShipment">+</button>
       <button class="submit pigment-green" @click="submitShipments">
         Zatwierdź
@@ -365,9 +298,6 @@ const submitOrder = async () => {
 .gray {
   color: gray;
 }
-option {
-  color: white;
-}
 .card {
   background-color: white;
   width: 30vw;
@@ -383,9 +313,13 @@ option {
 
 .textarea {
   resize: none;
+  border-radius: 10px;
+  background-color: #f6f6f6;
+  border: solid 2px #e8e8e8;
   height: 8vh;
   margin-top: 3vh;
   font-family: Arial, Helvetica, sans-serif;
+  color: black;
 }
 .textarea::placeholder {
   font-family: Arial, Helvetica, sans-serif;
@@ -398,5 +332,31 @@ option {
 }
 .active-page {
   background-color: green;
+}
+
+.rounded-input {
+  border-radius: 10px;
+  height: 30px;
+  width: 90%;
+  margin-top: 0.5vh;
+  background-color: #f6f6f6;
+  border: solid 2px #e8e8e8;
+  color: black;
+}
+
+.option {
+  color: black;
+  border-radius: 5px;
+  background-color: #e8e8e8;
+}
+
+select {
+  border-radius: 10px;
+  height: 35px;
+  width: 90%;
+  margin-top: 0.5vh;
+  background-color: #f6f6f6;
+  border: solid 2px #e8e8e8;
+  color: black;
 }
 </style>

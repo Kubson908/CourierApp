@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount } from "vue";
 import { NavBar, SideBar, LoadingPage } from "./components";
 import { user, loading } from "./main";
 
@@ -12,15 +12,14 @@ onBeforeMount(() => {
     user.roles = [];
   }
 });
-
-const sidebar = ref<boolean>(
-  user.roles.includes("Admin") || user.roles.includes("Dispatcher")
-);
 </script>
 
 <template width="100%">
   <NavBar id="navbar" />
-  <SideBar id="sidebar" v-if="sidebar" />
+  <SideBar
+    id="sidebar"
+    v-if="user.roles.includes('Admin') || user.roles.includes('Dispatcher')"
+  />
   <LoadingPage v-if="loading" id="loading" />
   <div
     :class="{

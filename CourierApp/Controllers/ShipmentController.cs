@@ -49,6 +49,7 @@ public class ShipmentController : ControllerBase
             return BadRequest();
         }
         string id = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        List<int> ids = new();
         try
         {
             foreach (Shipment shipment in dto.Shipments)
@@ -57,11 +58,8 @@ public class ShipmentController : ControllerBase
                 await _context.Shipments.AddAsync(shipment);
             }
             await _context.SaveChangesAsync();
-            return StatusCode(StatusCodes.Status201Created, new ApiUserResponse
-            {
-                Message = "Shipments registered",
-                IsSuccess = true,
-            });
+            ids = dto.Shipments.Select(s => s.Id).ToList();
+            return StatusCode(StatusCodes.Status201Created, ids);
         }
         catch (Exception ex)
         {
@@ -264,7 +262,7 @@ public class ShipmentController : ControllerBase
             document.Save(ms);
             response = ms.ToArray();
         }
-        string Filename = "Label.pdf";
+        string Filename = "Label_" + idList[0] + ".pdf";
         return File(response, "application/pdf", Filename);
     }
 }

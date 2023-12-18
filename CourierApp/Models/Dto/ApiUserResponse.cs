@@ -9,5 +9,7 @@ public class ApiUserResponse
     public string? AccessToken { get; set; } = string.Empty;
     public DateTime? ExpireDate { get; set; }
     public string? User { get; set; } = string.Empty;
+    public string? Email { get; set; } = string.Empty;
     public IList<string>? Roles { get; set; }
+    public string? Image { get; set; } = null;
 }

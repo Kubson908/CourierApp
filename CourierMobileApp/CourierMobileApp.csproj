@@ -65,6 +65,7 @@
 	  <None Remove="Resources\Images\hamburger.svg" />
 	  <None Remove="Resources\Images\history_icon.svg" />
 	  <None Remove="Resources\Images\package_icon.svg" />
+	  <None Remove="Resources\Images\pencil.svg" />
 	  <None Remove="Resources\Images\profile_circle.svg" />
 	  <None Remove="Resources\Images\profile_icon.svg" />
 	</ItemGroup>
@@ -84,6 +85,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\LoginPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\ProfilePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\Scanner.xaml">

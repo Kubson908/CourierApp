@@ -10,7 +10,7 @@
              Title="ShipmentPage"
              Shell.NavBarIsVisible="False">
     <Grid RowDefinitions="2*, 1*, 1*, Auto, 2*, 2*" Background="{StaticResource LoggedInBgDark}">
-        <components:NavBar Grid.Row="0" Margin="20, 0"/>
+        <components:NavBar Grid.Row="0" Margin="20, 0" x:Name="navbar"/>
 
         <Grid Grid.Row="1" ColumnDefinitions="25,*,25" Margin="25 ,0">
             <ImageButton Source="arrow_left" Grid.Column="0" WidthRequest="25" HorizontalOptions="Start" 
@@ -47,7 +47,7 @@
             <Label Grid.Row="4" Grid.Column="1" TextColor="White" Text="{Binding Size}" FontSize="20" Margin="0, 5" />
         </Grid>
         <Grid ColumnDefinitions="3*, 7*" Grid.Row="4" WidthRequest="150" HeightRequest="45" VerticalOptions="Start">
-            <Button Grid.ColumnSpan="2" BackgroundColor="{StaticResource BattleshipGray}" Clicked="FinishButtonClicked">
+            <Button Grid.ColumnSpan="2" BackgroundColor="{StaticResource BattleshipGray}" Command="{Binding FinishShipmentCommand}">
                 <Button.Triggers>
                     <DataTrigger TargetType="Button" Binding="{Binding StatusValue}" Value="InDelivery">
                         <Setter Property="BackgroundColor" Value="{StaticResource PigmentGreen}" />

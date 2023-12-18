@@ -1,4 +1,4 @@
-using CourierMobileApp.Models.Dto;
+ using CourierMobileApp.Models.Dto;
 using CourierMobileApp.Services;
 using CourierMobileApp.View;
 using IntelliJ.Lang.Annotations;
@@ -16,12 +16,15 @@ public partial class LoginViewModel : BaseViewModel
     [ObservableProperty]
     public string loginValidator;
 
-    public LoginViewModel(LoginService loginService)
+    private readonly ProfileService profileService;
+
+    public LoginViewModel(LoginService loginService, ProfileService profileService)
     {
         Title = "Logowanie";
         this.loginService = loginService;
         Login = string.Empty;
         Password = string.Empty;
+        this.profileService = profileService;
     }
 
     [RelayCommand]
@@ -46,6 +49,14 @@ public partial class LoginViewModel : BaseViewModel
                 throw new Exception(response.Errors.Contains("InvalidCredentials") ? "Niepoprawne dane logowania" : "Wyst¹pi³ b³¹d serwera", null);
             }
             await SecureStorage.Default.SetAsync("access_token", response.AccessToken);
+            await SecureStorage.Default.SetAsync("user", response.User);
+            await SecureStorage.Default.SetAsync("email", response.Email);
+            if (!string.IsNullOrEmpty(response.Image))
+            {
+                await SecureStorage.Default.SetAsync("profile_image", response.Image);
+                profileService.SetImage();
+            }
+                
         }
         catch (Exception ex)
         {

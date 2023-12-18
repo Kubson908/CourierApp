@@ -21,14 +21,22 @@
                VerticalOptions="Center"
                TextColor="#BDBDBD"
                FontSize="24"/>
-        <ImageButton Source="profile_circle.svg"
-                     Grid.Column="3"
-                     Grid.Row="1"
-                     HorizontalOptions="End"
-                     VerticalOptions="Center"
-                     HeightRequest="50"
-                     WidthRequest="50"
-                     Margin="0, 0, -4, 0"/>
+        <Grid Grid.Column="2" Grid.Row="1">
+            <Frame CornerRadius="75" HeightRequest="50"
+               WidthRequest="50"
+               Padding="0" Grid.Column="2" >
+                <Image x:Name="ProfileImage"
+                   Grid.Column="3"
+                   Grid.Row="1"
+                   HorizontalOptions="End"
+                   VerticalOptions="Center"
+                   HeightRequest="50"
+                   WidthRequest="50" />
+            </Frame>
+            <Button WidthRequest="50" HeightRequest="50"
+                    BackgroundColor="Transparent" CornerRadius="25"
+                    Clicked="ProfileClicked"/>
+        </Grid>
     </Grid>
-    
+
 </ContentView>

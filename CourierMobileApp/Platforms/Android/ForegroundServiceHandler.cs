@@ -12,11 +12,13 @@ public class ForegroundServiceHandler : IBackgroundService
     public event EventHandler ServiceStopped;
     public event EventHandler ServiceStarted;
     public ServiceConnection conn;
-    public LocationService locationService;
+    /*public LocationService locationService;*/
+    public ConnectionService apiConnection;
 
-    public ForegroundServiceHandler(LocationService locationService)
+    public ForegroundServiceHandler(/*LocationService locationService, */ConnectionService apiConnection)
     {
-        this.locationService = locationService;
+        /*this.locationService = locationService;*/
+        this.apiConnection = apiConnection;
     }
 
     public void InvokeServiceStoppedEvent(AndroidBackgroundService sender)
@@ -52,7 +54,7 @@ public class ForegroundServiceHandler : IBackgroundService
             _ = context.StartService(intent);
         }
     }
-    public void Stop()
+    public async void Stop()
     {
         if (context == null || !_isStarted)
         {
@@ -62,5 +64,20 @@ public class ForegroundServiceHandler : IBackgroundService
         _ = context.StopService(intent);
         context.UnbindService(conn);
         _isStarted = false;
+        await EndRoute();
+    }
+
+    public async Task CheckIn()
+    {
+        await apiConnection.SendAsync(HttpMethod.Get, "api/courier/check-in");
+    }
+
+    public async Task EndRoute()
+    {
+        try
+        {
+            await apiConnection.SendAsync(HttpMethod.Delete, "api/courier/end-route");
+        }  
+        catch (Exception) { }
     }
 }

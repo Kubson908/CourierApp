@@ -12,12 +12,14 @@ public class CourierService : IUserService<AddCourierDto, LoginDto>
 {
     private readonly UserManager<Courier> _userManager;
     private readonly IConfiguration _configuration;
+    private readonly IWebHostEnvironment _environment;
 
     public CourierService(UserManager<Courier> userManager, 
-        IConfiguration configuration)
+        IConfiguration configuration, IWebHostEnvironment environment)
     {
         _userManager = userManager;
         _configuration = configuration;
+        _environment = environment;
     }
 
     public async Task<ApiUserResponse> RegisterAsync(AddCourierDto dto)
@@ -112,15 +114,26 @@ public class CourierService : IUserService<AddCourierDto, LoginDto>
 
         string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-        return new ApiUserResponse
+        ApiUserResponse response = new ApiUserResponse
         {
             Message = "Logged in",
             IsSuccess = true,
             AccessToken = tokenString,
             ExpireDate = token.ValidTo,
             User = user.FirstName + " " + user.LastName,
+            Email = user.Email,
             Roles = await _userManager.GetRolesAsync(user)
         };
+
+        var path = Path.Combine(_environment.ContentRootPath, "StaticFiles", user.Id + ".png");
+
+        if (File.Exists(path))
+        {
+            var imageBytes = await File.ReadAllBytesAsync(path);
+            response.Image = Convert.ToBase64String(imageBytes);
+        }
+
+        return response;
     }
 
     

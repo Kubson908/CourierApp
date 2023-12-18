@@ -28,18 +28,6 @@ public class ShipmentController : ControllerBase
         return Ok(shipments);
     }
 
-    /*[HttpPost("register-shipment")]
-    public async Task<IActionResult> RegisterShipment([FromBody] Shipment shipment)
-    {
-        if (shipment == null)
-        {
-            return BadRequest();
-        }
-        await _context.Shipments.AddAsync(shipment);
-        await _context.SaveChangesAsync();
-        return StatusCode(StatusCodes.Status201Created, "Shipment registered");
-    }*/
-
     [HttpPost("register-shipments")]
     public async Task<IActionResult> RegisterShipments([FromBody] RegisterShipmentsDto dto)
     {
@@ -81,36 +69,8 @@ public class ShipmentController : ControllerBase
         return Ok(shipments);
     }
 
-    private async Task<ApiUserResponse> UpdateShipmentStatus(int id, Status status)
-    {
-        try
-        {
-            var shipment = await _context.Shipments.FindAsync(id);
-            if (shipment == null) return new ApiUserResponse
-            {
-                Message = "Shipment not found",
-                IsSuccess = false
-            };
-            shipment.Status = status;
-            await _context.SaveChangesAsync();
-            return new ApiUserResponse
-            {
-                Message = "Shipment status updated",
-                IsSuccess = true,
-            };
-        }
-        catch (Exception ex)
-        {
-            return new ApiUserResponse
-            {
-                Message = ex.Message,
-                IsSuccess = false,
-                Exception = true,
-            };
-        }
-        
-    }
-    // TODO: dodać endpoint do przypisywania paczek do kuriera i zmiany statusu na Accepted dla nowych paczek <-- chyba zrobione ale przetestować
+    
+
     [HttpPost("set-route")]
     public async Task<IActionResult> SetRoute([FromBody] RouteDto dto)
     {
@@ -150,6 +110,40 @@ public class ShipmentController : ControllerBase
             });
         }
     }
+    
+    private async Task<ApiUserResponse> UpdateShipmentStatus(int id, Status status)
+    {
+        try
+        {
+            var shipment = await _context.Shipments.FindAsync(id);
+            if (shipment == null) return new ApiUserResponse
+            {
+                Message = "Shipment not found",
+                IsSuccess = false
+            };
+            if (status == Status.NotDelivered)
+                shipment.DeliveryAttempts++;
+            if (shipment.DeliveryAttempts == 3 & status == Status.Stored)
+                shipment.Status = Status.StoredToReturn;
+            else shipment.Status = status;
+            await _context.SaveChangesAsync();
+            return new ApiUserResponse
+            {
+                Message = "Shipment status updated",
+                IsSuccess = true,
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ApiUserResponse
+            {
+                Message = ex.Message,
+                IsSuccess = false,
+                Exception = true,
+            };
+        }
+        
+    }
 
     [HttpPatch("deliver-package/{id}")]
     public async Task<IActionResult> DeliverPackage([FromRoute] int id)
@@ -173,6 +167,15 @@ public class ShipmentController : ControllerBase
     public async Task<IActionResult> StorePackage([FromRoute] int id)
     {
         ApiUserResponse result = await UpdateShipmentStatus(id, Status.Stored);
+        if (!result.IsSuccess) return BadRequest(result);
+        else if (result.Exception) return StatusCode(StatusCodes.Status500InternalServerError, result);
+        return Ok(result);
+    }
+
+    [HttpPatch("return-package/{id}")]
+    public async Task<IActionResult> ReturnPackage([FromRoute] int id)
+    {
+        ApiUserResponse result = await UpdateShipmentStatus(id, Status.Returned);
         if (!result.IsSuccess) return BadRequest(result);
         else if (result.Exception) return StatusCode(StatusCodes.Status500InternalServerError, result);
         return Ok(result);

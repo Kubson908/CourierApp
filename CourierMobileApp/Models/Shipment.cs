@@ -31,7 +31,11 @@ public enum Status
     PickedUp,
     Stored,
     InDelivery,
-    Delivered
+    Delivered,
+    NotDelivered,
+    StoredToReturn,
+    InReturn,
+    Returned
 }
 
 public enum Size

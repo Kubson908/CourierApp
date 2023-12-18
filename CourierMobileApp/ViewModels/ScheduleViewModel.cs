@@ -1,24 +1,37 @@
-﻿using CourierMobileApp.Services;
+﻿using Android.Content.Res;
+using CourierMobileApp.Interfaces;
+using CourierMobileApp.Services;
 using CourierMobileApp.View;
 
 namespace CourierMobileApp.ViewModels;
 
 public partial class ScheduleViewModel : BaseViewModel
 {
-    readonly ShipmentService shipmentService;
+    IBackgroundService foregroundServiceHandler;
+    public readonly ShipmentService shipmentService;
     [ObservableProperty]
     DateTime date;
     [ObservableProperty]
     DateTime minimumDate;
     [ObservableProperty]
     bool listEmpty;
-    public ObservableCollection<RouteElement> Route { get; set; }
 
-    public ScheduleViewModel(ShipmentService shipmentService)
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RouteButtonString))]
+    bool isWorking;
+
+    public string RouteButtonString => IsWorking ? "Zakończ trasę" : "Rozpocznij trasę";
+    public Color ButtonColor => IsWorking ? Color.FromArgb(Application.Current.Resources["BattleshipGray"].ToString()) : Color.FromArgb(Application.Current.Resources["PigmentGreen"].ToString());
+
+    public ObservableCollection<RouteElement> Route { get; set; }
+    private readonly ProfileService profileService;
+
+    public ScheduleViewModel(ShipmentService shipmentService, ProfileService profileService, IBackgroundService backgroundService)
     {
         Title = "Harmonogram";
         Route = new ObservableCollection<RouteElement>();
         this.shipmentService = shipmentService;
+        foregroundServiceHandler = backgroundService;
         foreach (RouteElement routeElement in this.shipmentService.route)
         {
             Route.Add(routeElement);
@@ -26,6 +39,18 @@ public partial class ScheduleViewModel : BaseViewModel
         ListEmpty = Route.Count == 0;
         MinimumDate = DateTime.Today;
         Date = DateTime.Today;
+        this.profileService = profileService;
+        foregroundServiceHandler.ServiceStopped += (object sender, EventArgs e) => { IsWorking = false; };
+        foregroundServiceHandler.ServiceStarted += (object sender, EventArgs e) => { IsWorking = true; };
+    }
+
+    public void SetRoute()
+    {
+        Route.Clear();
+        foreach (var route in shipmentService.route)
+        {
+            Route.Add(route);
+        }
     }
 
     [RelayCommand]
@@ -33,12 +58,8 @@ public partial class ScheduleViewModel : BaseViewModel
     {
         ListEmpty = false;
         IsBusy = true;
-        Route.Clear();
-        var temp = await shipmentService.GetRouteAsync(Date);
-        foreach (var route in temp)
-        {
-            Route.Add(route);
-        }
+        await shipmentService.GetRouteAsync(Date);
+        SetRoute();
         IsBusy = false;
         ListEmpty = Route.Count == 0;
     }
@@ -47,7 +68,28 @@ public partial class ScheduleViewModel : BaseViewModel
     {
         MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            await Shell.Current.Navigation.PushAsync(new ShipmentPage(new ShipmentViewModel(shipmentService, element)));
+            await Shell.Current.Navigation.PushAsync(new ShipmentPage(new ShipmentViewModel(shipmentService, element), profileService));
         });
+    }
+
+    public void ToggleRoute()
+    {
+        if (IsWorking)
+            foregroundServiceHandler.Stop();
+        else
+            IsWorking = StartRouteAsync();
+    }
+
+    public bool StartRouteAsync()
+    {
+        Vibration.Vibrate(TimeSpan.FromMilliseconds(200));
+        try
+        {
+            foregroundServiceHandler.Start();
+        } catch (Exception)
+        {
+            return false;
+        }
+        return true;
     }
 }

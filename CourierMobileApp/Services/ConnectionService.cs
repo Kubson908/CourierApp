@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Web;
+using CourierMobileApp.Models.Dto;
 
 namespace CourierMobileApp.Services;
 
@@ -48,9 +49,9 @@ public class ConnectionService
         return queryParams;
     }
 
-    public async Task<HttpResponseMessage> SendAsync(HttpMethod method, string url, object body = null, object queryParams = null) // dodać query params
+    public async Task<HttpResponseMessage> SendAsync(HttpMethod method, string url, object body = null, object queryParams = null, string contentType = null) // dodać query params
     {
-        var content = body != null ? new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json") : null;
+        var content = body != null ? new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, contentType ?? "application/json") : null;
         url = url.StartsWith("/") ? url : "/" + url;
         url = queryParams is not null ? url + setQuery(queryParams) : url;
         switch (method.Method)
@@ -67,5 +68,22 @@ public class ConnectionService
                 return await _client.DeleteAsync(url);
             default : throw new HttpRequestException($"Unsupported method: {method.Method}");
         }
+    }
+
+    public async Task<ApiUserResponse> UploadPhotoAsync(FileResult file)
+    {
+        var httpContent = new MultipartFormDataContent
+        {
+            { new StreamContent(await file.OpenReadAsync()), "postedFile", file.FileName }
+        };
+        var response = await _client.PostAsync("/api/courier/upload-image", httpContent);
+        if (!response.IsSuccessStatusCode)
+            return new ApiUserResponse()
+            {
+                IsSuccess = false,
+                Message = "Nie udało się przesłać zdjęcia"
+            };
+        ApiUserResponse responseData = JsonConvert.DeserializeObject<ApiUserResponse>(await response.Content.ReadAsStringAsync());
+        return responseData;
     }
 }

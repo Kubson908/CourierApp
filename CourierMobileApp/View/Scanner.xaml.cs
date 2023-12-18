@@ -19,14 +19,13 @@ public partial class Scanner : ContentPage
         };
     }
 
-    protected void BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
+    protected async void BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
     {
         BarcodeResult result = e.Results.First();
         PointF[] pos = result.PointsOfInterest;
         if (!IsInAllowedArea(pos)) return;
         cameraBarcodeReaderView.IsDetecting = false;
-        var id = LabelResolver.GetShipmentId(e.Results.First().Value);
-        viewModel.Label = id;
+        await viewModel.AfterScanAction(e.Results.First().Value);
     }
 
     private bool IsInAllowedArea(PointF[] points)

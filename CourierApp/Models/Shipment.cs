@@ -36,6 +36,7 @@ public class Shipment
     public DateTime? StoreDate { get; set; }
     public DateTime? DeliveryDate { get; set; }
     public string? AdditionalDetails { get; set; }
+    public int DeliveryAttempts { get; set; } = 0;
 
     //Navigation properties
     [ForeignKey(nameof(Customer))]
@@ -50,7 +51,11 @@ public enum Status
     PickedUp,
     Stored,
     InDelivery,
-    Delivered
+    Delivered,
+    NotDelivered,
+    StoredToReturn,
+    InReturn,
+    Returned
 }
 
 public enum Size

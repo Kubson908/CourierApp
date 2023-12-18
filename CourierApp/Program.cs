@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CourierAPI.Models.Dto;
 using CourierAPI.Services;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -91,6 +92,8 @@ builder.Services.AddScoped<IUserService<AddDispatcherDto, LoginDto>, DispatcherS
 builder.Services.AddScoped<IUserService<RegisterDto, LoginDto>, CustomerService>();
 builder.Services.AddScoped<AdminService, AdminService>();
 
+builder.Services.AddSingleton<WorkService>();
+builder.Services.AddHostedService<TimeTrackingService>();
 
 var app = builder.Build();
 
@@ -100,6 +103,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "StaticFiles")),
+    RequestPath = "/StaticFiles"
+});
 
 
 app.UseCors("AllowSpecificOrigins");

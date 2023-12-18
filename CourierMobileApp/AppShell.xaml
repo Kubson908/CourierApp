@@ -5,9 +5,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:CourierMobileApp"
     xmlns:view="clr-namespace:CourierMobileApp.View"
+    xmlns:components="clr-namespace:CourierMobileApp.View.Components"
     Shell.FlyoutBehavior="Disabled"
     BackgroundColor="#111516">
-    
+
     <ShellContent
         Shell.NavBarIsVisible="False"
         Title="Login"
@@ -25,5 +26,11 @@
         Title="Schedule"
         ContentTemplate="{DataTemplate view:SchedulePage}"
         Route="Schedule" />
+
+    <ShellContent
+        Shell.NavBarIsVisible="False"
+        Title="Profile"
+        ContentTemplate="{DataTemplate view:ProfilePage}"
+        Route="Profile" />
 
 </Shell>

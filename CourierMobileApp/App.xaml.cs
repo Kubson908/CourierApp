@@ -1,4 +1,6 @@
-﻿namespace CourierMobileApp
+﻿using CourierMobileApp.Services;
+
+namespace CourierMobileApp
 {
     public partial class App : Application
     {

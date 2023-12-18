@@ -5,6 +5,7 @@ using CourierMobileApp.Platforms;
 using CourierMobileApp.Platforms.Android;
 using CourierMobileApp.Services;
 using CourierMobileApp.View;
+using CourierMobileApp.View.Components;
 using Maui.Plugins.PageResolver;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
@@ -31,9 +32,14 @@ namespace CourierMobileApp
             builder.Services.AddSingleton<MainPageViewModel>();
             builder.Services.AddSingleton<ConnectionService>();
 
+            builder.Services.AddSingleton<ProfileService>();
+
             builder.Services.AddSingleton<LoginPage>();
             builder.Services.AddSingleton<LoginViewModel>();
             builder.Services.AddSingleton<LoginService>();
+            builder.Services.AddSingleton<ProfilePage>();
+            builder.Services.AddSingleton<ProfileViewModel>();
+
             builder.Services.AddSingleton<ShipmentService>();
             builder.Services.AddSingleton<SchedulePage>();
             builder.Services.AddSingleton<ScheduleViewModel>();

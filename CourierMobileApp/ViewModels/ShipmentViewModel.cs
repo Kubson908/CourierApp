@@ -1,4 +1,5 @@
 ﻿using CourierMobileApp.Services;
+using CourierMobileApp.View;
 
 namespace CourierMobileApp.ViewModels;
 
@@ -69,5 +70,14 @@ public partial class ShipmentViewModel : BaseViewModel
         index = increment ? (index < shipmentService.route.Count - 1 ? index + 1 : index) : (index > 0 ? index - 1 : index);
         RouteElement = shipmentService.route[index];
         SetProperties();
+    }
+
+    [RelayCommand]
+    public void FinishShipment()
+    {
+        MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            await Shell.Current.Navigation.PushAsync(new Scanner(new ScannerViewModel(RouteElement, true, shipmentService)));
+        });
     }
 }

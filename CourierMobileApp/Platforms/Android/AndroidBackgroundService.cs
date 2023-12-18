@@ -9,7 +9,7 @@ namespace CourierMobileApp.Platforms.Android;
 public class AndroidBackgroundService : Service
 {
     public const int SERVICE_RUNNING_NOTIFICATION_ID = 10001;
-    Location location;
+    /*Location location;*/
     /*bool status;*/
     Timer timer;
     Binder binder;
@@ -48,13 +48,16 @@ public class AndroidBackgroundService : Service
         {
             try
             {
-                location = await ForegroundServiceHandler.locationService.GetLocationAsync();
-                if (location is null)
+                // TODO: Wysylanie requesta CheckIn  
+                await ForegroundServiceHandler.CheckIn();
+
+                /*location = await ForegroundServiceHandler.locationService.GetLocationAsync();*/
+                /*if (location is null)
                 {
-                    /*await SnackbarService.ShowSnackbar("Utracono połączenie GPS", null, "OK", TimeSpan.FromSeconds(20), Color.FromArgb("#7e2320"), true)*/
+                    *//*await SnackbarService.ShowSnackbar("Utracono połączenie GPS", null, "OK", TimeSpan.FromSeconds(20), Color.FromArgb("#7e2320"), true)*//*
                     ;
                     OnServiceStopped();
-                }
+                }*/
                 /*status = await ForegroundServiceHandler.locationService.CheckDistanceAsync(location);
                 if (!status)
                 {
@@ -64,7 +67,7 @@ public class AndroidBackgroundService : Service
             catch (Exception)
             {
             }
-        }, null, TimeSpan.FromSeconds(5 * 60.0f), TimeSpan.FromSeconds(5 * 60.0f));
+        }, null, TimeSpan.FromSeconds(1.0f), TimeSpan.FromSeconds(5 * 60.0f));
         return StartCommandResult.Sticky;
     }
 
@@ -121,7 +124,7 @@ public class AndroidBackgroundService : Service
 
     private void RegisterNotification()
     {
-        CreateNotificationChannel("ServiceChannel", "LocationService", NotificationImportance.Max);
+        CreateNotificationChannel("ServiceChannel", "ConnectionService", NotificationImportance.Max);
 
 #pragma warning disable CA1416 // Validate platform compatibility
         Notification.Builder builder = new(this, "ServiceChannel");
@@ -131,7 +134,7 @@ public class AndroidBackgroundService : Service
            .SetSmallIcon(Resource.Drawable.delivery)
            .SetColor(144244122)
            .SetOngoing(true)
-           .SetContentText("Lokalizacja jest rejestrowana")
+           /*.SetContentText("Lokalizacja jest rejestrowana")*/
            .Build();
 
         StartForeground(SERVICE_RUNNING_NOTIFICATION_ID, notification);
@@ -139,14 +142,14 @@ public class AndroidBackgroundService : Service
 
     public void ServiceStoppedNotification()
     {
-        CreateNotificationChannel("ServiceStoppedChannel", "LocationServiceStopped", NotificationImportance.Max);
+        CreateNotificationChannel("ServiceStoppedChannel", "ConnectionServiceStopped", NotificationImportance.Max);
 #pragma warning disable CA1416 // Validate platform compatibility
         Notification.Builder builder = new(this, "ServiceStoppedChannel");
 #pragma warning restore CA1416 // Validate platform compatibility
 
 #pragma warning disable CA1422 // Validate platform compatibility
         Notification notification = builder
-           .SetContentTitle("Zakończyłeś trasę")
+           .SetContentTitle("Zakończono trasę")
            .SetSmallIcon(Resource.Drawable.pickup)
            .SetPriority(5)
            .SetColor(000000000)

@@ -9,6 +9,7 @@ using System.Text;
 using CourierAPI.Models.Dto;
 using CourierAPI.Services;
 using Microsoft.Extensions.FileProviders;
+using CourierAPI.Websocket;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -117,6 +118,16 @@ app.UseCors("AllowSpecificOrigins");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+// configure websocket
+var webSocketOptions = new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromMinutes(5)
+};
+webSocketOptions.AllowedOrigins.Add("http://localhost:5173");
+
+app.UseWebSockets(webSocketOptions);
+app.UseMiddleware<WebsocketMiddleware>();
 
 app.MapControllers();
 

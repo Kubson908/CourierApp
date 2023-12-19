@@ -1,9 +1,13 @@
 ﻿using CourierAPI.Models.Dto;
+using CourierAPI.Websocket;
+using System.Reflection;
 
 namespace CourierAPI.Services;
 
 public class WorkService
 {
+    public event EventHandler<WorkStatusEventArgs>? RecentlyActive;
+    public event EventHandler<WorkStatusEventArgs>? Inactive;
     public List<WorkTime> workTimes { get; set; }
 
     public WorkService()
@@ -37,7 +41,14 @@ public class WorkService
 
         if (status == WorkStatus.RecentlyActive)
         {
+            WorkStatusEventArgs args = new WorkStatusEventArgs(workTimes.First(t => t.CourierId == id));
             DeleteWorkTime(id);
+            Inactive.Invoke(this, args);
+        }
+        else if (status == WorkStatus.Active)
+        {
+            WorkStatusEventArgs args = new WorkStatusEventArgs(workTimes.First(t => t.CourierId == id));
+            RecentlyActive.Invoke(this, args);
         }
     }
 
@@ -62,4 +73,15 @@ public class WorkService
     {
         return workTimes.Any(x => x.CourierId == id);
     }
+}
+
+public class WorkStatusEventArgs : EventArgs
+{
+    private readonly WorkTime _workTime;
+
+    public WorkStatusEventArgs(WorkTime workTime)
+    {
+        _workTime = workTime;
+    }
+    public WorkTime WorkTime { get { return _workTime; } }
 }

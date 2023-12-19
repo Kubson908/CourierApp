@@ -8,6 +8,8 @@ const openServiceApi: string =
 const warehouseCoordinates: Array<number> = [
   20.456084839809897, 53.744143291594206,
 ];
+
+const webSocketUrl = "wss://localhost:7119";
 export {
   prefix,
   geocodingKey,
@@ -15,4 +17,5 @@ export {
   openServiceKey,
   openServiceApi,
   warehouseCoordinates,
+  webSocketUrl,
 };

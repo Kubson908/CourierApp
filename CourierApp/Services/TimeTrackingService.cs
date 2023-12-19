@@ -12,7 +12,7 @@ public class TimeTrackingService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await Task.Delay(15 * 60 * 1000, stoppingToken); // czekanie 15 minut | TODO: USTAWIĆ 15 MINUT ZAMIAST 30 SEKUND
+            await Task.Delay(7 * 60 * 1000, stoppingToken);
             workService.CheckTime();
         }
     }

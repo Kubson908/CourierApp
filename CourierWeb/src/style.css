@@ -106,14 +106,26 @@ button:focus-visible {
 .pigment-green {
   background-color: #15ab54;
 }
+.red {
+  background-color: red;
+}
+.yellow {
+  background-color: rgb(255, 217, 3);
+}
 .pigment-green-text {
   color: #15ab54;
+}
+.red-text {
+  color: red;
+}
+.yellow-text {
+  color: rgb(255, 217, 3);
 }
 .black-text {
   color: black;
 }
 .gray-text {
-  color: #848C8E
+  color: #848c8e;
 }
 
 .gray-placeholder::placeholder {

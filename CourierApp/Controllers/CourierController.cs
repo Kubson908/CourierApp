@@ -37,12 +37,7 @@ public class CourierController : ControllerBase
         {
             _workService.AddWorkTime(id);
         }
-        ApiUserResponse response = new()
-        {
-            Message = "Checked in",
-            IsSuccess = true,
-        };
-        return Ok(response);
+        return Ok(new { message = "Checked in", data = id});
     }
 
     [HttpDelete("end-route"), Authorize(Roles = "Courier")]
@@ -56,11 +51,7 @@ public class CourierController : ControllerBase
                 _workService.DeleteWorkTime(id);
             }
             
-            return Ok(new ApiUserResponse
-            {
-                Message = "Route ended",
-                IsSuccess = true,
-            });
+            return Ok(new { message = "Route ended", data = id });
         } catch
         {
             return BadRequest(new ApiUserResponse

@@ -142,4 +142,24 @@ public class CourierService : IUserService<AddCourierDto, LoginDto>
     {
         throw new NotImplementedException();
     }
+
+    public Task<ApiUserResponse> ConfirmEmail(string token)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task ResendConfirmationLinkAsync(string email)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<ApiUserResponse> SendResetPasswordLinkAsync(string email)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<ApiUserResponse> ResetPassword(string token, string newPassword)
+    {
+        throw new NotImplementedException();
+    }
 }

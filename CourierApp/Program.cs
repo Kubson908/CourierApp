@@ -42,11 +42,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 
 builder.Services.AddIdentityCore<Courier>().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddIdentityCore<Dispatcher>().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddIdentityCore<Customer>().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentityCore<Customer>().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
-/*builder.Services.AddIdentityCore<Dispatcher>().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
-
-builder.Services.AddIdentityCore<Customer>().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();*/
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Password settings.
@@ -93,6 +90,7 @@ builder.Services.AddScoped<IUserService<AddDispatcherDto, LoginDto>, DispatcherS
 builder.Services.AddScoped<IUserService<RegisterDto, LoginDto>, CustomerService>();
 builder.Services.AddScoped<AdminService, AdminService>();
 
+builder.Services.AddSingleton<EmailService>();
 builder.Services.AddSingleton<WorkService>();
 builder.Services.AddHostedService<TimeTrackingService>();
 

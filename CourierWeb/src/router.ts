@@ -1,7 +1,12 @@
 import { Route } from "./typings";
 import { AdminPage } from "./components/Admin";
 import { HomePage } from "./components";
-import { LoginForm, RegisterForm } from "./components/Guest";
+import {
+  LoginForm,
+  RegisterForm,
+  ResetPassword,
+  VerifyEmail,
+} from "./components/Guest";
 import { DownloadLabels, OrderShipments } from "./components/Customer";
 import { MapView, ShipmentsList, CouriersList } from "./components/Dispatcher";
 
@@ -31,4 +36,6 @@ export const routes: Array<Route> = [
     component: CouriersList,
     meta: { roles: ["Dispatcher"] },
   },
+  { path: "/verify", component: VerifyEmail, meta: { roles: null } },
+  { path: "/reset-password", component: ResetPassword, meta: { roles: null } },
 ];

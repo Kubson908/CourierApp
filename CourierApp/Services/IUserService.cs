@@ -7,5 +7,9 @@ namespace CourierAPI.Services
         Task<ApiUserResponse> RegisterAsync(R dto);
         Task<ApiUserResponse> LoginAsync(L dto);
         Task<ApiUserResponse> DeleteUserAsync(string id);
+        Task<ApiUserResponse> ConfirmEmail(string token);
+        Task ResendConfirmationLinkAsync(string email);
+        Task<ApiUserResponse> SendResetPasswordLinkAsync(string email);
+        Task<ApiUserResponse> ResetPassword(string token, string newPassword);
     }
 }

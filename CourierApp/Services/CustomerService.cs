@@ -13,11 +13,13 @@ public class CustomerService : IUserService<RegisterDto, LoginDto>
 {
     private readonly UserManager<Customer> _userManager;
     private readonly IConfiguration _configuration;
+    private readonly EmailService _emailService;
 
-    public CustomerService(UserManager<Customer> userManager, IConfiguration configuration)
+    public CustomerService(UserManager<Customer> userManager, IConfiguration configuration, EmailService emailService)
     {
         _userManager = userManager;
         _configuration = configuration;
+        _emailService = emailService;
     }
 
     public async Task<ApiUserResponse> RegisterAsync(RegisterDto dto)
@@ -47,6 +49,13 @@ public class CustomerService : IUserService<RegisterDto, LoginDto>
         {
             await _userManager.AddToRoleAsync(customer, "Customer");
 
+            try
+            {
+                string token = await _userManager.GenerateEmailConfirmationTokenAsync(customer);
+                await _emailService.SendRegisterConfirmationLink(customer.Email, token, customer.Id);
+            }
+            catch (Exception) { }
+
             return new ApiUserResponse
             {
                 Message = "Success",
@@ -63,11 +72,126 @@ public class CustomerService : IUserService<RegisterDto, LoginDto>
         };
     }
 
-    private bool IsValidEmail(string email)
+    public async Task ResendConfirmationLinkAsync(string email)
     {
-        string regex = @"^[^@\s]+@[^@\s]+\.(com|net|org|gov)$";
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null) return;
+        string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        await _emailService.SendRegisterConfirmationLink(email, token, user.Id);
+    }
+
+    public async Task<ApiUserResponse> SendResetPasswordLinkAsync(string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null) return new ApiUserResponse
+        {
+            IsSuccess = false,
+            Message = "User not found"
+        };
+        string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        await _emailService.SendResetPasswordLink(email, token, user.Id);
+        return new ApiUserResponse
+        {
+            IsSuccess = true,
+            Message = "Link sent"
+        };
+    }
+
+    public async Task<ApiUserResponse> ResetPassword(string token, string newPassword)
+    {
+        try
+        {
+            var tokenString = token.Split("|")[0];
+            var id = token.Split("|")[1];
+            if (id == null)
+                return new ApiUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid token",
+                };
+            var customer = await _userManager.FindByIdAsync(id);
+            if (customer == null)
+                return new ApiUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "User not found",
+                };
+            var result = await _userManager.ResetPasswordAsync(customer, tokenString, newPassword);
+            if (!result.Succeeded)
+            {
+                return new ApiUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Cannot reset user's password",
+                };
+            }
+            return new ApiUserResponse
+            {
+                IsSuccess = true,
+                Message = "Pasword reset"
+            };
+        } catch (Exception ex)
+        {
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Exception = true,
+                Message = ex.Message,
+            };
+        }
+    }
+
+    public async Task<ApiUserResponse> ConfirmEmail(string token)
+    {
+        try
+        {
+            var tokenString = token.Split("|")[0];
+            var id = token.Split("|")[1];
+            if (id == null)
+                return new ApiUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid token",
+                };
+            var customer = await _userManager.FindByIdAsync(id);
+            if (customer == null)
+                return new ApiUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "User not found",
+                };
+            var result = await _userManager.ConfirmEmailAsync(customer, tokenString);
+            if (!result.Succeeded)
+            {
+                return new ApiUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Cannot confirm user's email",
+                };
+            }
+            return new ApiUserResponse
+            {
+                IsSuccess = true,
+                Message = "Email confirmed"
+            };
+
+        } catch (Exception ex)
+        {
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Exception = true,
+                Message = ex.Message,
+            };
+        }
+    }
+
+    private static bool IsValidEmail(string email)
+    {
+        string regex = @"^[^@\s]+@[^@\s]+\.(com|net|org|gov|pl)$";
         return Regex.IsMatch(email, regex, RegexOptions.IgnoreCase);
     }
+
     public async Task<ApiUserResponse> LoginAsync(LoginDto dto)
     {
         if (dto == null)
@@ -83,6 +207,13 @@ public class CustomerService : IUserService<RegisterDto, LoginDto>
             {
                 Message = "Invalid login or password",
                 IsSuccess = false
+            };
+
+        if (!user.EmailConfirmed)
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = "Email not confirmed"
             };
 
         var result = await _userManager.CheckPasswordAsync(user, dto.Password);

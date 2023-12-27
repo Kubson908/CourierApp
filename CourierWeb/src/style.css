@@ -95,9 +95,17 @@ button:focus-visible {
   flex-direction: column;
 }
 
+.center {
+  margin: auto !important;
+}
+
+.mt-10 {
+  margin-top: 10px !important;
+}
+
 /* buttons */
 .submit {
-  width: 50%;
+  width: fit-content !important;
   margin: 2% auto auto auto;
   border-radius: 10px;
 }

@@ -15,7 +15,7 @@ public class WebsocketMiddleware
 
     public List<WebsocketInfo> connections;
     JwtSecurityTokenHandler handler;
-    List<string> endpoints = new()
+    readonly List<string> endpoints = new()
     {
         "api/courier/check-in",
         "api/courier/end-route"

@@ -1,7 +1,13 @@
 export const sidelinks: {
   [key: string]: Array<link>;
 } = {
-  admin: [{ link: "/administration", title: "Administracja", icon: "" }],
+  admin: [
+    {
+      link: "/administration",
+      title: "Pracownicy",
+      icon: "/src/assets/people.svg",
+    },
+  ],
   dispatcher: [
     { link: "/shipments", title: "Przesyłki", icon: "/src/assets/package.svg" },
     { link: "/couriers", title: "Kurierzy", icon: "/src/assets/people.svg" },

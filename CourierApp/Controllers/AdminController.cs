@@ -1,10 +1,12 @@
 ﻿using CourierAPI.Data;
 using CourierAPI.Models;
+using CourierAPI.Models.Dto;
 using CourierAPI.Services;
 using CourierAPI.Websocket;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CourierAPI.Controllers;
 
@@ -14,25 +16,23 @@ namespace CourierAPI.Controllers;
 public class AdminController : ControllerBase
 {
     private ApplicationDbContext _context;
-    private UserManager<Dispatcher> _dispatcherManager;
-    private UserManager<Courier> _courierManager;
+    private readonly IUserService<AddDispatcherDto, LoginDto, Dispatcher> _dispatcherService;
+    private readonly IUserService<AddCourierDto, LoginDto, Courier> _courierService;
     private WorkService _workService;
 
-    public AdminController(ApplicationDbContext context,
-        UserManager<Dispatcher> userManager,
-        UserManager<Courier> courierManager,
-        WorkService workService)
+    public AdminController(ApplicationDbContext context, IUserService<AddDispatcherDto, LoginDto, Dispatcher> dispatcherService,
+        WorkService workService, IUserService<AddCourierDto, LoginDto, Courier> courierService)
     {
         _context = context;
-        _dispatcherManager = userManager;
-        _courierManager = courierManager;
+        _dispatcherService = dispatcherService;
         _workService = workService;
+        _courierService = courierService;
     }
 
     [HttpGet("get-dispatchers")]
     public ActionResult GetDispatchers()
     {
-        var dispatchers = _dispatcherManager.Users.ToList().Select(d => new
+        var dispatchers = _dispatcherService.GetUsers().Select(d => new
         {
             d.Id,
             d.FirstName,
@@ -47,7 +47,7 @@ public class AdminController : ControllerBase
     [HttpGet("get-couriers")]
     public ActionResult GetCouriers()
     {
-        var couriers = _courierManager.Users.ToList().Select(d => new
+        var couriers = _courierService.GetUsers().Select(d => new
         {
             d.Id,
             d.FirstName,
@@ -56,10 +56,67 @@ public class AdminController : ControllerBase
             d.Email,
             d.PhoneNumber,
             Status = _workService.workTimes.Any(w => w.CourierId == d.Id) ? 
-                    _workService.workTimes.First(w => w.CourierId == d.Id).Status : Models.Dto.WorkStatus.Inactive
+                    _workService.workTimes.First(w => w.CourierId == d.Id).Status : Models.Dto.WorkStatus.Inactive,
         });
         return Ok(couriers);
     }
 
+    [HttpDelete("delete-courier/{id}"), Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteCourier([FromRoute] string id)
+    {
+        ApiUserResponse result = await _courierService.DeleteUserAsync(id);
+        if (result.IsSuccess)
+        {
+            return Ok(result);
+        }
+        return BadRequest(result);
+    }
 
+    [HttpDelete("delete-dispatcher/{id}"), Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeleteDispatcher([FromRoute] string id)
+    {
+        ApiUserResponse result = await _dispatcherService.DeleteUserAsync(id);
+        if (result.IsSuccess)
+        {
+            return Ok(result);
+        }
+        return BadRequest(result);
+    }
+
+    [HttpPatch("update-courier/{id}"), Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateCourier([FromRoute] string id, [FromBody] UpdateUserDto dto)
+    {
+        ApiUserResponse result = await _courierService.UpdateUserAsync(id, dto);
+        if (result.IsSuccess)
+        {
+            return Ok(result);
+        }
+        return BadRequest(result);
+    }
+
+    [HttpPatch("update-dispatcher/{id}"), Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateDispatcher([FromRoute] string id, [FromBody] UpdateUserDto dto)
+    {
+        ApiUserResponse result = await _dispatcherService.UpdateUserAsync(id, dto);
+        if (result.IsSuccess)
+        {
+            return Ok(result);
+        }
+        return BadRequest(result);
+    }
+
+    [HttpPost("update-price-list")]
+    public async Task<IActionResult> UpdatePriceList([FromBody] PriceList newPriceList)
+    {
+        var priceList = await _context.PriceList.FirstAsync();
+        priceList.VerySmallSize = newPriceList.VerySmallSize;
+        priceList.SmallSize = newPriceList.SmallSize;
+        priceList.MediumSize = newPriceList.MediumSize;
+        priceList.LargeSize = newPriceList.LargeSize;
+        priceList.LightWeight = newPriceList.LightWeight;
+        priceList.MediumWeight = priceList.MediumWeight;
+        priceList.HeavyWeight = priceList.HeavyWeight;
+        await _context.SaveChangesAsync();
+        return Ok(priceList);
+    }
 }

@@ -11,12 +11,18 @@ public partial class ShipmentViewModel : BaseViewModel
     private int index;
     [ObservableProperty]
     string header;
-    List<string> sizes = new()
+    readonly List<string> sizes = new()
     {
         "bardzo mała",
         "mała",
         "średnia",
         "duża",
+    };
+    readonly List<string> weights = new()
+    {
+        "lekka",
+        "średnia",
+        "ciężka",
     };
     [ObservableProperty]
     string address;
@@ -24,7 +30,8 @@ public partial class ShipmentViewModel : BaseViewModel
     string city;
     [ObservableProperty]
     string size;
-
+    [ObservableProperty]
+    string weight;
     [ObservableProperty]
     string finishIconPath;
     [ObservableProperty]
@@ -61,6 +68,7 @@ public partial class ShipmentViewModel : BaseViewModel
         Address = StatusValue == Status.Accepted ? RouteElement.Shipment.PickupAddress : RouteElement.Shipment.RecipientAddress;
         City = StatusValue == Status.Accepted ? RouteElement.Shipment.PickupCity : RouteElement.Shipment.RecipientCity;
         Size = sizes[(int)RouteElement.Shipment.Size];
+        Weight = weights[(int)RouteElement.Shipment.Weight];
         FinishIconPath = RouteElement.Shipment.Status == Status.Accepted ? "pickup_button.svg" : "delivery_button.svg";
     }
 

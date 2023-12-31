@@ -3,14 +3,14 @@ import axios from "axios";
 import { prefix } from "./config";
 import "./style.css";
 import App from "./App.vue";
-import { User } from "./typings";
+import { PriceList, User } from "./typings";
 import * as VueRouter from "vue-router";
 import { routes } from "./router";
 import OpenLayersMap, {
   type Vue3OpenlayersGlobalOptions,
 } from "vue3-openlayers";
 
-export const loading = ref(false);
+export const loading = ref<boolean>(false);
 
 export const user = reactive<User>({
   name: localStorage.getItem("user") ?? "Niezalogowany",
@@ -63,5 +63,7 @@ router.beforeEach((to, from) => {
 const mapOptions: Vue3OpenlayersGlobalOptions = {
   debug: true,
 };
+
+export const priceList = ref<PriceList | null>(null);
 
 createApp(App).use(router).use(OpenLayersMap, mapOptions).mount("#app");

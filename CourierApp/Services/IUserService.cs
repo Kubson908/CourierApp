@@ -2,7 +2,7 @@
 
 namespace CourierAPI.Services
 {
-    public interface IUserService<R, L>
+    public interface IUserService<R, L, U>
     {
         Task<ApiUserResponse> RegisterAsync(R dto);
         Task<ApiUserResponse> LoginAsync(L dto);
@@ -11,5 +11,7 @@ namespace CourierAPI.Services
         Task ResendConfirmationLinkAsync(string email);
         Task<ApiUserResponse> SendResetPasswordLinkAsync(string email);
         Task<ApiUserResponse> ResetPassword(string token, string newPassword);
+        List<U> GetUsers();
+        Task<ApiUserResponse> UpdateUserAsync(string id, UpdateUserDto dto);
     }
 }

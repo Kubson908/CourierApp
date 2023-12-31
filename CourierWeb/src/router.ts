@@ -9,9 +9,21 @@ import {
 } from "./components/Guest";
 import { DownloadLabels, OrderShipments } from "./components/Customer";
 import { MapView, ShipmentsList, CouriersList } from "./components/Dispatcher";
+import { user } from "./main";
 
 export const routes: Array<Route> = [
-  { path: "/", component: HomePage, meta: { roles: null } },
+  {
+    path: "/",
+    component: HomePage,
+    meta: { roles: null },
+    beforeEnter: () => {
+      if (user.roles.includes("Admin")) {
+        return {
+          path: "/administration",
+        };
+      }
+    },
+  },
   { path: "/administration", component: AdminPage, meta: { roles: ["Admin"] } },
   { path: "/login", component: LoginForm, meta: { roles: null } },
   { path: "/register", component: RegisterForm, meta: { roles: null } },

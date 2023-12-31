@@ -6,4 +6,5 @@ export type Courier = {
   email: string;
   phoneNumber: string;
   status: number;
+  role: string | undefined;
 };

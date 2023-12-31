@@ -2,12 +2,18 @@
 import { ref } from "vue";
 import { sidelinks } from "../structures/sidelinks";
 import { user } from "../main";
+import { useRoute } from "vue-router";
 
 const hover = ref(false);
 
 const links = user.roles.includes("Admin")
   ? sidelinks.admin
   : sidelinks.dispatcher;
+
+const active: (path: string) => boolean = (path: string) => {
+  if (useRoute().path == path) return true;
+  return false;
+};
 </script>
 
 <template>
@@ -23,7 +29,11 @@ const links = user.roles.includes("Admin")
         </a>
       </div>
       <div :class="hover ? 'hidden' : 'visible'">
-        <a :href="item.link"><img :src="item.icon" class="icon" /> </a>
+        <a
+          :href="item.link"
+          :class="active(item.link) ? 'activated' : 'inactive'"
+          ><img :src="item.icon" class="icon" />
+        </a>
       </div>
     </li>
     <!-- <li><a href="/">Home</a></li>
@@ -60,7 +70,7 @@ li a {
   text-decoration: none;
 }
 li a:hover {
-  background-color: #111;
+  background-color: #4d4d4d;
 }
 .active {
   width: 8%;
@@ -77,6 +87,12 @@ li a:hover {
 .icon {
   height: 100%;
   margin: 0;
-  transform: translateY(-35%);
+}
+.activated {
+  background-color: #4d4d4d;
+  transform: translateY(-37%);
+}
+.inactive {
+  transform: translateY(-37%);
 }
 </style>

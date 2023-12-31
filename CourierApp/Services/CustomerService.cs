@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace CourierAPI.Services;
 
-public class CustomerService : IUserService<RegisterDto, LoginDto>
+public class CustomerService : IUserService<RegisterDto, LoginDto, Customer>
 {
     private readonly UserManager<Customer> _userManager;
     private readonly IConfiguration _configuration;
@@ -259,6 +259,16 @@ public class CustomerService : IUserService<RegisterDto, LoginDto>
     }
 
     public Task<ApiUserResponse> DeleteUserAsync(string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<Customer> GetUsers()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<ApiUserResponse> UpdateUserAsync(string id, UpdateUserDto dto)
     {
         throw new NotImplementedException();
     }

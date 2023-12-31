@@ -4,6 +4,7 @@ using CourierAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourierAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231229123700_ChangedShipmentWeightToEnum")]
+    partial class ChangedShipmentWeightToEnum
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,53 +24,6 @@ namespace CourierAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("CourierAPI.Models.PriceList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<float>("HeavyWeight")
-                        .HasColumnType("real");
-
-                    b.Property<float>("LargeSize")
-                        .HasColumnType("real");
-
-                    b.Property<float>("LightWeight")
-                        .HasColumnType("real");
-
-                    b.Property<float>("MediumSize")
-                        .HasColumnType("real");
-
-                    b.Property<float>("MediumWeight")
-                        .HasColumnType("real");
-
-                    b.Property<float>("SmallSize")
-                        .HasColumnType("real");
-
-                    b.Property<float>("VerySmallSize")
-                        .HasColumnType("real");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PriceList");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            HeavyWeight = 10.99f,
-                            LargeSize = 20f,
-                            LightWeight = 3.99f,
-                            MediumSize = 15f,
-                            MediumWeight = 6.99f,
-                            SmallSize = 10f,
-                            VerySmallSize = 5f
-                        });
-                });
 
             modelBuilder.Entity("CourierAPI.Models.RouteElement", b =>
                 {
@@ -140,9 +96,6 @@ namespace CourierAPI.Migrations
                     b.Property<string>("PickupPostalCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<float?>("Price")
-                        .HasColumnType("real");
 
                     b.Property<string>("RecipientAddress")
                         .IsRequired()
@@ -224,19 +177,19 @@ namespace CourierAPI.Migrations
                         },
                         new
                         {
-                            Id = "975faf85-9220-4de1-920d-6c6f217cd1b9",
+                            Id = "e0df0b62-34d8-4949-a259-6737037dd527",
                             Name = "Courier",
                             NormalizedName = "COURIER"
                         },
                         new
                         {
-                            Id = "4d354eff-09fd-43fb-82b4-abadac76a89a",
+                            Id = "7d9a8680-469b-41d9-b818-d22ff2618736",
                             Name = "Dispatcher",
                             NormalizedName = "DISPATCHER"
                         },
                         new
                         {
-                            Id = "6dbbccba-b63e-4f07-8b5f-3d950507a517",
+                            Id = "e0f8edfa-cd8d-4ee9-87e4-c0e599653c26",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -338,13 +291,13 @@ namespace CourierAPI.Migrations
                         {
                             Id = "00000000-0000-0000-0000-000000000001",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "31feba7b-5d68-40dd-88cf-5935de73ef09",
+                            ConcurrencyStamp = "da816131-9f93-4211-98bc-080eddb336d9",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGGJnoWioeGlkSiQdLonqKLIc5HypgVyXBrqAcMhpYgPXXE6jy8MRRnYrbgvjl8Wng==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE1BCKoVtDy/pReXmSp//mxTd6ZH6BjSfa6cQcagmhMxoGkK5Hp7rJ50b1A5BoE59w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0fa251fc-15af-476c-883d-3af8c0b17790",
+                            SecurityStamp = "eff62c9b-0bc1-4e3a-9eff-ba365aa88ef3",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });

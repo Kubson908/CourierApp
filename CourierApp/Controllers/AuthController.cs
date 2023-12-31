@@ -1,4 +1,5 @@
 ﻿using CourierAPI.Helpers;
+using CourierAPI.Models;
 using CourierAPI.Models.Dto;
 using CourierAPI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -10,14 +11,14 @@ namespace CourierAPI.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private IUserService<AddCourierDto, LoginDto> _courierService;
-    private IUserService<AddDispatcherDto, LoginDto> _dispatcherService;
-    private IUserService<RegisterDto, LoginDto> _customerService;
+    private IUserService<AddCourierDto, LoginDto, Courier> _courierService;
+    private IUserService<AddDispatcherDto, LoginDto, Dispatcher> _dispatcherService;
+    private IUserService<RegisterDto, LoginDto, Customer> _customerService;
     private AdminService _adminService;
 
-    public AuthController(IUserService<AddCourierDto, LoginDto> courierService,
-        IUserService<AddDispatcherDto, LoginDto> dispatcherService,
-        IUserService<RegisterDto, LoginDto> customerService,
+    public AuthController(IUserService<AddCourierDto, LoginDto, Courier> courierService,
+        IUserService<AddDispatcherDto, LoginDto, Dispatcher> dispatcherService,
+        IUserService<RegisterDto, LoginDto, Customer> customerService,
         AdminService adminService)
     {
         _courierService = courierService;
@@ -68,7 +69,7 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
     {
         if (dto.Password == null || dto.ConfirmPassword == null || dto.Password != dto.ConfirmPassword)
-            return BadRequest("siema");
+            return BadRequest();
         // TODO: dodac reset hasla dla kuriera i dyspozytora
         var token = HttpContext.Request.Headers.Authorization.ToString().Replace(" ", "+");
         ApiUserResponse result = await _customerService.ResetPassword(token!, dto.Password!);

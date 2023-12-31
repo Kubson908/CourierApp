@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { authorized } from "../../main";
+import { authorized, router } from "../../main";
 import { useRoute } from "vue-router";
 import { AxiosResponse } from "axios";
 
@@ -36,6 +36,10 @@ const generateLabels = async () => {
     forceDownload(res, filename);
   }
 };
+
+const redirect = () => {
+  router.push("/");
+}
 </script>
 
 <template>
@@ -44,7 +48,7 @@ const generateLabels = async () => {
     <button class="submit pigment-green" @click="generateLabels">
       Pobierz etykietę
     </button>
-    <button class="submit">Strona główna</button>
+    <button class="submit" @click="redirect">Strona główna</button>
   </div>
 </template>
 

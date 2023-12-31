@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import { prefix } from "../../config";
-import { router } from "../../main";
+import { loading, router } from "../../main";
 
-const loading = ref<boolean>(true);
 const token = useRoute().query.token?.toString()!;
 
 onMounted(async () => {

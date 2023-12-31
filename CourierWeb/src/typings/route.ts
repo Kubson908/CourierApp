@@ -5,4 +5,5 @@ export type Route = {
   component: Component;
   meta: { roles: Array<string> | null };
   children?: Array<Route>;
+  beforeEnter?: (to: any, from: any) => void;
 };

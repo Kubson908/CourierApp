@@ -3,13 +3,13 @@ import { ref } from "vue";
 import axios from "axios";
 import { prefix } from "../../config";
 import { useRoute } from "vue-router";
+import { loading } from "../../main";
 
 const token = useRoute().query.token?.toString()!;
 
 const password = ref<string>("");
 const confirmPassword = ref<string>("");
 
-const loading = ref<boolean>(false);
 const errorMessage = ref<string>("");
 const passwordReset = ref<boolean>(false);
 // TODO: dodac rules do hasla

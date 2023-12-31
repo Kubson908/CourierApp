@@ -19,7 +19,7 @@ public class Shipment
     [Required]
     public Size Size { get; set; }
     [Required]
-    public float Weight { get; set; }
+    public Weight Weight { get; set; }
     [Required]
     public required string RecipientName { get; set; }
     [Required]
@@ -36,6 +36,7 @@ public class Shipment
     public DateTime? StoreDate { get; set; }
     public DateTime? DeliveryDate { get; set; }
     public string? AdditionalDetails { get; set; }
+    public float? Price { get; set; }
     public int DeliveryAttempts { get; set; } = 0;
 
     //Navigation properties
@@ -64,4 +65,11 @@ public enum Size
     Small,
     Medium,
     Large,
+}
+
+public enum Weight
+{
+    Light,
+    Medium,
+    Heavy
 }

@@ -1,23 +1,36 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from "vue";
-import { authorized } from "../../main";
+import { authorized, loading } from "../../main";
 import { UserCard, EditUser, AddUser } from ".";
+import { Courier } from "../../typings";
 
 const dispatchers = ref<any>(null);
+const couriers = ref<Array<Courier>>();
 
 const fetchData = async () => {
-  const getDispatchers = await authorized.get("/admin/get-dispatchers");
-  dispatchers.value = getDispatchers.data.map((dispatcher: any) => {
-    return {
-      id: dispatcher.id,
-      firstName: dispatcher.firstName,
-      lastName: dispatcher.lastName,
-      username: dispatcher.userName,
-      email: dispatcher.email,
-      phoneNumber: dispatcher.phoneNumber,
-      role: "Dispatcher",
-    };
-  });
+  loading.value = true;
+  try {
+    const getDispatchers = await authorized.get("/admin/get-dispatchers");
+    dispatchers.value = getDispatchers.data.map((dispatcher: any) => {
+      return {
+        id: dispatcher.id,
+        firstName: dispatcher.firstName,
+        lastName: dispatcher.lastName,
+        userName: dispatcher.userName,
+        email: dispatcher.email,
+        phoneNumber: dispatcher.phoneNumber,
+        role: "Dispatcher",
+      };
+    });
+    const getCouriers = await authorized.get("/admin/get-couriers");
+    couriers.value = getCouriers.data.map((courier: Courier) => {
+      courier.role = "Courier";
+      return courier;
+    });
+    loading.value = false;
+  } catch {
+    loading.value = false;
+  }
 };
 
 onBeforeMount(async () => {
@@ -30,40 +43,104 @@ const edit = (user: any) => {
   selectedUser.value = user;
   showEdit.value = true;
 };
-const showAdd = ref(false);
-const add = () => (showAdd.value = true);
+const showAddDispatcher = ref(false);
+const showAddCourier = ref(false);
 </script>
 
 <template>
-  <div id="adminDiv">
-    <h1 color="#ff0000">Dyspozytorzy</h1>
-    <UserCard
-      v-for="dispatcher in dispatchers"
-      :user="dispatcher"
-      @edit="edit(dispatcher)"
-    />
+  <div v-if="!loading">
+    <h1 class="pigment-green-text">Dyspozytorzy</h1>
+    <div class="adminDiv">
+      <UserCard
+        v-for="dispatcher in dispatchers"
+        :user="dispatcher"
+        @edit="edit(dispatcher)"
+      />
+      <button
+        class="addButton submit pigment-green"
+        @click="showAddDispatcher = true"
+      >
+        Dodaj
+      </button>
+    </div>
+
     <teleport to="body">
       <EditUser
         :user="selectedUser"
         v-if="showEdit"
         @closeModal="showEdit = false"
+        @fetchData="fetchData"
       />
       <AddUser
-        v-if="showAdd"
-        @closeModal="showAdd = false"
+        v-if="showAddDispatcher"
+        role="Dispatcher"
+        @closeModal="showAddDispatcher = false"
+        @fetchData="fetchData"
+      />
+    </teleport>
+    <hr class="divider" />
+    <h1 class="pigment-green-text">Kurierzy</h1>
+    <div class="adminDiv">
+      <UserCard
+        v-for="courier in couriers"
+        :user="courier"
+        @edit="edit(courier)"
+      />
+      <button
+        class="addButton submit pigment-green"
+        @click="showAddCourier = true"
+      >
+        Dodaj
+      </button>
+    </div>
+
+    <teleport to="body">
+      <EditUser
+        :user="selectedUser"
+        v-if="showEdit"
+        @closeModal="showEdit = false"
+        @fetchData="fetchData"
+      />
+      <AddUser
+        v-if="showAddCourier"
+        role="Courier"
+        @closeModal="showAddCourier = false"
         @fetchData="fetchData"
       />
     </teleport>
     <br />
-    <button id="addButton" @click="add">Dodaj</button>
+  </div>
+  <div v-else>
+    <img src="/src/assets/loading.gif" class="loading" />
   </div>
 </template>
 
 <style scoped>
-#adminDiv {
-  padding: 0 10%;
+.adminDiv {
+  color: black;
+  display: grid;
+  gap: 2vh;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  width: 70%;
+  margin: auto;
+  margin-top: 10px;
 }
-#addButton {
-  float: right;
+.addButton {
+  width: fit-content !important;
+  padding-right: 5%;
+  padding-left: 5%;
+  grid-column: span 4;
+  grid-row: span 1;
+  margin-right: 10px !important;
+  margin-left: auto !important;
+}
+.divider {
+  margin: 0 100px;
+}
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

@@ -85,9 +85,9 @@ builder.Services.AddAuthentication(auth =>
     };
 });
 
-builder.Services.AddScoped<IUserService<AddCourierDto, LoginDto>, CourierService>();
-builder.Services.AddScoped<IUserService<AddDispatcherDto, LoginDto>, DispatcherService>();
-builder.Services.AddScoped<IUserService<RegisterDto, LoginDto>, CustomerService>();
+builder.Services.AddScoped<IUserService<AddCourierDto, LoginDto, Courier>, CourierService>();
+builder.Services.AddScoped<IUserService<AddDispatcherDto, LoginDto, Dispatcher>, DispatcherService>();
+builder.Services.AddScoped<IUserService<RegisterDto, LoginDto, Customer>, CustomerService>();
 builder.Services.AddScoped<AdminService, AdminService>();
 
 builder.Services.AddSingleton<EmailService>();

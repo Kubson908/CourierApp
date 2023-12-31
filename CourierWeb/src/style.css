@@ -103,11 +103,17 @@ button:focus-visible {
   margin-top: 10px !important;
 }
 
+.mb-10 {
+  margin-bottom: 10px !important;
+}
+
 /* buttons */
 .submit {
   width: fit-content !important;
   margin: 2% auto auto auto;
   border-radius: 10px;
+  background-color: black;
+  color: white;
 }
 
 /* colors */
@@ -115,16 +121,19 @@ button:focus-visible {
   background-color: #15ab54;
 }
 .red {
-  background-color: red;
+  background-color: rgb(189, 0, 0);
 }
 .yellow {
   background-color: rgb(255, 217, 3);
+}
+.black {
+  background-color: rgb(24, 24, 24);
 }
 .pigment-green-text {
   color: #15ab54;
 }
 .red-text {
-  color: red;
+  color: rgb(189, 0, 0);
 }
 .yellow-text {
   color: rgb(255, 217, 3);

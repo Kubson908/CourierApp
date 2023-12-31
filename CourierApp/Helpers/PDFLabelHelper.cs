@@ -13,8 +13,6 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using BarcodeStandard;
-using CourierAPI.Models;
 using CourierAPI.Models.Dto;
 using PdfSharp.Drawing;
 using PdfSharp.Drawing.BarCodes;
@@ -37,7 +35,7 @@ public static class PDFLabelHelper
         XFont font = new("Verdana", 18, XFontStyleEx.Regular);
         foreach (LabelShipmentDto shipment in shipments)
         {
-            var barcodeText = "PC" + shipment.Id + "-" + (int)shipment.Size + "-" + shipment.Weight;
+            var barcodeText = "PC" + shipment.Id + "-" + (int)shipment.Size + "-" + (int)shipment.Weight;
             PdfPage page = document.AddPage();
             page.Size = PdfSharp.PageSize.A5;
 

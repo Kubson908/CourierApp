@@ -9,7 +9,7 @@ public class Shipment
     public string PickupCity { get; set; }
     public string PickupPostalCode { get; set; }
     public Size Size { get; set; }
-    public float Weight { get; set; }
+    public Weight Weight { get; set; }
     public string RecipientName { get; set; }
     public string RecipientPhoneNumber { get; set; }
     public string RecipientAddress { get; set; }
@@ -44,4 +44,11 @@ public enum Size
     Small,
     Medium,
     Large,
+}
+
+public enum Weight
+{
+    Light,
+    Medium,
+    Heavy
 }

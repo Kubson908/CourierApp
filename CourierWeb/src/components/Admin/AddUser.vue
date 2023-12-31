@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { loading, unauthorized } from "../../main";
+import { authorized } from "../../main";
 const emit = defineEmits(["closeModal", "fetchData"]);
 const close = () => {
   emit("closeModal");
 };
-const role = ref<string>("");
+const props = defineProps<{
+  role: string;
+}>();
 const firstName = ref<string>("");
 const lastName = ref<string>("");
 const userName = ref<string>("");
@@ -14,15 +16,25 @@ const password = ref<string>("");
 const confirmPassword = ref<string>("");
 const phoneNumber = ref<string>("");
 
+const passwordError = ref<boolean>(false);
+
+const loading = ref<boolean>(false);
+
+/*TODO: walidacja danych */
 const submit = async () => {
   // const valid = ((await data) as any).valid;
   // if (!valid) return;
-  if (password.value != confirmPassword.value) return;
+  if (password.value !== confirmPassword.value) {
+    passwordError.value = true;
+    return;
+  }
+  passwordError.value = false;
   try {
     loading.value = true;
     const url =
-      role.value == "Dispatcher" ? "/auth/add-dispatcher" : "/auth/add-courier";
-    await unauthorized.post(url, {
+      props.role == "Dispatcher" ? "/auth/add-dispatcher" : "/auth/add-courier";
+    console.log("test");
+    await authorized.post(url, {
       firstName: firstName.value,
       lastName: lastName.value,
       userName: userName.value,
@@ -42,94 +54,118 @@ const submit = async () => {
 </script>
 
 <template>
-  <div class="fog" @click.self="close">
+  <div class="fog">
     <div class="modal">
-      <form @submit.prevent="submit" class="add-user-form">
-        <select v-model="role" class="add-user-input">
+      <h2 class="pigment-green-text center">
+        {{ props.role == "Dispatcher" ? "Dodaj dyspozytora" : "Dodaj kuriera" }}
+      </h2>
+      <form @submit.prevent="submit" class="flex-col">
+        <!-- <select v-model="role" class="add-user-input">
           <option disabled value="">--Rola--</option>
           <option value="Dispatcher">Dyspozytor</option>
           <option value="Courier">Kurier</option>
-        </select>
+        </select> -->
         <input
-          class="add-user-input"
+          class="add-user-input center"
           type="text"
           placeholder="Imię"
           v-model="firstName"
         />
         <input
-          class="add-user-input"
+          class="add-user-input center"
           type="text"
           placeholder="Nazwisko"
           v-model="lastName"
         />
         <input
-          class="add-user-input"
+          class="add-user-input center"
           type="text"
           placeholder="Login"
           v-model="userName"
         />
         <input
-          class="add-user-input"
+          class="add-user-input center"
           type="text"
           placeholder="Email"
           v-model="email"
         />
         <input
-          class="add-user-input"
+          class="add-user-input center"
           type="password"
           placeholder="Hasło"
           v-model="password"
         />
         <input
-          class="add-user-input"
+          class="add-user-input center"
           type="password"
           placeholder="Powtórz hasło"
           v-model="confirmPassword"
         />
+        <span class="red-text center" v-if="passwordError">
+          Hasła nie są identyczne
+        </span>
         <input
-          class="add-user-input"
+          class="add-user-input center"
           type="text"
           placeholder="Telefon"
           v-model="phoneNumber"
         />
-        <input type="submit" value="Zapisz" />
+        <div class="center mt-10 mb-10">
+          <button class="submit center spacing" @click="close">Anuluj</button>
+          <button type="submit" class="submit center pigment-green spacing">
+            Zapisz
+          </button>
+        </div>
       </form>
     </div>
   </div>
 </template>
 
 <style scoped>
-.fog {
-  background-color: rgba(83, 83, 83, 0.789);
-  position: fixed;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
+.modal {
+  background-color: white;
+  width: 30vw;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  flex-direction: column;
+  display: flex;
+  max-height: 75vh;
+  overflow-y: auto;
 }
-.modal {
-  width: 40vw;
-  height: 40vh;
-  padding: 0 20px;
-  z-index: 1;
-  background: #1b1919;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
+.modal::-webkit-scrollbar {
+  width: 10px;
 }
+.modal::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: #bdbdbd;
+}
+.modal::-webkit-scrollbar-thumb {
+  background: #15ab54;
+  border-radius: 10px;
+}
+.modal::-webkit-scrollbar-thumb:hover {
+  background: #129448;
+}
+
 .add-user-form {
   width: 40%;
   height: 90%;
   padding: 1%;
 }
 .add-user-input {
-  height: 10%;
-  width: 100%;
-  margin: 1% 0;
+  border-radius: 10px;
+  height: 30px;
+  width: 90%;
+  margin-top: 1vh !important;
+  background-color: #f6f6f6;
+  border: solid 2px #e8e8e8;
+  color: black;
+}
+.spacing {
+  margin: 0 20px !important;
 }
 </style>

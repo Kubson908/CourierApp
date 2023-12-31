@@ -18,11 +18,9 @@ const signIn = async () => {
       login: login.value,
       password: password.value,
     });
-    console.log("test");
     localStorage.setItem("token", res.data.accessToken);
     if (remember_me.value) {
       localStorage.setItem("expireDate", res.data.expireDate);
-      console.log("coś");
     } else {
       let time = new Date(Date.now());
       time.setTime(time.getTime() + 2 * 60 * 60 * 1000);

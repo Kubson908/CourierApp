@@ -61,6 +61,6 @@ onBeforeMount(() => {
 .center {
   text-align: center;
   min-height: 94.5vh;
-  margin-top: 5.5vh;
+  margin-top: 5.5vh !important;
 }
 </style>

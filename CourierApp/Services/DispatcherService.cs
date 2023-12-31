@@ -1,5 +1,7 @@
-﻿using CourierAPI.Models;
+﻿using CourierAPI.Data;
+using CourierAPI.Models;
 using CourierAPI.Models.Dto;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,16 +11,23 @@ using System.Text.RegularExpressions;
 
 namespace CourierAPI.Services;
 
-public class DispatcherService : IUserService<AddDispatcherDto, LoginDto>
+public class DispatcherService : IUserService<AddDispatcherDto, LoginDto, Dispatcher>
 {
     private readonly UserManager<Dispatcher> _userManager;
     private readonly IConfiguration _configuration;
+    private ApplicationDbContext _context;
 
     public DispatcherService(UserManager<Dispatcher> userManager, 
-        IConfiguration configuration)
+        IConfiguration configuration, ApplicationDbContext context)
     {
         _userManager = userManager;
         _configuration = configuration;
+        _context = context;
+    }
+
+    public List<Dispatcher> GetUsers()
+    {
+        return _userManager.Users.ToList();
     }
 
     public async Task<ApiUserResponse> RegisterAsync(AddDispatcherDto dto)
@@ -129,9 +138,39 @@ public class DispatcherService : IUserService<AddDispatcherDto, LoginDto>
         };
     }
 
-    public Task<ApiUserResponse> DeleteUserAsync(string id)
+    public async Task<ApiUserResponse> DeleteUserAsync(string id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            Dispatcher? user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return new ApiUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "User not found",
+                };
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+                return new ApiUserResponse
+                {
+                    IsSuccess = true,
+                    Message = "User has been deleted",
+                };
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = "Cannot delete user",
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = ex.Message,
+                Exception = true,
+            };
+        }
     }
 
     public Task<ApiUserResponse> ConfirmEmail(string token)
@@ -152,5 +191,53 @@ public class DispatcherService : IUserService<AddDispatcherDto, LoginDto>
     public Task<ApiUserResponse> ResetPassword(string token, string newPassword)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<ApiUserResponse> UpdateUserAsync(string id, UpdateUserDto dto)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) 
+                return new ApiUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "User not found",
+                };
+            foreach (var prop in typeof(Dispatcher).GetProperties())
+            {
+                var fromProp = typeof(UpdateUserDto).GetProperty(prop.Name);
+                var toValue = fromProp != null ? fromProp.GetValue(dto, null) : null;
+                if (toValue != null)
+                {
+                    prop.SetValue(user, toValue, null);
+                    _context.Entry(user).Property(prop.Name).IsModified = true;
+                }
+            }
+            foreach (var prop in typeof(IdentityUser).GetProperties())
+            {
+                var fromProp = typeof(UpdateUserDto).GetProperty(prop.Name);
+                var toValue = fromProp != null ? fromProp.GetValue(dto, null) : null;
+                if (toValue != null)
+                {
+                    prop.SetValue(user, toValue, null);
+                    _context.Entry(user).Property(prop.Name).IsModified = true;
+                }
+            }
+            await _context.SaveChangesAsync();
+            return new ApiUserResponse
+            {
+                IsSuccess = true,
+                Message = "User updated",
+            };
+        } catch (Exception ex)
+        {
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = ex.Message,
+                Exception = true,
+            };
+        }
     }
 }

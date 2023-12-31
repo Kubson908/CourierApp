@@ -42,7 +42,7 @@
             <Label Grid.Row="2" Grid.Column="0" TextColor="White" Text="Telefon:" FontSize="20" Margin="0, 5" />
             <Label Grid.Row="2" Grid.Column="1" TextColor="White" Text="{Binding RouteElement.Shipment.RecipientPhoneNumber}" FontSize="20" Margin="0, 5" />
             <Label Grid.Row="3" Grid.Column="0" TextColor="White" Text="Waga:" FontSize="20" Margin="0, 35, 0 , 5" />
-            <Label Grid.Row="3" Grid.Column="1" TextColor="White" Text="{Binding RouteElement.Shipment.Weight, StringFormat='{0} kg'}" FontSize="20" Margin="0, 35, 0 , 5"  />
+            <Label Grid.Row="3" Grid.Column="1" TextColor="White" Text="{Binding Weight}" FontSize="20" Margin="0, 35, 0 , 5"  />
             <Label Grid.Row="4" Grid.Column="0" TextColor="White" Text="Rozmiar:" FontSize="20" Margin="0, 5" />
             <Label Grid.Row="4" Grid.Column="1" TextColor="White" Text="{Binding Size}" FontSize="20" Margin="0, 5" />
         </Grid>

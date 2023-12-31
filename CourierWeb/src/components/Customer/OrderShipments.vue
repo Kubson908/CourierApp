@@ -1,8 +1,27 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { Shipment } from "../../typings/shipment";
 import { SubmitOrder } from ".";
-import { authorized, router } from "../../main";
+import { authorized, priceList, router } from "../../main";
+
+const sizePrices = ref<Array<number>>();
+const weightPrices = ref<Array<number>>();
+
+onBeforeMount(async () => {
+  const res = await authorized.get("/shipment/get-price-list");
+  if (res.status == 200) priceList.value = res.data;
+  sizePrices.value = [
+    priceList.value!.verySmallSize,
+    priceList.value!.smallSize,
+    priceList.value!.mediumSize,
+    priceList.value!.largeSize,
+  ];
+  weightPrices.value = [
+    priceList.value!.lightWeight,
+    priceList.value!.mediumWeight,
+    priceList.value!.heavyWeight,
+  ];
+});
 
 let shipments: Array<Shipment> = new Array<Shipment>(1).fill({
   pickupAddress: "",
@@ -21,6 +40,7 @@ let shipments: Array<Shipment> = new Array<Shipment>(1).fill({
   additionalDetails: "",
   status: undefined,
   id: undefined,
+  price: undefined,
 });
 
 const activeShipment = ref<Shipment>(shipments[0]);
@@ -29,9 +49,32 @@ const pageCount = ref<number>(1);
 
 const activePage = ref<number>(1);
 
+const verifyShipment: () => boolean = () => {
+  const excludedFields: Array<string> = [
+    "id",
+    "pickupApartmentNumber",
+    "recipientApartmentNumber",
+    "status",
+    "price",
+    "additionalDetails",
+  ];
+  let shipment = shipments[shipments.length - 1];
+  let status: boolean = true;
+  Object.keys(shipment)
+    .filter((property) => !excludedFields.includes(property))
+    .forEach((property) => {
+      const value = shipment[property as keyof Shipment];
+      if (value == null || value == "") {
+        status = false;
+        return;
+      }
+    });
+  if (!status) return false;
+  return true;
+};
+
 const addToList: () => boolean = () => {
-  if (!activeShipment.value?.size || !activeShipment.value?.weight)
-    return false;
+  if (!verifyShipment()) return false;
   shipments.push({
     pickupAddress:
       activeShipment.value.pickupAddress != ""
@@ -61,9 +104,9 @@ const addToList: () => boolean = () => {
     status: undefined,
     id: undefined,
     weight: null,
+    price: undefined,
   });
   activeShipment.value = shipments[shipments.length - 1];
-  console.log(shipments);
   return true;
 };
 
@@ -73,11 +116,10 @@ const m = ref<number>(0);
 const l = ref<number>(0);
 const submitPage = ref<boolean>(false);
 const submitShipments = () => {
-  if (pageCount.value > shipments.length) {
-    if (!shipments[activePage.value - 1].size) return;
-  }
+  if (!verifyShipment()) return;
   shipments = shipments.map((x) => {
     x.size = parseInt(x.size!.toString(), 10);
+    x.weight = parseInt(x.weight!.toString(), 10);
     switch (x.size) {
       case 0:
         xs.value++;
@@ -94,7 +136,6 @@ const submitShipments = () => {
     }
     return x;
   });
-  console.log(xs, " ", s, " ", m, " ", l);
   submitPage.value = true;
 };
 
@@ -124,18 +165,38 @@ const submitOrder = async () => {
     console.log(error);
   }
 };
+
+const managePrice = () => {
+  if (!activeShipment.value.weight || !activeShipment.value.size) return;
+  activeShipment.value.price = parseFloat(
+    (
+      sizePrices.value![activeShipment.value.size] +
+      weightPrices.value![activeShipment.value.weight]
+    ).toFixed(2)
+  );
+};
+
+const removeShipment = () => {
+  let previous: number = activePage.value - 1;
+  if (activePage.value > 1) activePage.value--;
+  else activePage.value++;
+  activeShipment.value = shipments[activePage.value - 1];
+  shipments.splice(previous, 1);
+  pageCount.value--;
+}
 </script>
 
 <template>
   <div class="card" v-if="!submitPage">
-    <div v-if="pageCount > 1">
+    <div v-if="pageCount > 1" class="page-numbers">
       <label
-        class="page-label"
+        class="page-label pigment-green-text"
         v-for="i in pageCount"
         @click="changePage(i)"
         :class="i == activePage ? 'active-page' : 'page-label'"
         >{{ i }}</label
       >
+      <button class="right-corner" @click="removeShipment">X</button>
     </div>
     <div>
       <form class="flex-col">
@@ -144,6 +205,7 @@ const submitOrder = async () => {
           <tr>
             <td>
               <input
+                name="pickupAddress"
                 type="text"
                 v-model="activeShipment!.pickupAddress"
                 placeholder="Adres odbioru"
@@ -152,6 +214,7 @@ const submitOrder = async () => {
             </td>
             <td>
               <input
+                name=" pickupAppartmentNumber"
                 type="number"
                 v-model="activeShipment!.pickupApartmentNumber"
                 placeholder="Numer mieszkania"
@@ -162,6 +225,7 @@ const submitOrder = async () => {
           <tr>
             <td>
               <input
+                name="pickupCity"
                 type="text"
                 v-model="activeShipment!.pickupCity"
                 placeholder="Miejscowość"
@@ -170,6 +234,7 @@ const submitOrder = async () => {
             </td>
             <td>
               <input
+                name="pickupPostalCode"
                 type="text"
                 v-model="activeShipment!.pickupPostalCode"
                 placeholder="Kod pocztowy"
@@ -183,6 +248,7 @@ const submitOrder = async () => {
           <tr>
             <td>
               <input
+                name="recipientName"
                 type="text"
                 v-model="activeShipment!.recipientName"
                 placeholder="Odbiorca"
@@ -191,6 +257,7 @@ const submitOrder = async () => {
             </td>
             <td>
               <input
+                name="recipientPhoneNumber"
                 type="text"
                 v-model="activeShipment!.recipientPhoneNumber"
                 placeholder="Telefon"
@@ -201,6 +268,7 @@ const submitOrder = async () => {
           <tr>
             <td>
               <input
+                name="recipientAddress"
                 type="text"
                 v-model="activeShipment!.recipientAddress"
                 placeholder="Adres"
@@ -209,6 +277,7 @@ const submitOrder = async () => {
             </td>
             <td>
               <input
+                name="recipientApartmentNumber"
                 type="number"
                 v-model="activeShipment!.recipientApartmentNumber"
                 placeholder="Numer mieszkania"
@@ -219,6 +288,7 @@ const submitOrder = async () => {
           <tr>
             <td>
               <input
+                name="recipientCity"
                 type="text"
                 v-model="activeShipment!.recipientCity"
                 placeholder="Miejscowość"
@@ -227,6 +297,7 @@ const submitOrder = async () => {
             </td>
             <td>
               <input
+                name="recipientPostalCode"
                 type="text"
                 v-model="activeShipment!.recipientPostalCode"
                 placeholder="Kod pocztowy"
@@ -237,6 +308,7 @@ const submitOrder = async () => {
           <tr>
             <td colspan="2">
               <input
+                name="recipientEmail"
                 type="text"
                 v-model="activeShipment!.recipientEmail"
                 placeholder="Email"
@@ -248,8 +320,10 @@ const submitOrder = async () => {
           <tr>
             <td>
               <select
+                name="size"
                 v-model="activeShipment!.size"
                 required
+                @change="managePrice"
                 :class="activeShipment!.size == null ? 'gray' : 'black'"
               >
                 <option value="null" selected hidden>Rozmiar przesyłki</option>
@@ -260,24 +334,40 @@ const submitOrder = async () => {
               </select>
             </td>
             <td>
-              <input
-                type="number"
+              <select
+                name="weight"
                 v-model="activeShipment!.weight"
-                placeholder="Waga przesyłki"
-                class="rounded-input"
-              />
+                required
+                @change="managePrice"
+                :class="activeShipment!.weight == null ? 'gray' : 'black'"
+              >
+                <option value="null" selected hidden>Waga</option>
+                <option value="0" class="option">Lekka (do 5 kg)</option>
+                <option value="1" class="option">Średnia (10 - 15 kg)</option>
+                <option value="2" class="option">Ciężka (powyżej 15 kg)</option>
+              </select>
             </td>
           </tr>
         </table>
 
         <textarea
+          name="additionalDetails"
           type="text"
           v-model="activeShipment!.additionalDetails"
           placeholder="Dodatkowe informacje"
           class="textarea"
         ></textarea>
       </form>
-      <button @click="addShipment">+</button>
+      <div>
+        <span v-if="activeShipment!.price" class="black-text left">
+          Cena przesyłki: {{ activeShipment!.price }} zł
+        </span>
+        <span class="black-text right" v-if="shipments[0].price"> Suma: {{
+          (shipments.map((s) => s.price).filter((p) => p != undefined) as Array<number>).reduce((a, b) => a + b, 0)
+        }} zł</span>
+      </div>
+      <br />
+      <button @click="addShipment">Dodaj</button>
       <button class="submit pigment-green" @click="submitShipments">
         Zatwierdź
       </button>
@@ -309,6 +399,22 @@ const submitOrder = async () => {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
   flex-direction: column;
   display: flex;
+  max-height: 75vh;
+  overflow-y: auto;
+}
+.card::-webkit-scrollbar {
+  width: 10px;
+}
+.card::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: #BDBDBD;
+}
+.card::-webkit-scrollbar-thumb {
+  background: #15AB54;
+  border-radius: 10px;
+}
+.card::-webkit-scrollbar-thumb:hover {
+  background: #129448;
 }
 
 .textarea {
@@ -317,21 +423,50 @@ const submitOrder = async () => {
   background-color: #f6f6f6;
   border: solid 2px #e8e8e8;
   height: 8vh;
-  margin-top: 3vh;
+  margin-top: 1vh;
   font-family: Arial, Helvetica, sans-serif;
   color: black;
 }
 .textarea::placeholder {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.page-numbers {
+  width: 90%;
+  margin: auto;
+}
+
+.right-corner {
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 10px !important;
+  width: fit-content !important;
+}
+
 .page-label {
-  background-color: red;
+  font-weight:bold;
+  padding: 3px 10px;
+  border-radius: 10%;
+  background-color: #e9e9e9;
   float: left;
   margin: 0 5px;
   cursor: pointer;
 }
 .active-page {
-  background-color: green;
+  color: white;
+  padding: 3px 10px;
+  background-color: #848C8E;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+}
+.page-label:hover {
+  scale: 1.1;
+}
+.page-label:active {
+  scale: 1;
+}
+.active-page:hover {
+  scale: 1;
 }
 
 .rounded-input {
@@ -358,5 +493,15 @@ select {
   background-color: #f6f6f6;
   border: solid 2px #e8e8e8;
   color: black;
+}
+
+.left {
+  margin-left: 15px;
+  float: left;
+}
+
+.right {
+  margin-right: 15px;
+  float: right;
 }
 </style>

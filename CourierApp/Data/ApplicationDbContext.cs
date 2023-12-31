@@ -12,6 +12,7 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Shipment> Shipments { get; set; }
     public DbSet<RouteElement> RouteElements { get; set; }
+    public DbSet<PriceList> PriceList { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -32,6 +33,7 @@ public class ApplicationDbContext : IdentityDbContext
             Id = "00000000-0000-0000-0000-000000000001",
             UserName = "admin",
             NormalizedUserName = "ADMIN",
+            EmailConfirmed = true,
         };
 
         appUser.PasswordHash = new PasswordHasher<IdentityUser>().HashPassword(appUser, "Admin1234_?");
@@ -59,6 +61,18 @@ public class ApplicationDbContext : IdentityDbContext
         {
             Name = "Customer",
             NormalizedName = "CUSTOMER",
+        });
+
+        builder.Entity<PriceList>().HasData(new PriceList
+        {
+            Id = 1,
+            VerySmallSize = 5,
+            SmallSize = 10,
+            MediumSize = 15,
+            LargeSize = 20,
+            LightWeight = 3.99f,
+            MediumWeight = 6.99f,
+            HeavyWeight = 10.99f,
         });
 
         builder.Entity<Courier>(entity => { entity.ToTable("Couriers"); });

@@ -4,6 +4,7 @@ using CourierAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourierAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231229131315_AddedPriceListTable")]
+    partial class AddedPriceListTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,19 +227,19 @@ namespace CourierAPI.Migrations
                         },
                         new
                         {
-                            Id = "975faf85-9220-4de1-920d-6c6f217cd1b9",
+                            Id = "3deb5a7f-6e42-4104-89ff-98f50f48c2d6",
                             Name = "Courier",
                             NormalizedName = "COURIER"
                         },
                         new
                         {
-                            Id = "4d354eff-09fd-43fb-82b4-abadac76a89a",
+                            Id = "68582efe-8d6d-4572-8bf0-d2ae65466fb0",
                             Name = "Dispatcher",
                             NormalizedName = "DISPATCHER"
                         },
                         new
                         {
-                            Id = "6dbbccba-b63e-4f07-8b5f-3d950507a517",
+                            Id = "2d18dd5a-1509-4766-b686-3fda129c82e3",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -338,13 +341,13 @@ namespace CourierAPI.Migrations
                         {
                             Id = "00000000-0000-0000-0000-000000000001",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "31feba7b-5d68-40dd-88cf-5935de73ef09",
+                            ConcurrencyStamp = "a82c2f18-e954-4441-a321-72d52af9e740",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGGJnoWioeGlkSiQdLonqKLIc5HypgVyXBrqAcMhpYgPXXE6jy8MRRnYrbgvjl8Wng==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJhVtrwhqAR3sEroX17rHmVMtIHrWP1gzBMhqM090GGY67ABrcanrblJYjQpM66q0Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "0fa251fc-15af-476c-883d-3af8c0b17790",
+                            SecurityStamp = "c1b2a347-1b51-4b2d-9fdb-db9a7873ea56",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });

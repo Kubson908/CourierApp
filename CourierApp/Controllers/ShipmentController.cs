@@ -31,7 +31,7 @@ public class ShipmentController : ControllerBase
     [HttpPost("register-shipments")]
     public async Task<IActionResult> RegisterShipments([FromBody] RegisterShipmentsDto dto)
     {
-        
+        PriceListHelper.PriceList ??= await _context.PriceList.FirstAsync();
         if (dto.Shipments.Count() == 0 || dto.Shipments is null)
         {
             return BadRequest();
@@ -42,6 +42,9 @@ public class ShipmentController : ControllerBase
         {
             foreach (Shipment shipment in dto.Shipments)
             {
+                var size = PriceListHelper.PriceList?.GetType().GetProperty(Enum.GetName(shipment.Size)! + "Size")?.GetValue(PriceListHelper.PriceList, null);
+                var weight = PriceListHelper.PriceList?.GetType().GetProperty(Enum.GetName(shipment.Weight)! + "Weight")?.GetValue(PriceListHelper.PriceList, null);
+                shipment.Price = (float)size! + (float)weight!;
                 shipment.CustomerId = id;
                 await _context.Shipments.AddAsync(shipment);
             }
@@ -267,5 +270,12 @@ public class ShipmentController : ControllerBase
         }
         string Filename = "Label_" + idList[0] + ".pdf";
         return File(response, "application/pdf", Filename);
+    }
+
+    [HttpGet("get-price-list")]
+    public async Task<IActionResult> GetPriceList()
+    {
+        PriceListHelper.PriceList ??= await _context.PriceList.FirstAsync();
+        return Ok(PriceListHelper.PriceList);
     }
 }

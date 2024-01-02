@@ -63,7 +63,6 @@ const deleteWorker = async () => {
     //TODO: mozna zrobic snackbar z komunikatem o bledzie
   }
 };
-//TODO: dodac nazwy przed polami bo nie wiadomo ktore jest od czego
 </script>
 
 <template>

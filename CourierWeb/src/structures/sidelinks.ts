@@ -7,6 +7,11 @@ export const sidelinks: {
       title: "Pracownicy",
       icon: "/src/assets/people.svg",
     },
+    {
+      link: "/price-list",
+      title: "Cennik",
+      icon: "/src/assets/package.svg",
+    },
   ],
   dispatcher: [
     { link: "/shipments", title: "Przesyłki", icon: "/src/assets/package.svg" },

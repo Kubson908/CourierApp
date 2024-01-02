@@ -1,4 +1,5 @@
 ﻿using CourierAPI.Data;
+using CourierAPI.Helpers;
 using CourierAPI.Models;
 using CourierAPI.Models.Dto;
 using CourierAPI.Services;
@@ -105,7 +106,7 @@ public class AdminController : ControllerBase
         return BadRequest(result);
     }
 
-    [HttpPost("update-price-list")]
+    [HttpPatch("update-price-list")]
     public async Task<IActionResult> UpdatePriceList([FromBody] PriceList newPriceList)
     {
         var priceList = await _context.PriceList.FirstAsync();
@@ -116,6 +117,7 @@ public class AdminController : ControllerBase
         priceList.LightWeight = newPriceList.LightWeight;
         priceList.MediumWeight = priceList.MediumWeight;
         priceList.HeavyWeight = priceList.HeavyWeight;
+        PriceListHelper.PriceList = newPriceList;
         await _context.SaveChangesAsync();
         return Ok(priceList);
     }

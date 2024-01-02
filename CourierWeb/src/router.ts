@@ -1,5 +1,5 @@
 import { Route } from "./typings";
-import { AdminPage } from "./components/Admin";
+import { AdminPage, PriceList } from "./components/Admin";
 import { HomePage } from "./components";
 import {
   LoginForm,
@@ -24,7 +24,16 @@ export const routes: Array<Route> = [
       }
     },
   },
-  { path: "/administration", component: AdminPage, meta: { roles: ["Admin"] } },
+  {
+    path: "/administration",
+    component: AdminPage,
+    meta: { roles: ["Admin"] },
+  },
+  {
+    path: "/price-list",
+    component: PriceList,
+    meta: { roles: ["Admin"] },
+  },
   { path: "/login", component: LoginForm, meta: { roles: null } },
   { path: "/register", component: RegisterForm, meta: { roles: null } },
   {

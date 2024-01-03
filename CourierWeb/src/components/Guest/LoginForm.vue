@@ -5,7 +5,7 @@ import { router, unauthorized, user, loading } from "../../main";
 
 const login = ref("");
 const password = ref("");
-const remember_me = ref(false);
+const rememberMe = ref(false);
 
 onBeforeMount(() => {
   if (user.isLoggedIn) router.push("/");
@@ -19,12 +19,14 @@ const signIn = async () => {
       password: password.value,
     });
     localStorage.setItem("token", res.data.accessToken);
-    if (remember_me.value) {
+    if (rememberMe.value) {
+      localStorage.setItem("rememberMe", "true");
       localStorage.setItem("expireDate", res.data.expireDate);
     } else {
       let time = new Date(Date.now());
       time.setTime(time.getTime() + 2 * 60 * 60 * 1000);
       localStorage.setItem("expireDate", time.toString());
+      localStorage.setItem("rememberMe", "false");
     }
     localStorage.setItem("user", res.data.user);
     localStorage.setItem("roles", JSON.stringify(res.data.roles));
@@ -78,7 +80,7 @@ const back = () => {
           type="password"
         />
         <div>
-          <input id="remember-me" v-model="remember_me" type="checkbox" />
+          <input id="remember-me" v-model="rememberMe" type="checkbox" />
           <label class="black-text" for="rememberMe">Zapamiętaj mnie</label>
         </div>
 

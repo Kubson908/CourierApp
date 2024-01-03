@@ -4,6 +4,7 @@ using CourierAPI.Models.Dto;
 using CourierAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CourierAPI.Controllers;
 
@@ -60,6 +61,9 @@ public class AuthController : ControllerBase
     [HttpGet("reset-password-email")]
     public async Task<IActionResult> SendResetPasswordLink([FromQuery] string email)
     {
+        ApiUserResponse dispatcherCheck = await _dispatcherService.SendResetPasswordLinkAsync(email);
+        if (dispatcherCheck.IsSuccess)
+            return StatusCode(StatusCodes.Status423Locked, dispatcherCheck);
         ApiUserResponse res = await _customerService.SendResetPasswordLinkAsync(email);
         if (res.IsSuccess) return Ok(res);
         return BadRequest(res);
@@ -146,5 +150,42 @@ public class AuthController : ControllerBase
         var result = await _dispatcherService.RegisterAsync(dto);
         if (result.IsSuccess) return Ok(result);
         return BadRequest(result);
+    }
+
+    [HttpGet("refresh-token")]
+    public async Task<IActionResult> RefreshToken()
+    {
+        string id = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        string role = HttpContext.User.FindFirstValue(ClaimTypes.Role)!;
+        ApiUserResponse response;
+        switch (role)
+        {
+            case "Dispatcher":
+                response = await _dispatcherService.RefreshToken(id);
+                break;
+
+            case "Customer":
+                response = await _customerService.RefreshToken(id); 
+                break;
+
+            case "Courier":
+                response = await _courierService.RefreshToken(id);
+                break;
+
+            case "Admin":
+                response = await _adminService.RefreshToken(id);
+                break;
+
+            default:
+                response = new ApiUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Role does not exist",
+                };
+                break;
+        }
+
+        if (response.IsSuccess) return Ok(response);
+        return BadRequest(response);
     }
 }

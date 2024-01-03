@@ -105,9 +105,24 @@ public class CourierService : IUserService<AddCourierDto, LoginDto, Courier>
                 }
             };
 
+        ApiUserResponse response = await GenerateToken(user);
+
+        var path = Path.Combine(_environment.ContentRootPath, "StaticFiles", user.Id + ".png");
+
+        if (File.Exists(path))
+        {
+            var imageBytes = await File.ReadAllBytesAsync(path);
+            response.Image = Convert.ToBase64String(imageBytes);
+        }
+
+        return response;
+    }
+
+    private async Task<ApiUserResponse> GenerateToken(Courier user)
+    {
         var claims = new[]
         {
-            new Claim("Login", dto.Login),
+            new Claim("Login", user.Email!),
             new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim(ClaimTypes.Role, "Courier")
         };
@@ -133,19 +148,8 @@ public class CourierService : IUserService<AddCourierDto, LoginDto, Courier>
             Email = user.Email,
             Roles = await _userManager.GetRolesAsync(user)
         };
-
-        var path = Path.Combine(_environment.ContentRootPath, "StaticFiles", user.Id + ".png");
-
-        if (File.Exists(path))
-        {
-            var imageBytes = await File.ReadAllBytesAsync(path);
-            response.Image = Convert.ToBase64String(imageBytes);
-        }
-
         return response;
     }
-
-    
     
     public async Task<ApiUserResponse> DeleteUserAsync(string id)
     {
@@ -247,5 +251,18 @@ public class CourierService : IUserService<AddCourierDto, LoginDto, Courier>
                 Exception = true,
             };
         }
+    }
+
+    public async Task<ApiUserResponse> RefreshToken(string id)
+    {
+        Courier? user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = "User not found",
+            };
+        ApiUserResponse response = await GenerateToken(user!);
+        return response;
     }
 }

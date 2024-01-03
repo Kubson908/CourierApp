@@ -81,4 +81,18 @@ public class AdminService
             ExpireDate = token.ValidTo,
         };
     }
+
+    public async Task<ApiUserResponse> RefreshToken(string id)
+    {
+        IdentityUser? user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = "User not found",
+            };
+        ApiUserResponse response = GenerateToken(user!.UserName!, user.Id);
+        return response;
+    }
+
 }

@@ -166,27 +166,6 @@ const addEventListeners = (map: Map, shipments: Array<Shipment>) => {
               ? shipment!.pickupPostalCode
               : shipment!.recipientPostalCode,
         });
-        // titleClass.value =
-        //   shipment?.status == 0 ? "gray-text" : "pigment-green-text";
-        // title.value = shipment?.status == 0 ? "Odbiór" : "Dostawa";
-        // address.value = // TODO: DOROBIĆ OPCJE WYŚWIETLENIA POPUPU DLA KILKU PACZEK W TEJ SAMEJ LOKALIZACJI
-        //   shipment?.status == 0
-        //     ? shipment?.pickupAddress +
-        //       (shipment?.pickupApartmentNumber
-        //         ? "/" + shipment?.pickupApartmentNumber
-        //         : "")
-        //     : shipment?.recipientAddress +
-        //       (shipment?.recipientApartmentNumber
-        //         ? "/" + shipment?.recipientApartmentNumber
-        //         : "");
-        // city.value =
-        //   shipment?.status == 0
-        //     ? shipment?.pickupCity
-        //     : shipment?.recipientCity;
-        // postalCode.value =
-        //   shipment?.status == 0
-        //     ? shipment?.pickupPostalCode
-        //     : shipment?.recipientPostalCode;
         popup.setPosition(coordinates);
       }
     });

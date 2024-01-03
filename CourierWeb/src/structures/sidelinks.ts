@@ -10,7 +10,7 @@ export const sidelinks: {
     {
       link: "/price-list",
       title: "Cennik",
-      icon: "/src/assets/package.svg",
+      icon: "/src/assets/price-list.svg",
     },
   ],
   dispatcher: [

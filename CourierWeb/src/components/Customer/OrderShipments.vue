@@ -141,8 +141,6 @@ const submitShipments = () => {
 
 const addShipment = () => {
   if (!addToList()) return;
-  pageCount.value++;
-  activePage.value = pageCount.value;
 };
 
 const changePage = (n: number) => {
@@ -196,7 +194,9 @@ const removeShipment = () => {
         :class="i == activePage ? 'active-page' : 'page-label'"
         >{{ i }}</label
       >
-      <button class="right-corner" @click="removeShipment">X</button>
+      <button class="right-corner submit" @click="removeShipment">
+        <img src="/src/assets/delete.svg" :width="20" />
+      </button>
     </div>
     <div>
       <form class="flex-col">
@@ -363,7 +363,7 @@ const removeShipment = () => {
           Cena przesyłki: {{ activeShipment!.price }} zł
         </span>
         <span class="black-text right" v-if="shipments[0].price"> Suma: {{
-          (shipments.map((s) => s.price).filter((p) => p != undefined) as Array<number>).reduce((a, b) => a + b, 0)
+          (shipments.map((s) => s.price).filter((p) => p != undefined) as Array<number>).reduce((a, b) => a + b, 0).toString().substring(0, 6)
         }} zł</span>
       </div>
       <br />
@@ -440,8 +440,10 @@ const removeShipment = () => {
   position: fixed;
   top: 0;
   right: 0;
+  height: 40px;
+  width: 40px !important;
   margin: 10px !important;
-  width: fit-content !important;
+  padding: 7px !important;
 }
 
 .page-label {
@@ -450,7 +452,7 @@ const removeShipment = () => {
   border-radius: 10%;
   background-color: #e9e9e9;
   float: left;
-  margin: 0 5px;
+  margin: 5px 5px;
   cursor: pointer;
 }
 .active-page {

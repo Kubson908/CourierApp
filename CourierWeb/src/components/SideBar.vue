@@ -55,6 +55,7 @@ ul {
   transition: width 0.2s;
   font-size: 2vh;
 }
+
 li {
   height: 5.5vh;
 }

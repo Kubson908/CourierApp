@@ -7,7 +7,7 @@ import { manageCoordinates } from "../../geocoding";
 import { Courier, LocalCoords } from "../../typings";
 import { route, removeFeatures } from "./map";
 
-const showMap = ref<boolean>(false);
+const showMap = ref<boolean>(true);
 const shipments = ref<Array<Shipment>>([]);
 const localCoords = ref<Array<LocalCoords>>([]);
 const couriers = ref<Array<Courier>>();
@@ -106,20 +106,43 @@ const submit = async () => {
 </script>
 
 <template>
-  <div>
-    <h1 class="pigment-green-text">Przesyłki do przypisania</h1>
-    <button @click="showMap = true" v-if="!showMap">Widok mapy</button>
-    <button @click="routesClearConfirmation" v-else>Widok listy</button>
-    <select
-      v-model="selectedCourier"
-      :class="selectedCourier == null ? 'gray' : 'white'"
-    >
-      <option value="null" selected hidden>Wybierz kuriera</option>
-      <option v-for="courier in couriers" :key="courier.id" :value="courier">
-        {{ courier.firstName + " " + courier.lastName }}
-      </option>
-    </select>
-    <input type="date" v-model="selectedDate" @input="validateDate" />
+  <div class="card">
+    <div class="vh20">
+      <h1 class="pigment-green-text">Przesyłki do przypisania</h1>
+      <button
+        @click="showMap = true"
+        v-if="!showMap"
+        class="pigment-green submit const-width"
+      >
+        Widok mapy
+      </button>
+      <button
+        @click="routesClearConfirmation"
+        v-else
+        class="pigment-green submit const-width"
+      >
+        Widok listy
+      </button>
+      <select
+        v-model="selectedCourier"
+        :class="
+          selectedCourier == null ? 'gray rounded-input' : 'white rounded-input'
+        "
+        style="height: 34px"
+      >
+        <option value="null" selected hidden>Wybierz kuriera</option>
+        <option v-for="courier in couriers" :key="courier.id" :value="courier">
+          {{ courier.firstName + " " + courier.lastName }}
+        </option>
+      </select>
+      <input
+        type="date"
+        v-model="selectedDate"
+        @input="validateDate"
+        class="rounded-input"
+        onkeydown="return false"
+      />
+    </div>
     <div class="shipments-list" v-if="!showMap">
       <div v-for="shipment in shipments">
         <div class="list-element">
@@ -133,10 +156,10 @@ const submit = async () => {
             shipment.status == 0 ? shipment.pickupCity : shipment.recipientCity
           }}
         </div>
-        <hr />
+        <hr v-if="shipments[shipments.length - 1] != shipment" />
       </div>
     </div>
-    <div v-if="showMap">
+    <div v-else class="map-container">
       <MapView
         @closeMap="showMap = false"
         :localCoords="localCoords"
@@ -155,16 +178,67 @@ const submit = async () => {
 </template>
 
 <style scoped>
+.map-container {
+  height: 64vh;
+}
+.vh20 {
+  height: 20vh;
+  margin: 0 !important;
+}
+.card {
+  background-color: white;
+  width: 60%;
+  height: fit-content;
+  margin-top: 12vh;
+  margin-bottom: 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  padding: 0 !important;
+}
 .shipments-list {
   color: black;
+  margin: 0 auto;
   width: 90%;
-  margin: auto;
+  height: 63vh;
   margin-top: 10px;
+  overflow-y: auto;
 }
-
+.shipments-list::-webkit-scrollbar {
+  width: 10px;
+}
+.shipments-list::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: #bdbdbd;
+}
+.shipments-list::-webkit-scrollbar-thumb {
+  background: #15ab54;
+  border-radius: 10px;
+}
+.shipments-list::-webkit-scrollbar-thumb:hover {
+  background: #129448;
+}
 .list-element {
   width: 20vw;
   margin: auto;
-  text-align: start;
+}
+.const-width {
+  width: 20% !important;
+  margin: 10px 5px 10px 5px !important;
+}
+.rounded-input {
+  border-radius: 10px;
+  height: 30px;
+  width: 20%;
+  margin: 5px;
+  background-color: #f6f6f6;
+  border: solid 2px #e8e8e8;
+  color: black;
+  text-align: center;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  width: 100%;
+  position: absolute;
+  padding-left: 11%;
 }
 </style>

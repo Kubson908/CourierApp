@@ -38,7 +38,12 @@ const sendEmail = async () => {
     });
     emailSent.value = true;
   } catch (error: any) {
-    errorMessage.value = "Nie znaleziono użytkownika";
+    if (error.request.status == 423) {
+      errorMessage.value =
+        "Aby zmienić hasło do konta pracownika skontaktuj się z administratorem";
+    } else {
+      errorMessage.value = "Nie znaleziono użytkownika";
+    }
     console.log(error);
     loading.value = false;
   }

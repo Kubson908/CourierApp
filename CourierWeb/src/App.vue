@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import { onBeforeMount } from "vue";
 import { NavBar, SideBar, LoadingPage } from "./components";
-import { user, loading } from "./main";
+import { user, loading, authorized } from "./main";
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
+  if (!localStorage.getItem("expireDate")) return;
   const date = Date.parse(localStorage.getItem("expireDate") as string);
-  if (date < Date.now()) {
+  if (date && date < Date.now()) {
     localStorage.clear();
     user.name = "Niezalogowany";
     user.isLoggedIn = false;
     user.roles = [];
+  } else if (localStorage.getItem("rememberMe") == "true") {
+    const res = await authorized.get("/auth/refresh-token");
+    localStorage.setItem("token", res.data.accessToken);
+    localStorage.setItem("expireDate", res.data.expireDate);
   }
 });
 </script>

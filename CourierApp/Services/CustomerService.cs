@@ -272,4 +272,17 @@ public class CustomerService : IUserService<RegisterDto, LoginDto, Customer>
     {
         throw new NotImplementedException();
     }
+
+    public async Task<ApiUserResponse> RefreshToken(string id)
+    {
+        Customer? user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = "User not found",
+            };
+        ApiUserResponse response = GenerateToken(user!.UserName!, user.Id);
+        return response;
+    }
 }

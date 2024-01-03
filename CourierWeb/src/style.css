@@ -47,7 +47,7 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: #ffffff;
 }
 button:focus,
 button:focus-visible {
@@ -152,4 +152,22 @@ button:focus-visible {
 
 .gray-placeholder::-ms-input-placeholder {
   color: #bdbdbd;
+}
+
+/* OpenLayers map buttons */
+.ol-full-screen-false,
+.ol-full-screen-true,
+.ol-zoom-in,
+.ol-zoom-out {
+  width: 30px !important;
+  height: 30px !important;
+  background-color: black !important;
+  color: white !important;
+  border-radius: 10% !important;
+  justify-content: center !important;
+  align-items: center !important;
+  display: flex !important;
+  font-size: 20px !important;
+  line-height: 20px !important;
+  text-align: center !important;
 }

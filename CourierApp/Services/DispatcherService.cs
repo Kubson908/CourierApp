@@ -183,9 +183,20 @@ public class DispatcherService : IUserService<AddDispatcherDto, LoginDto, Dispat
         throw new NotImplementedException();
     }
 
-    public Task<ApiUserResponse> SendResetPasswordLinkAsync(string email)
+    public async Task<ApiUserResponse> SendResetPasswordLinkAsync(string email)
     {
-        throw new NotImplementedException();
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user != null)
+            return new ApiUserResponse
+            {
+                IsSuccess = true,
+                Message = "The user with this email is the dispatcher",
+            };
+        return new ApiUserResponse
+        {
+            IsSuccess = false,
+            Message = "Dispatcher with this email does not exist",
+        };
     }
 
     public Task<ApiUserResponse> ResetPassword(string token, string newPassword)
@@ -239,5 +250,18 @@ public class DispatcherService : IUserService<AddDispatcherDto, LoginDto, Dispat
                 Exception = true,
             };
         }
+    }
+
+    public async Task<ApiUserResponse> RefreshToken(string id)
+    {
+        Dispatcher? user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = "User not found",
+            };
+        ApiUserResponse response = GenerateToken(user.UserName!, user.Id);
+        return response;
     }
 }

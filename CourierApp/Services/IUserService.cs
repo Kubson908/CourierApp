@@ -13,5 +13,6 @@ namespace CourierAPI.Services
         Task<ApiUserResponse> ResetPassword(string token, string newPassword);
         List<U> GetUsers();
         Task<ApiUserResponse> UpdateUserAsync(string id, UpdateUserDto dto);
+        Task<ApiUserResponse> RefreshToken(string id);
     }
 }

@@ -132,8 +132,8 @@ const emit = defineEmits(["submit"]);
 .map {
   height: 100%;
   width: 100%;
-  margin: auto;
-  margin-top: 0;
+  border-radius: 12px;
+  overflow: hidden;
 }
 .map:fullscreen,
 .map:-webkit-full-screen {
@@ -151,10 +151,10 @@ const emit = defineEmits(["submit"]);
   padding: 0;
 }
 #fullscreen {
-  height: 80vh;
-  width: 80vw;
-  margin: auto;
-  padding: 0;
+  height: 64vh;
+  margin: 0 !;
+  padding: 0 !;
+  border-radius: 30px;
 }
 #drop-container {
   display: flex;
@@ -214,10 +214,22 @@ const emit = defineEmits(["submit"]);
 #popup-closer {
   text-decoration: none;
   position: absolute;
-  top: 2px;
-  right: 8px;
+  padding: 0 !important;
+  top: 0;
+  right: 0;
+  width: 30px !important;
+  height: 30px !important;
+  background-color: black !important;
+  color: white !important;
+  border-radius: 20% !important;
+  justify-content: center !important;
+  align-items: center !important;
+  display: flex !important;
+  font-size: 20px !important;
+  line-height: 20px !important;
+  text-align: center !important;
 }
-#popup-closer:after {
+#popup-closer::after {
   content: "✖";
 }
 .popup-img {

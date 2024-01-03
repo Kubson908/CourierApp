@@ -40,12 +40,20 @@ public class ShipmentController : ControllerBase
         List<int> ids = new();
         try
         {
+            Order order = new Order
+            {
+                OrderDate = DateTime.Now,
+                CustomerId = id,
+            };
+            await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
             foreach (Shipment shipment in dto.Shipments)
             {
                 var size = PriceListHelper.PriceList?.GetType().GetProperty(Enum.GetName(shipment.Size)! + "Size")?.GetValue(PriceListHelper.PriceList, null);
                 var weight = PriceListHelper.PriceList?.GetType().GetProperty(Enum.GetName(shipment.Weight)! + "Weight")?.GetValue(PriceListHelper.PriceList, null);
                 shipment.Price = (float)size! + (float)weight!;
                 shipment.CustomerId = id;
+                shipment.OrderId = order.Id;
                 await _context.Shipments.AddAsync(shipment);
             }
             await _context.SaveChangesAsync();

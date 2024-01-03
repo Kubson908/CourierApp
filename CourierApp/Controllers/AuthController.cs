@@ -81,6 +81,30 @@ public class AuthController : ControllerBase
         return BadRequest(result);
     }
 
+    [HttpPatch("reset-dispatcher-password/{id}")]
+    public async Task<IActionResult> ResetDispatcherPassword([FromRoute] string id, [FromBody] ResetPasswordDto dto)
+    {
+        if (dto.Password == null || dto.ConfirmPassword == null || dto.Password != dto.ConfirmPassword)
+            return BadRequest();
+        ApiUserResponse response = await _dispatcherService.ResetPassword(id, dto.Password);
+        if (response.Exception) 
+            return StatusCode(StatusCodes.Status500InternalServerError, response);
+        if (response.IsSuccess) return Ok(response);
+        return BadRequest(response);
+    }
+
+    [HttpPatch("reset-courier-password/{id}")]
+    public async Task<IActionResult> ResetCourierPassword([FromRoute] string id, [FromBody] ResetPasswordDto dto)
+    {
+        if (dto.Password == null || dto.ConfirmPassword == null || dto.Password != dto.ConfirmPassword)
+            return BadRequest();
+        ApiUserResponse response = await _courierService.ResetPassword(id, dto.Password);
+        if (response.Exception)
+            return StatusCode(StatusCodes.Status500InternalServerError, response);
+        if (response.IsSuccess) return Ok(response);
+        return BadRequest(response);
+    }
+
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync([FromBody] LoginDto loginDto)
     {

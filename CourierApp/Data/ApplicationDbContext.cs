@@ -13,6 +13,7 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Shipment> Shipments { get; set; }
     public DbSet<RouteElement> RouteElements { get; set; }
     public DbSet<PriceList> PriceList { get; set; }
+    public DbSet<Order> Orders { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -39,7 +40,7 @@ public class ApplicationDbContext : IdentityDbContext
         appUser.PasswordHash = new PasswordHasher<IdentityUser>().HashPassword(appUser, "Admin1234_?");
         builder.Entity<IdentityUser>().HasData(appUser);
 
-        //set role do admin
+        //set role to admin
         builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
         {
             RoleId = role.Id,

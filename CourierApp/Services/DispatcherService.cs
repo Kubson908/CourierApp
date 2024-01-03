@@ -199,9 +199,46 @@ public class DispatcherService : IUserService<AddDispatcherDto, LoginDto, Dispat
         };
     }
 
-    public Task<ApiUserResponse> ResetPassword(string token, string newPassword)
+    private bool VerifyPassword(string password)
     {
-        throw new NotImplementedException();
+        if (password.Length < 8) return false;
+        if (!Regex.IsMatch(password, @"\d")) return false;
+        if (!Regex.IsMatch(password, @"[A-Z]")) return false;
+        return true;
+    }
+
+    public async Task<ApiUserResponse> ResetPassword(string id, string newPassword)
+    {
+        Dispatcher? dispatcher = await _userManager.FindByIdAsync(id);
+        if (dispatcher == null) return new ApiUserResponse
+        {
+            IsSuccess = false,
+            Message = "User not found"
+        };
+        try
+        {
+            if (!VerifyPassword(newPassword))
+                return new ApiUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Incorrect password"
+                };
+            dispatcher.PasswordHash = new PasswordHasher<Dispatcher>().HashPassword(dispatcher, newPassword);
+            await _context.SaveChangesAsync();
+            return new ApiUserResponse
+            {
+                IsSuccess = true,
+                Message = "Password has been changed"
+            };
+        } catch (Exception ex)
+        {
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = ex.Message,
+                Exception = true
+            };
+        }
     }
 
     public async Task<ApiUserResponse> UpdateUserAsync(string id, UpdateUserDto dto)

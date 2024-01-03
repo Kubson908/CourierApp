@@ -1,11 +1,13 @@
 ﻿using CourierAPI.Data;
 using CourierAPI.Models;
 using CourierAPI.Models.Dto;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CourierAPI.Services;
 
@@ -199,9 +201,47 @@ public class CourierService : IUserService<AddCourierDto, LoginDto, Courier>
         throw new NotImplementedException();
     }
 
-    public Task<ApiUserResponse> ResetPassword(string token, string newPassword)
+    private bool VerifyPassword(string password)
     {
-        throw new NotImplementedException();
+        if (password.Length < 8) return false;
+        if (!Regex.IsMatch(password, @"\d")) return false;
+        if (!Regex.IsMatch(password, @"[A-Z]")) return false;
+        return true;
+    }
+
+    public async Task<ApiUserResponse> ResetPassword(string id, string newPassword)
+    {
+        Courier? courier = await _userManager.FindByIdAsync(id);
+        if (courier == null) return new ApiUserResponse
+        {
+            IsSuccess = false,
+            Message = "User not found"
+        };
+        try
+        {
+            if (!VerifyPassword(newPassword))
+                return new ApiUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Incorrect password"
+                };
+            courier.PasswordHash = new PasswordHasher<Courier>().HashPassword(courier, newPassword);
+            await _context.SaveChangesAsync();
+            return new ApiUserResponse
+            {
+                IsSuccess = true,
+                Message = "Password has been changed"
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = ex.Message,
+                Exception = true
+            };
+        }
     }
 
     public async Task<ApiUserResponse> UpdateUserAsync(string id, UpdateUserDto dto)

@@ -10,7 +10,7 @@ namespace CourierAPI.Services
         Task<ApiUserResponse> ConfirmEmail(string token);
         Task ResendConfirmationLinkAsync(string email);
         Task<ApiUserResponse> SendResetPasswordLinkAsync(string email);
-        Task<ApiUserResponse> ResetPassword(string token, string newPassword);
+        Task<ApiUserResponse> ResetPassword(string tokenOrId, string newPassword);
         List<U> GetUsers();
         Task<ApiUserResponse> UpdateUserAsync(string id, UpdateUserDto dto);
         Task<ApiUserResponse> RefreshToken(string id);

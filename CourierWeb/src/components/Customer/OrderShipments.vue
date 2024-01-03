@@ -141,6 +141,8 @@ const submitShipments = () => {
 
 const addShipment = () => {
   if (!addToList()) return;
+  pageCount.value++;
+  activePage.value = pageCount.value;
 };
 
 const changePage = (n: number) => {

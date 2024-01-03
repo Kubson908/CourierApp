@@ -43,6 +43,10 @@ public class Shipment
     [ForeignKey(nameof(Customer))]
     public string? CustomerId { get; set; }
     public Customer? Customer { get; set; }
+
+    [ForeignKey(nameof(Order))]
+    public int? OrderId { get; set; }
+    public Order? Order { get; set; }
 }
 
 public enum Status

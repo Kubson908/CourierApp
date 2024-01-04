@@ -14,7 +14,7 @@ namespace CourierAPI.Controllers;
 [ApiController]
 public class ShipmentController : ControllerBase
 {
-    private ApplicationDbContext _context;
+    private readonly ApplicationDbContext _context;
 
     public ShipmentController(ApplicationDbContext context)
     {
@@ -40,7 +40,7 @@ public class ShipmentController : ControllerBase
         List<int> ids = new();
         try
         {
-            Order order = new Order
+            Order order = new()
             {
                 OrderDate = DateTime.Now,
                 CustomerId = id,
@@ -54,6 +54,7 @@ public class ShipmentController : ControllerBase
                 shipment.Price = (float)size! + (float)weight!;
                 shipment.CustomerId = id;
                 shipment.OrderId = order.Id;
+                shipment.DeliveryAttempts = 0;
                 await _context.Shipments.AddAsync(shipment);
             }
             await _context.SaveChangesAsync();
@@ -70,6 +71,69 @@ public class ShipmentController : ControllerBase
             });
         }
     }
+
+    [HttpPost("repeat-order")]
+    public async Task<IActionResult> RepeatOrder([FromBody] RegisterShipmentsDto dto)
+    {
+        PriceListHelper.PriceList ??= await _context.PriceList.FirstAsync();
+        if (dto.Shipments.Count() == 0 || dto.Shipments is null)
+        {
+            return BadRequest();
+        }
+        string id = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        List<int> ids = new();
+        try
+        {
+            Order order = new()
+            {
+                OrderDate = DateTime.Now,
+                CustomerId = id,
+            };
+            await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
+            foreach (Shipment shipment in dto.Shipments)
+            {
+                Shipment newShipment = new()
+                {
+                    PickupAddress = shipment.PickupAddress,
+                    PickupApartmentNumber = shipment.PickupApartmentNumber,
+                    PickupCity = shipment.PickupCity,
+                    PickupPostalCode = shipment.PickupPostalCode,
+                    Size = shipment.Size,
+                    Weight = shipment.Weight,
+                    RecipientName = shipment.RecipientName,
+                    RecipientPhoneNumber = shipment.RecipientPhoneNumber,
+                    RecipientAddress = shipment.RecipientAddress,
+                    RecipientApartmentNumber = shipment.RecipientApartmentNumber,
+                    RecipientCity = shipment.RecipientCity,
+                    RecipientPostalCode = shipment.RecipientPostalCode,
+                    RecipientEmail = shipment.RecipientEmail,
+                    AdditionalDetails = shipment.AdditionalDetails,
+                };
+
+                var size = PriceListHelper.PriceList?.GetType().GetProperty(Enum.GetName(shipment.Size)! + "Size")?.GetValue(PriceListHelper.PriceList, null);
+                var weight = PriceListHelper.PriceList?.GetType().GetProperty(Enum.GetName(shipment.Weight)! + "Weight")?.GetValue(PriceListHelper.PriceList, null);
+                newShipment.Price = (float)size! + (float)weight!;
+                newShipment.CustomerId = id;
+                newShipment.OrderId = order.Id;
+                newShipment.DeliveryAttempts = 0;
+                await _context.Shipments.AddAsync(newShipment);
+            }
+            await _context.SaveChangesAsync();
+            ids = dto.Shipments.Select(s => s.Id).ToList();
+            return StatusCode(StatusCodes.Status201Created, ids);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ApiUserResponse
+            {
+                Message = ex.Message,
+                IsSuccess = false,
+                Exception = true
+            });
+        }
+    }
+
 
     [HttpGet("get-shipments-by-user")]
     [Authorize(Roles = "Customer")]
@@ -285,5 +349,61 @@ public class ShipmentController : ControllerBase
     {
         PriceListHelper.PriceList ??= await _context.PriceList.FirstAsync();
         return Ok(PriceListHelper.PriceList);
+    }
+
+    [HttpGet("get-orders"), Authorize(Roles = "Customer")]
+    public async Task<IActionResult> GetOrders()
+    {
+        string id = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        try
+        {
+            var orders = await _context.Orders.Where(o => o.CustomerId == id).OrderByDescending(o => o.OrderDate).Select(o => new
+            {
+                o.Id,
+                o.OrderDate,
+                ShipmentCount = _context.Shipments.Count(s => s.OrderId == o.Id),
+            }).ToListAsync();
+            return Ok(orders);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = ex.Message,
+                Exception = true,
+            });
+        }
+    }
+
+    [HttpGet("get-order-details/{id}")]
+    public async Task<IActionResult> GetOrderDetails([FromRoute] int id)
+    {
+        string customerId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        try
+        {
+            Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerId == customerId && o.Id == id);
+            if (order == null)
+                return BadRequest(new ApiUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Order not found",
+                });
+            List<Shipment> shipments = await _context.Shipments.Where(s => s.OrderId == order.Id).ToListAsync();
+            OrderDetailsDto orderDetails = new()
+            {
+                OrderDate = order.OrderDate,
+                Shipments = shipments,
+            };
+            return Ok(orderDetails);
+        } catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = ex.Message,
+                Exception = true,
+            });
+        }
     }
 }

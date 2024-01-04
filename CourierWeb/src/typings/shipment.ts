@@ -15,5 +15,6 @@ export type Shipment = {
   recipientEmail: string;
   additionalDetails: string | undefined;
   status: number | undefined;
+  deliveryAttempts: number | undefined;
   price: number | undefined;
 };

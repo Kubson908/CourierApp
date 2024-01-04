@@ -41,6 +41,7 @@ let shipments: Array<Shipment> = new Array<Shipment>(1).fill({
   status: undefined,
   id: undefined,
   price: undefined,
+  deliveryAttempts: undefined,
 });
 
 const activeShipment = ref<Shipment>(shipments[0]);
@@ -105,6 +106,7 @@ const addToList: () => boolean = () => {
     id: undefined,
     weight: null,
     price: undefined,
+    deliveryAttempts: undefined,
   });
   activeShipment.value = shipments[shipments.length - 1];
   return true;
@@ -156,7 +158,6 @@ const submitOrder = async () => {
       shipments: shipments,
     });
     const shipmentsIds = res.data;
-    console.log(shipmentsIds);
     if (res.status < 300) {
       submitPage.value = false;
       router.push({ path: "/order-registered", query: { id: shipmentsIds } });

@@ -11,6 +11,7 @@ import {
   DownloadLabels,
   OrderShipments,
   OrderArchive,
+  OrderDetails,
 } from "./components/Customer";
 import { MapView, ShipmentsList, CouriersList } from "./components/Dispatcher";
 import { user } from "./main";
@@ -91,4 +92,9 @@ export const routes: Array<Route> = [
     meta: { roles: ["Customer", "Dispatcher", "Admin"] },
   },
   { path: "/history", component: OrderArchive, meta: { roles: ["Customer"] } },
+  {
+    path: "/history/details",
+    component: OrderDetails,
+    meta: { roles: ["Customer"] },
+  },
 ];

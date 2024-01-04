@@ -1,5 +1,6 @@
 ﻿using CourierMobileApp.Models.Dto;
 using CourierMobileApp.Services;
+using Newtonsoft.Json;
 
 namespace CourierMobileApp.ViewModels;
 
@@ -9,6 +10,16 @@ public partial class ProfileViewModel : BaseViewModel
     private readonly ConnectionService connectionService;
     [ObservableProperty]
     ImageSource imgSource;
+    [ObservableProperty]
+    string user;
+    [ObservableProperty]
+    string email;
+    [ObservableProperty]
+    string phoneNumber;
+    [ObservableProperty]
+    bool error;
+    [ObservableProperty]
+    bool noError;
 
     public ProfileViewModel(ProfileService profileService, ConnectionService connectionService)
     {
@@ -29,6 +40,29 @@ public partial class ProfileViewModel : BaseViewModel
             await SecureStorage.Default.SetAsync("profile_image", response.Image);
             profileService.SetImage();
             ImgSource = profileService.imageSource;
+        }
+    }
+
+    public async Task GetProfileData()
+    {
+        IsBusy = true;
+        string url = $"api/auth/get-profile-info";
+        var res = await connectionService.SendAsync(HttpMethod.Get, url);
+        try
+        {
+            ProfileInfoDto profile = JsonConvert.DeserializeObject<ProfileInfoDto>(await res.Content.ReadAsStringAsync());
+            Email = profile.Email;
+            PhoneNumber = profile.PhoneNumber;
+            Error = false;
+            NoError = true;
+            IsBusy = false;
+        }
+        catch (Exception)
+        {
+            await Shell.Current.DisplayAlert("Błąd pobierania", "Nie udało się pobrać danych profilu", "OK");
+            Error = true;
+            NoError = false;
+            IsBusy = false;
         }
     }
 }

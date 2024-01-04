@@ -32,8 +32,13 @@ public class LoginService
         }
 
         var response = await connectionService.SendAsync(HttpMethod.Post, "api/auth/login-courier", body: loginDto);
-        if (!response.IsSuccessStatusCode)
-            throw new Exception(await response.Content.ReadAsStringAsync());
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = "Invalid credentials",
+                Errors = new List<string>() { "InvalidCredentials" },
+            };
         ApiUserResponse responseData = JsonConvert.DeserializeObject<ApiUserResponse>(await response.Content.ReadAsStringAsync());
         connectionService.Token = responseData.AccessToken;
         return responseData;

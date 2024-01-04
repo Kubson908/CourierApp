@@ -26,6 +26,7 @@ public partial class NavBar : ContentView
 
     private async void ProfileClicked(object sender, EventArgs e)
     {
+        /*await profileService.GetProfileData();*/
         await Shell.Current.Navigation.PushAsync<ProfilePage>();
     }
 }

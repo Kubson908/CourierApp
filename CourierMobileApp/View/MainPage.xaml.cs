@@ -17,6 +17,10 @@ public partial class MainPage : ContentPage
     {
         base.OnAppearing();
         navbar.SetImage();
+        MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            profileService.user = await SecureStorage.Default.GetAsync("user");
+        });
     }
 
     protected override bool OnBackButtonPressed()

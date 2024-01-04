@@ -1,7 +1,6 @@
- using CourierMobileApp.Models.Dto;
+using CourierMobileApp.Models.Dto;
 using CourierMobileApp.Services;
 using CourierMobileApp.View;
-using IntelliJ.Lang.Annotations;
 using System.Net.Mail;
 
 namespace CourierMobileApp.ViewModels;
@@ -31,14 +30,12 @@ public partial class LoginViewModel : BaseViewModel
     async Task LoginAsync()
     {
         await ValidateEmail();
-        if (IsBusy || LoginValidator is not null) return;
+        if (IsBusy || LoginValidator is not null || Password.Length <= 1) return;
 
         try
         {
             Platforms.KeyboardHelper.HideKeyboard();
             IsBusy = true;
-            if (Password.Length < 8)
-                throw new Exception("Niepoprawne dane logowania", null);
             ApiUserResponse response = await loginService.LoginAsync(new LoginDto
             {
                 Login = Login,
@@ -56,7 +53,7 @@ public partial class LoginViewModel : BaseViewModel
                 await SecureStorage.Default.SetAsync("profile_image", response.Image);
                 profileService.SetImage();
             }
-                
+            profileService.user = response.User;
         }
         catch (Exception ex)
         {

@@ -12,9 +12,10 @@
 
     <Grid RowDefinitions="Auto, *, Auto" 
           Background="{StaticResource LoggedInBgDark}">
-        <Grid Grid.Row="0" ColumnDefinitions="*, *, *">
+
+        <Grid Grid.Row="0" ColumnDefinitions="*, *, *" IsVisible="{Binding IsNotBusy}">
             <Frame CornerRadius="75" WidthRequest="150" HeightRequest="150" 
-                   Margin="0, 100, 0, 0" Padding="0" Grid.Column="1" >
+                   Margin="0, 100, 0, 0" Padding="0" Grid.Column="1">
                 <Image WidthRequest="150" Margin="0" Source="{Binding ImgSource}"/>
             </Frame>
             
@@ -35,11 +36,33 @@
                     VerticalOptions="End"
                     HorizontalOptions="End"
                     Command="{Binding UploadPhotoCommand}"/>
-                   
-
-            
-
         </Grid>
         
+        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding NoError}">
+            <Label HorizontalTextAlignment="Center" 
+                   Margin="20" 
+                   FontSize="20"
+                   IsVisible="{Binding IsNotBusy}"
+                   TextColor="White" 
+                   Text="{Binding User}" />
+            <Label HorizontalTextAlignment="Center" 
+                   Margin="20" 
+                   FontSize="20"
+                   IsVisible="{Binding IsNotBusy}"
+                   TextColor="White" 
+                   Text="{Binding Email}" />
+            <Label HorizontalTextAlignment="Center" 
+                   Margin="20" 
+                   FontSize="20"
+                   TextColor="White" 
+                   Text="{Binding PhoneNumber, StringFormat='Tel: {0}'}" />
+        </VerticalStackLayout>
+        <Label HorizontalTextAlignment="Center" 
+               IsVisible="{Binding Error}"
+               Margin="20" 
+               FontSize="20"
+               TextColor="Red" 
+               Text="Błąd pobierania danych" />
+        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="True" Grid.Row="0" Grid.RowSpan="3" HeightRequest="100" Color="#15AB54"/>
     </Grid>
 </ContentPage>

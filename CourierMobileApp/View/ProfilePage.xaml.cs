@@ -17,6 +17,7 @@ public partial class ProfilePage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+		MainThread.InvokeOnMainThreadAsync(viewModel.GetProfileData);
 		viewModel.ImgSource = profileService.imageSource;
     }
 }

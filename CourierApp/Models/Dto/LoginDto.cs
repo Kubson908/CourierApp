@@ -5,10 +5,9 @@ namespace CourierAPI.Models.Dto;
 public class LoginDto
 {
     [Required]
-    [StringLength(50)]
+    [EmailAddress]
     public string Login { get; set; } = string.Empty;
 
     [Required]
-    [StringLength(50, MinimumLength = 8)]
     public string Password { get; set; } = string.Empty;
 }

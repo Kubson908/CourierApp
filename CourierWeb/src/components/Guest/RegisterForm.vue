@@ -9,9 +9,73 @@ const email = ref<string>("");
 const password = ref<string>("");
 const confirmPassword = ref<string>("");
 const phoneNumber = ref<string>("");
-// TODO: dodac rules do hasla
+
+const phoneErrorMessage = ref<string | null>(null);
+const passwordErrorMessage = ref<string | null>(null);
+const emailErrorMessage = ref<string | null>(null);
+
+const validatePassword: () => boolean = () => {
+  if (password.value.length < 8) return false;
+  if (!/\d/.test(password.value)) return false;
+  if (!/[A-Z]/.test(password.value)) return false;
+  return true;
+};
+
+const validateEmail = (): boolean => {
+  var validRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  if (email.value.match(validRegex)) {
+    emailErrorMessage.value = null;
+    return true;
+  }
+  emailErrorMessage.value = "Nieprawidłowy adres email";
+  return false;
+};
+
+const validateNumber: () => boolean = () => {
+  const cleanedPhoneNumber: string = phoneNumber.value
+    .replace(/\s/g, "")
+    .replace("+", "");
+  if (!/^\d+$/.test(cleanedPhoneNumber)) {
+    phoneErrorMessage.value = "Nieprawidłowy numer telefonu";
+    return false;
+  }
+  if (![9, 11].includes(cleanedPhoneNumber.length)) {
+    phoneErrorMessage.value = "Nieprawidłowy numer telefonu";
+    return false;
+  }
+  if (cleanedPhoneNumber.length === 11 && !/^48/.test(cleanedPhoneNumber)) {
+    phoneErrorMessage.value = "Nieprawidłowy numer telefonu";
+    return false;
+  }
+  phoneErrorMessage.value = null;
+  return true;
+};
+
 const submit = async () => {
-  if (password.value != confirmPassword.value) return;
+  if (!validatePassword()) {
+    passwordErrorMessage.value =
+      "Hasło powinno składać się z co najmniej 8 znaków i zawierać przynajmniej jedną wielkią literę i jedną cyfrę";
+    validateNumber();
+    validateEmail();
+    return;
+  }
+  if (password.value != confirmPassword.value) {
+    passwordErrorMessage.value = "Hasła nie są identyczne";
+    validateNumber();
+    validateEmail();
+    return;
+  }
+  if (!validateNumber()) {
+    validateEmail();
+    return;
+  }
+  if (!validateEmail()) {
+    return;
+  }
+  passwordErrorMessage.value = null;
+  emailErrorMessage.value = null;
+  phoneErrorMessage.value = null;
   try {
     const res = await unauthorized.post("/auth/register-customer", {
       firstName: firstName.value,
@@ -53,12 +117,18 @@ const registered = ref<boolean>(false);
           class="register-input gray-placeholder"
           placeholder="Email"
         />
+        <span class="red-text" v-if="emailErrorMessage">
+          {{ emailErrorMessage }}
+        </span>
         <input
           type="text"
           v-model="phoneNumber"
           class="register-input gray-placeholder"
           placeholder="Telefon"
         />
+        <span class="red-text" v-if="phoneErrorMessage">
+          {{ phoneErrorMessage }}
+        </span>
         <input
           type="password"
           v-model="password"
@@ -71,6 +141,9 @@ const registered = ref<boolean>(false);
           class="register-input gray-placeholder"
           placeholder="Powtórz hasło"
         />
+        <span class="red-text" v-if="passwordErrorMessage">
+          {{ passwordErrorMessage }}
+        </span>
         <button type="submit" class="submit center">Zarejestruj</button>
       </form>
     </div>

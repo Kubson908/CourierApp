@@ -95,4 +95,43 @@ public class AdminService
         return response;
     }
 
+    public async Task<IdentityUser?> GetUserData(string id)
+    {
+        IdentityUser? user = await _userManager.FindByIdAsync(id);
+        return user;
+    }
+
+    public async Task<ApiUserResponse> ChangePasswordAsync(string id, string oldPassword, string newPassword)
+    {
+        try
+        {
+            IdentityUser? user = await _userManager.FindByIdAsync(id);
+            if (user == null) return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = "User not found",
+            };
+            var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+            if (result.Succeeded) return new ApiUserResponse
+            {
+                IsSuccess = true,
+                Message = "Password has been changed",
+            };
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = "Invalid password",
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = ex.Message,
+                Exception = true,
+            };
+        }
+    }
+
 }

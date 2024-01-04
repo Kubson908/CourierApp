@@ -16,7 +16,7 @@ export const user = reactive<User>({
   name: localStorage.getItem("user") ?? "Niezalogowany",
   isLoggedIn: localStorage.getItem("user") ? true : false,
   roles: localStorage.getItem("roles")
-    ? JSON.parse(localStorage.getItem("roles") ?? "")
+    ? JSON.parse(localStorage.getItem("roles")!)
     : [],
 });
 

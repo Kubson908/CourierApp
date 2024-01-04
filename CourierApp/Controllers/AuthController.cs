@@ -3,6 +3,7 @@ using CourierAPI.Models;
 using CourierAPI.Models.Dto;
 using CourierAPI.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -176,40 +177,97 @@ public class AuthController : ControllerBase
         return BadRequest(result);
     }
 
-    [HttpGet("refresh-token")]
+    [HttpGet("refresh-token"), Authorize]
     public async Task<IActionResult> RefreshToken()
     {
         string id = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
         string role = HttpContext.User.FindFirstValue(ClaimTypes.Role)!;
-        ApiUserResponse response;
-        switch (role)
+        ApiUserResponse response = role switch
         {
-            case "Dispatcher":
-                response = await _dispatcherService.RefreshToken(id);
-                break;
-
-            case "Customer":
-                response = await _customerService.RefreshToken(id); 
-                break;
-
-            case "Courier":
-                response = await _courierService.RefreshToken(id);
-                break;
-
-            case "Admin":
-                response = await _adminService.RefreshToken(id);
-                break;
-
-            default:
-                response = new ApiUserResponse
-                {
-                    IsSuccess = false,
-                    Message = "Role does not exist",
-                };
-                break;
-        }
-
+            "Dispatcher" => await _dispatcherService.RefreshToken(id),
+            "Customer" => await _customerService.RefreshToken(id),
+            "Courier" => await _courierService.RefreshToken(id),
+            "Admin" => await _adminService.RefreshToken(id),
+            _ => new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = "Role does not exist",
+            },
+        };
         if (response.IsSuccess) return Ok(response);
+        return BadRequest(response);
+    }
+
+    [HttpGet("get-profile-info"), Authorize]
+    public async Task<IActionResult> GetProfileInfo()
+    {
+        string role = HttpContext.User.FindFirstValue(ClaimTypes.Role)!;
+        string id = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        IdentityUser? user = role switch
+        {
+            "Customer" => await _customerService.GetUserData(id),
+            "Dispatcher" => await _dispatcherService.GetUserData(id),
+            "Courier" => await _courierService.GetUserData(id),
+            "Admin" => await _adminService.GetUserData(id),
+            _ => null,
+        };
+        if (user != null)
+            return Ok(new
+            {
+                email = user.Email,
+                phoneNumber = user.PhoneNumber,
+            });
+        return BadRequest();
+    }
+
+    [HttpPatch("change-phone-number"), Authorize(Roles = "Customer,Dispatcher,Courier")]
+    public async Task<IActionResult> ChangePhoneNumber([FromBody] ChangePhoneNumberDto dto)
+    {
+        string role = HttpContext.User.FindFirstValue(ClaimTypes.Role)!;
+        string id = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        ApiUserResponse response = role switch
+        {
+            "Customer" => await _customerService.ChangePhoneNumberAsync(id, dto.PhoneNumber, dto.Password),
+            "Dispatcher" => await _dispatcherService.ChangePhoneNumberAsync(id, dto.PhoneNumber, dto.Password),
+            "Courier" => await _courierService.ChangePhoneNumberAsync(id, dto.PhoneNumber, dto.Password),
+            _ => new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = "Invalid role",
+            },
+        };
+        if (response.IsSuccess) return Ok(response);
+        if (response.Message == "Invalid password") return Unauthorized(response);
+        if (response.Exception) return StatusCode(StatusCodes.Status500InternalServerError, response);
+        return BadRequest(response);
+    }
+
+    [HttpPatch("change-password"), Authorize]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+    {
+        if (dto == null || dto.OldPassword == null || dto.NewPassword == null)
+            return BadRequest(new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = "Password is required",
+            });
+        string role = HttpContext.User.FindFirstValue(ClaimTypes.Role)!;
+        string id = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        ApiUserResponse response = role switch
+        {
+            "Dispatcher" => await _dispatcherService.ChangePasswordAsync(id, dto.OldPassword, dto.NewPassword),
+            "Customer" => await _customerService.ChangePasswordAsync(id, dto.OldPassword, dto.NewPassword),
+            "Courier" => await _courierService.ChangePasswordAsync(id, dto.OldPassword, dto.NewPassword),
+            "Admin" => await _adminService.ChangePasswordAsync(id, dto.OldPassword, dto.NewPassword),
+            _ => new ApiUserResponse
+            {
+                IsSuccess = false,
+                Message = "Role does not exist",
+            },
+        };
+        if (response.IsSuccess) return Ok(response);
+        if (response.Message == "Invalid password") return Unauthorized(response);
+        if (response.Exception) return StatusCode(StatusCodes.Status500InternalServerError, response);
         return BadRequest(response);
     }
 }

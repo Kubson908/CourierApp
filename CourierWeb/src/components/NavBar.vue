@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { user } from "../main";
+import { router, user } from "../main";
 
 const logout = () => {
   localStorage.clear();
@@ -11,7 +11,7 @@ const logout = () => {
 
 <template>
   <ul>
-    <li v-if="!user.roles.includes('Admin')"><a href="/">Home</a></li>
+    <li v-if="!user.roles.includes('Admin')"><a href="/">Strona główna</a></li>
     <li v-if="!user.isLoggedIn" class="float-right">
       <a href="/login">Logowanie</a>
     </li>
@@ -21,6 +21,16 @@ const logout = () => {
     <li v-if="user.isLoggedIn" class="float-right">
       <a href="#" @click="logout">Wyloguj</a>
     </li>
+    <li v-if="user.isLoggedIn" class="float-right">
+      <img
+        src="/src/assets/account-circle-white.svg"
+        class="profile-icon"
+        @click="router.push('/profile')"
+      />
+    </li>
+    <div v-if="user.isLoggedIn" class="float-right username">
+      <a class="username">{{ user.name }}</a>
+    </div>
   </ul>
 </template>
 
@@ -40,7 +50,6 @@ li {
   float: left;
   height: 100%;
   width: fit-content;
-  
 }
 
 li a {
@@ -53,11 +62,27 @@ li a {
   align-items: center;
   text-decoration: none;
 }
-li a:hover {
+li a:hover,
+.profile-icon:hover {
   background-color: #111;
 }
 
 .float-right {
   float: right;
+}
+.profile-icon {
+  height: 100%;
+  cursor: pointer;
+}
+.username {
+  display: flex;
+  padding: 0 0.5vw;
+  color: white;
+  line-height: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  font-style: normal !important;
 }
 </style>

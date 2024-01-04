@@ -1,13 +1,17 @@
 import { Route } from "./typings";
 import { AdminPage, PriceList } from "./components/Admin";
-import { HomePage } from "./components";
+import { HomePage, ProfilePage } from "./components";
 import {
   LoginForm,
   RegisterForm,
   ResetPassword,
   VerifyEmail,
 } from "./components/Guest";
-import { DownloadLabels, OrderShipments } from "./components/Customer";
+import {
+  DownloadLabels,
+  OrderShipments,
+  OrderArchive,
+} from "./components/Customer";
 import { MapView, ShipmentsList, CouriersList } from "./components/Dispatcher";
 import { user } from "./main";
 
@@ -34,8 +38,30 @@ export const routes: Array<Route> = [
     component: PriceList,
     meta: { roles: ["Admin"] },
   },
-  { path: "/login", component: LoginForm, meta: { roles: null } },
-  { path: "/register", component: RegisterForm, meta: { roles: null } },
+  {
+    path: "/login",
+    component: LoginForm,
+    meta: { roles: null },
+    beforeEnter: () => {
+      if (user.roles.length > 0) {
+        return {
+          path: "/",
+        };
+      }
+    },
+  },
+  {
+    path: "/register",
+    component: RegisterForm,
+    meta: { roles: null },
+    beforeEnter: () => {
+      if (user.roles.length > 0) {
+        return {
+          path: "/",
+        };
+      }
+    },
+  },
   {
     path: "/order",
     component: OrderShipments,
@@ -59,4 +85,10 @@ export const routes: Array<Route> = [
   },
   { path: "/verify", component: VerifyEmail, meta: { roles: null } },
   { path: "/reset-password", component: ResetPassword, meta: { roles: null } },
+  {
+    path: "/profile",
+    component: ProfilePage,
+    meta: { roles: ["Customer", "Dispatcher", "Admin"] },
+  },
+  { path: "/history", component: OrderArchive, meta: { roles: ["Customer"] } },
 ];

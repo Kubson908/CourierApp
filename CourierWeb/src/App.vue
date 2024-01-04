@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeMount } from "vue";
-import { NavBar, SideBar, LoadingPage } from "./components";
-import { user, loading, authorized } from "./main";
+import { NavBar, SideBar } from "./components";
+import { user, authorized } from "./main";
 
 onBeforeMount(async () => {
   if (!localStorage.getItem("expireDate")) return;
@@ -25,7 +25,6 @@ onBeforeMount(async () => {
     id="sidebar"
     v-if="user.roles.includes('Admin') || user.roles.includes('Dispatcher')"
   />
-  <LoadingPage v-if="loading" id="loading" />
   <div
     :class="{
       content:

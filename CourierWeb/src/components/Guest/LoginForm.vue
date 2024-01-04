@@ -68,19 +68,26 @@ const back = () => {
       <h2 class="pigment-green-text">Zaloguj się</h2>
       <form class="login-form" @submit.prevent="signIn">
         <input
+          name="login"
           class="login-input gray-placeholder"
           v-model="login"
           placeholder="Login"
           type="text"
         />
         <input
+          name="password"
           class="login-input gray-placeholder"
           v-model="password"
           placeholder="Hasło"
           type="password"
         />
         <div>
-          <input id="remember-me" v-model="rememberMe" type="checkbox" />
+          <input
+            name="remember_me"
+            id="remember-me"
+            v-model="rememberMe"
+            type="checkbox"
+          />
           <label class="black-text" for="rememberMe">Zapamiętaj mnie</label>
         </div>
 

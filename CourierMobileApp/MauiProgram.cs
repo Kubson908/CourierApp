@@ -39,6 +39,8 @@ namespace CourierMobileApp
             builder.Services.AddSingleton<LoginService>();
             builder.Services.AddSingleton<ProfilePage>();
             builder.Services.AddSingleton<ProfileViewModel>();
+            builder.Services.AddSingleton<ChangePasswordPage>();
+            builder.Services.AddSingleton<ChangePasswordViewModel>();
 
             builder.Services.AddSingleton<ShipmentService>();
             builder.Services.AddSingleton<SchedulePage>();

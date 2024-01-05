@@ -1,5 +1,7 @@
 ﻿using CourierMobileApp.Models.Dto;
 using CourierMobileApp.Services;
+using CourierMobileApp.View;
+using Maui.Plugins.PageResolver;
 using Newtonsoft.Json;
 
 namespace CourierMobileApp.ViewModels;
@@ -53,6 +55,7 @@ public partial class ProfileViewModel : BaseViewModel
             ProfileInfoDto profile = JsonConvert.DeserializeObject<ProfileInfoDto>(await res.Content.ReadAsStringAsync());
             Email = profile.Email;
             PhoneNumber = profile.PhoneNumber;
+            User = await SecureStorage.Default.GetAsync("user");
             Error = false;
             NoError = true;
             IsBusy = false;
@@ -65,4 +68,12 @@ public partial class ProfileViewModel : BaseViewModel
             IsBusy = false;
         }
     }
+
+    [RelayCommand]
+    public async static Task ChangePassword()
+    {
+        await Shell.Current.Navigation.PushAsync<ChangePasswordPage>();
+    }
+
+
 }

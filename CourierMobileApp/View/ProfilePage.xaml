@@ -14,11 +14,15 @@
           Background="{StaticResource LoggedInBgDark}">
 
         <Grid Grid.Row="0" ColumnDefinitions="*, *, *" IsVisible="{Binding IsNotBusy}">
-            <Frame CornerRadius="75" WidthRequest="150" HeightRequest="150" 
-                   Margin="0, 100, 0, 0" Padding="0" Grid.Column="1">
-                <Image WidthRequest="150" Margin="0" Source="{Binding ImgSource}"/>
-            </Frame>
-            
+
+            <Image Grid.Column="1" Margin="0, 100, 0, 0" WidthRequest="150" Source="{Binding ImgSource}" >
+                <Image.Clip>
+                    <EllipseGeometry Center="75, 75"
+                                     RadiusX="75"
+                                     RadiusY="75" />
+                </Image.Clip>
+            </Image>
+
             <Frame Grid.Column="1"
                    WidthRequest="40" HeightRequest="40"
                    CornerRadius="20" BackgroundColor="{StaticResource BattleshipGray}"
@@ -56,6 +60,9 @@
                    FontSize="20"
                    TextColor="White" 
                    Text="{Binding PhoneNumber, StringFormat='Tel: {0}'}" />
+            <Button Text="Zmień hasło" WidthRequest="200" 
+                    FontSize="16" BackgroundColor="#15AB54"
+                    Command="{Binding ChangePasswordCommand}"/>
         </VerticalStackLayout>
         <Label HorizontalTextAlignment="Center" 
                IsVisible="{Binding Error}"

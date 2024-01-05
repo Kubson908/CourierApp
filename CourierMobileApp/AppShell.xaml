@@ -32,5 +32,11 @@
         Title="Profile"
         ContentTemplate="{DataTemplate view:ProfilePage}"
         Route="Profile" />
+    
+    <ShellContent
+        Shell.NavBarIsVisible="False"
+        Title="ChangePassword"
+        ContentTemplate="{DataTemplate view:ChangePasswordPage}"
+        Route="ChangePassword" />
 
 </Shell>

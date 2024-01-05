@@ -201,7 +201,7 @@ public class CourierService : IUserService<AddCourierDto, LoginDto, Courier>
         throw new NotImplementedException();
     }
 
-    private bool VerifyPassword(string password)
+    private static bool VerifyPassword(string password)
     {
         if (password.Length < 8) return false;
         if (!Regex.IsMatch(password, @"\d")) return false;

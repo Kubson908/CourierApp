@@ -131,7 +131,7 @@ public class AndroidBackgroundService : Service
 #pragma warning restore CA1416 // Validate platform compatibility
         Notification notification = builder
            .SetContentTitle("Trasa rozpoczęta")
-           .SetSmallIcon(Resource.Drawable.delivery)
+           .SetSmallIcon(Resource.Drawable.package_icon)
            .SetColor(144244122)
            .SetOngoing(true)
            /*.SetContentText("Lokalizacja jest rejestrowana")*/
@@ -150,7 +150,7 @@ public class AndroidBackgroundService : Service
 #pragma warning disable CA1422 // Validate platform compatibility
         Notification notification = builder
            .SetContentTitle("Zakończono trasę")
-           .SetSmallIcon(Resource.Drawable.pickup)
+           .SetSmallIcon(Resource.Drawable.logout)
            .SetPriority(5)
            .SetColor(000000000)
            .SetVibrate(new long[] { 100, 200, 300, 400, 500 })

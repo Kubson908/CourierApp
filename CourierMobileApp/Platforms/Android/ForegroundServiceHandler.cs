@@ -1,7 +1,6 @@
 ﻿using Android.Content;
 using CourierMobileApp.Interfaces;
 using CourierMobileApp.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CourierMobileApp.Platforms.Android;
 

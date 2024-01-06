@@ -19,8 +19,7 @@ public partial class SchedulePage : ContentPage
         {
             layout = MainContent
         };
-        navbar.MenuClicked += animation.OpenMenu;
-        menu.ContainerClicked += (object sender, EventArgs e) => { animation.CloseMenu(sender, e); navbar.RotateIcon(); };
+        navbar.MenuClicked += (object sender, EventArgs e) => { animation.OpenMenu(sender, e); navbar.RotateIcon(); };
         navbar.Initialize(this.profileService);
 
     }

@@ -13,14 +13,11 @@ public partial class MainPageViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    private void ScheduleClicked()
+    private static void ScheduleClicked()
     {
         MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            IsBusy = true;
-            await shipmentService.GetRouteAsync(DateTime.Today);
             await Shell.Current.Navigation.PushAsync<SchedulePage>();
-            IsBusy = false;
         });
     }
 }

@@ -17,11 +17,15 @@ public partial class ScheduleViewModel : BaseViewModel
     bool listEmpty;
 
     [ObservableProperty]
+    bool canStartRoute;
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(RouteButtonString))]
+    [NotifyPropertyChangedFor(nameof(ButtonColor))]
     bool isWorking;
 
     public string RouteButtonString => IsWorking ? "Zakończ trasę" : "Rozpocznij trasę";
-    public Color ButtonColor => IsWorking ? Color.FromArgb(Application.Current.Resources["BattleshipGray"].ToString()) : Color.FromArgb(Application.Current.Resources["PigmentGreen"].ToString());
+    public Color ButtonColor => IsWorking ? Color.FromArgb("#848C8E") : Color.FromArgb("#15AB54");
 
     public ObservableCollection<RouteElement> Route { get; set; }
     private readonly ProfileService profileService;
@@ -51,6 +55,7 @@ public partial class ScheduleViewModel : BaseViewModel
         {
             Route.Add(route);
         }
+        CanStartRoute = Date.CompareTo(DateTime.Today) == 0 && Route.Count > 0;
     }
 
     [RelayCommand]
@@ -77,10 +82,10 @@ public partial class ScheduleViewModel : BaseViewModel
         if (IsWorking)
             foregroundServiceHandler.Stop();
         else
-            IsWorking = StartRouteAsync();
+            IsWorking = StartRoute();
     }
 
-    public bool StartRouteAsync()
+    public bool StartRoute()
     {
         Vibration.Vibrate(TimeSpan.FromMilliseconds(200));
         try

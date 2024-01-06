@@ -1,18 +1,13 @@
-using Maui.Plugins.PageResolver;
-
 namespace CourierMobileApp.View.Components;
 
 public partial class Menu : ContentView
 {
-    public EventHandler ContainerClicked;
+    readonly ScheduleViewModel scheduleViewModel;
+
     public Menu()
 	{
 		InitializeComponent();
-    }
-
-    private void OnContainerClicked(object sender, TappedEventArgs e)
-    {
-        ContainerClicked?.Invoke(this, EventArgs.Empty);
+        scheduleViewModel = MauiApplication.Current.Services.GetService<ScheduleViewModel>();
     }
 
     private async void GoToMainPage(object sender, EventArgs e)
@@ -26,9 +21,23 @@ public partial class Menu : ContentView
         await Shell.Current.GoToAsync(nameof(SchedulePage));
     }
 
-    private void Quit(object sender, EventArgs e)
+    private async void Quit(object sender, EventArgs e)
     {
-        // TODO: Dodaæ sprawdzanie czy serwis w tle nie jest uruchomiony i odpowiedni komunikat obs³uguj¹cy wy³¹czanie serwisu
+        if (scheduleViewModel.IsWorking)
+        {
+            bool answer = await Shell.Current.DisplayAlert("Trasa rozpoczêta", "Czy chcesz przerwaæ trasê?", "Tak", "Nie");
+            if (answer)
+            {
+                scheduleViewModel.ToggleRoute();
+            }
+            else
+                return;
+        }
+        else
+        {
+            bool answer = await Shell.Current.DisplayAlert("Wyjœcie", "Czy chcesz wyjœæ z aplikacji?", "Tak", "Nie");
+            if (!answer) return;
+        }
         Application.Current.Quit();
     }
 }

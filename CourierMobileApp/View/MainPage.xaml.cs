@@ -18,7 +18,6 @@ public partial class MainPage : ContentPage
             layout = MainContent
         };
         navbar.MenuClicked += (object sender, EventArgs e) => { animation.OpenMenu(sender, e); navbar.RotateIcon(); };
-        menu.ContainerClicked += (object sender, EventArgs e) => { animation.CloseMenu(sender, e); navbar.RotateIcon(); };
         navbar.Initialize(this.profileService);
     }
 
@@ -45,14 +44,4 @@ public partial class MainPage : ContentPage
         navbar.RotateIcon();
         return true;
     }
-
-    /*private async void OpenMenu(object sender, EventArgs e)
-    {
-        await MainContent.TranslateTo(MainContent.Width * 0.5, 0, AnimationDuration, Easing.Linear);
-    }
-
-    private async void CloseMenu(object sender, EventArgs e)
-    {
-        await MainContent.TranslateTo(0, 0, AnimationDuration, Easing.Linear);
-    }*/
 }

@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="CourierMobileApp.View.Components.Menu">
-    <Grid BackgroundColor="#fa0c1011">
-        <!--<Grid.Background>
-            <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 1">
-                <GradientStop Color="#666666" Offset="0.0" />
-                <GradientStop Color="#000000" Offset="1.0" />
+             x:Class="CourierMobileApp.View.Components.Menu"
+             BackgroundColor="#0c1011">
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0, 0" EndPoint="0, 1.5">
+                <GradientStop Color="#7d15AB54" Offset="0.0" />
+                <GradientStop Color="#fa0c1011" Offset="0.3" />
             </LinearGradientBrush>
-        </Grid.Background>-->
+        </Grid.Background>
 
         <Grid RowDefinitions="*, *" 
-              Margin="0, 52, 0, 0"
+              Margin="0, 0, 0, 0"
+              WidthRequest="100"
               HorizontalOptions="Start"
               IsEnabled="False">
             <VerticalStackLayout HeightRequest="100" Grid.Row="0">
@@ -20,14 +22,15 @@
                        TextColor="White"
                        HorizontalOptions="Center"/>
                 <Switch Grid.Row="0" WidthRequest="50"
-                        ThumbColor="#15AB54" OnColor="{StaticResource BattleshipGray}"/>
+                        ThumbColor="#15AB54" OnColor="{StaticResource Gray100}"/>
             </VerticalStackLayout>
-            <Image Source="quit.svg" Grid.Row="2" WidthRequest="60" Margin="20"
+            <Image Source="quit.svg" Grid.Row="2" WidthRequest="60" Margin="20, 72, 20 , 0"
                    BackgroundColor="Transparent" HorizontalOptions="Start"/>
             <Button Grid.Row="1" WidthRequest="60" HeightRequest="60" CornerRadius="30"
-                    BackgroundColor="#2dbdbdbd" HorizontalOptions="Start" Margin="20"
+                    BackgroundColor="#2dbdbdbd" HorizontalOptions="Start" Margin="20, 72, 20 , 0"
                     Clicked="Quit"/>
-
+            <!--<Rectangle Grid.Row="0" Grid.RowSpan="2" WidthRequest="4"
+                     BackgroundColor="#3d15AB54" HorizontalOptions="End"/>-->
         </Grid>
 
     </Grid>

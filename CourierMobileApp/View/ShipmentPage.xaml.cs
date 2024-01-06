@@ -18,8 +18,7 @@ public partial class ShipmentPage : ContentPage
         {
             layout = MainContent
         };
-        navbar.MenuClicked += animation.OpenMenu;
-        menu.ContainerClicked += (object sender, EventArgs e) => { animation.CloseMenu(sender, e); navbar.RotateIcon(); };
+        navbar.MenuClicked += (object sender, EventArgs e) => { animation.OpenMenu(sender, e); navbar.RotateIcon(); };
         navbar.Initialize(this.profileService);
     }
 
@@ -42,5 +41,10 @@ public partial class ShipmentPage : ContentPage
         {
             await Shell.Current.Navigation.PushAsync(new Scanner(new ScannerViewModel(viewModel.RouteElement, true, shipmentService)));
         });*/
+    }
+
+    private async void PhoneDialer(object sender, EventArgs e)
+    {
+        await viewModel.DialNumber();
     }
 }

@@ -43,16 +43,16 @@
                     <Label Grid.Row="0" Grid.Column="1" TextColor="White" Text="{Binding City, StringFormat='{0}, '}" FontSize="20" HorizontalTextAlignment="Start"/>
                     <Label Grid.Row="0" Grid.Column="1" TextColor="White" Text="{Binding Address}" FontSize="20" />
                 </VerticalStackLayout>
-                <Label Grid.Row="1" Grid.Column="0" TextColor="White" Text="Odbiorca:" FontSize="20" Margin="0, 5" />
-                <Label Grid.Row="1" Grid.Column="1" TextColor="White" Text="{Binding RouteElement.Shipment.RecipientName}" FontSize="20" Margin="0, 5" />
+                <Label Grid.Row="1" Grid.Column="0" TextColor="White" Text="{Binding Customer}" FontSize="20" Margin="0, 5" />
+                <Label Grid.Row="1" Grid.Column="1" TextColor="White" Text="{Binding CustomerName}" FontSize="20" Margin="0, 5" />
                 <Label Grid.Row="2" Grid.Column="0" TextColor="White" Text="Telefon:" FontSize="20" Margin="0, 5" />
-                <Label Grid.Row="2" Grid.Column="1" TextColor="White" Text="{Binding RouteElement.Shipment.RecipientPhoneNumber}" FontSize="20" Margin="0, 5" />
+                <Label Grid.Row="2" Grid.Column="1" TextColor="White" Text="{Binding PhoneNumber}" FontSize="20" Margin="0, 5" />
                 <Label Grid.Row="3" Grid.Column="0" TextColor="White" Text="Waga:" FontSize="20" Margin="0, 35, 0 , 5" />
                 <Label Grid.Row="3" Grid.Column="1" TextColor="White" Text="{Binding Weight}" FontSize="20" Margin="0, 35, 0 , 5"  />
                 <Label Grid.Row="4" Grid.Column="0" TextColor="White" Text="Rozmiar:" FontSize="20" Margin="0, 5" />
                 <Label Grid.Row="4" Grid.Column="1" TextColor="White" Text="{Binding Size}" FontSize="20" Margin="0, 5" />
             </Grid>
-            <Grid ColumnDefinitions="3*, 7*" Grid.Row="4" WidthRequest="150" HeightRequest="45" VerticalOptions="Start">
+            <Grid ColumnDefinitions="3*, 7*" Grid.Row="4" WidthRequest="150" HeightRequest="45" VerticalOptions="Start" IsVisible="{Binding CanFinish}">
                 <Button Grid.ColumnSpan="2" BackgroundColor="{StaticResource BattleshipGray}" Command="{Binding FinishShipmentCommand}">
                     <Button.Triggers>
                         <DataTrigger TargetType="Button" Binding="{Binding StatusValue}" Value="InDelivery">
@@ -68,6 +68,8 @@
                    HorizontalTextAlignment="Center"
                    FontSize="20"/>
             </Grid>
+            <Label Grid.Row="4" Text="Aby zmienić status przesyłki musisz rozpocząć trasę"
+                   HorizontalTextAlignment="Center" IsVisible="{Binding CanNotFinish}" TextColor="Red"/>
             <VerticalStackLayout Grid.Row="5">
                 <HorizontalStackLayout  Spacing="50" HorizontalOptions="Center">
                     <Grid ColumnDefinitions="*, *, *" VerticalOptions="Center" WidthRequest="140" HorizontalOptions="Center">
@@ -75,7 +77,8 @@
                         <Image Source="message.svg" Grid.Column="1" HeightRequest="35"/>
                     </Grid>
                     <Grid ColumnDefinitions="*, *, *" VerticalOptions="Center" WidthRequest="140" HorizontalOptions="Center">
-                        <Button Grid.ColumnSpan="3" HeightRequest="60" CornerRadius="15" BackgroundColor="{StaticResource PigmentGreen}"/>
+                        <Button Grid.ColumnSpan="3" HeightRequest="60" CornerRadius="15" BackgroundColor="{StaticResource PigmentGreen}"
+                                Clicked="PhoneDialer"/>
                         <Image Source="phone.svg" Grid.Column="1" HeightRequest="35"/>
                     </Grid>
                 </HorizontalStackLayout>

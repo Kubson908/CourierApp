@@ -7,12 +7,16 @@
           RowDefinitions="30, 60"
           HeightRequest="90"
           VerticalOptions="Start">
-        <ImageButton Source="hamburger.svg"
-                     Grid.Column="0"
-                     Grid.Row="1"
-                     HorizontalOptions="Start"
-                     HeightRequest="40"
-                     WidthRequest="40"/>
+        <Grid Grid.Column="0" Grid.Row="1">
+            <ImageButton Source="hamburger.svg"
+                         Grid.Column="0"
+                         x:Name="menuButton"
+                         Grid.Row="1"
+                         HorizontalOptions="Start"
+                         HeightRequest="40"
+                         WidthRequest="40"
+                         Clicked="OnMenuClicked"/>
+        </Grid>
         <Label Text="CourierApp"
                HorizontalTextAlignment="Center"
                Grid.Column="1"

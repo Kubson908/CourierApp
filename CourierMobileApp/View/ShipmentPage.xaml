@@ -9,71 +9,78 @@
              x:DataType="viewmodel:ShipmentViewModel"
              Title="ShipmentPage"
              Shell.NavBarIsVisible="False">
-    <Grid RowDefinitions="2*, 1*, 1*, Auto, 2*, 2*" Background="{StaticResource LoggedInBgDark}">
-        <components:NavBar Grid.Row="0" Margin="20, 0" x:Name="navbar"/>
+    <Grid>
 
-        <Grid Grid.Row="1" ColumnDefinitions="25,*,25" Margin="25 ,0">
-            <ImageButton Source="arrow_left" Grid.Column="0" WidthRequest="25" HorizontalOptions="Start" 
+        <!-- Menu -->
+        <components:Menu x:Name="menu"/>
+
+        <!-- Main Content -->
+        <Grid RowDefinitions="2*, 1*, 1*, Auto, 2*, 2*" Background="{StaticResource LoggedInBgDark}" x:Name="MainContent">
+            <components:NavBar Grid.Row="0" Margin="20, 0" x:Name="navbar"/>
+
+            <Grid Grid.Row="1" ColumnDefinitions="25,*,25" Margin="25 ,0">
+                <ImageButton Source="arrow_left" Grid.Column="0" WidthRequest="25" HorizontalOptions="Start" 
                          Command="{Binding ChangeShipmentCommand}" CommandParameter="{Binding FalseValue}"
                          IsVisible="{Binding CanDecrement}" IsEnabled="{Binding CanDecrement}"/>
-            <Label TextColor="White" Text="{Binding Header}" Grid.Column="1" FontSize="30" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
-            <ImageButton Source="arrow_right" Grid.Column="2" WidthRequest="25" HorizontalOptions="End" 
+                <Label TextColor="White" Text="{Binding Header}" Grid.Column="1" FontSize="30" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                <ImageButton Source="arrow_right" Grid.Column="2" WidthRequest="25" HorizontalOptions="End" 
                          Command="{Binding ChangeShipmentCommand}" CommandParameter="{Binding TrueValue}"
                          IsVisible="{Binding CanIncrement}" IsEnabled="{Binding CanIncrement}"/>
-        </Grid>
-        <Grid ColumnDefinitions="2*, 5*" Grid.Row="2" WidthRequest="150" HeightRequest="45" >
-            <Button Grid.ColumnSpan="2" BackgroundColor="{StaticResource BattleshipGray}"/>
-            <Image Source="map.svg" Grid.Column="0"/>
-            <Label Grid.Column="1" 
+            </Grid>
+            <Grid ColumnDefinitions="2*, 5*" Grid.Row="2" WidthRequest="150" HeightRequest="45" >
+                <Button Grid.ColumnSpan="2" BackgroundColor="{StaticResource BattleshipGray}"/>
+                <Image Source="map.svg" Grid.Column="0"/>
+                <Label Grid.Column="1" 
                    TextColor="White" 
                    Text="Trasa" 
                    VerticalTextAlignment="Center" 
                    HorizontalTextAlignment="Center"
                    FontSize="20"/>
-        </Grid>
-        <Grid ColumnDefinitions="3*, 5*" RowDefinitions="Auto, Auto, Auto, Auto, Auto" Grid.Row="3" Margin="40, 10">
-            <Label Grid.Row="0" Grid.Column="0" TextColor="White" Text="Adres:" FontSize="20" HorizontalTextAlignment="Start"/>
-            <VerticalStackLayout Grid.Column="1" Grid.Row="0">
-                <Label Grid.Row="0" Grid.Column="1" TextColor="White" Text="{Binding City, StringFormat='{0}, '}" FontSize="20" HorizontalTextAlignment="Start"/>
-                <Label Grid.Row="0" Grid.Column="1" TextColor="White" Text="{Binding Address}" FontSize="20" />
-            </VerticalStackLayout>
-            <Label Grid.Row="1" Grid.Column="0" TextColor="White" Text="Odbiorca:" FontSize="20" Margin="0, 5" />
-            <Label Grid.Row="1" Grid.Column="1" TextColor="White" Text="{Binding RouteElement.Shipment.RecipientName}" FontSize="20" Margin="0, 5" />
-            <Label Grid.Row="2" Grid.Column="0" TextColor="White" Text="Telefon:" FontSize="20" Margin="0, 5" />
-            <Label Grid.Row="2" Grid.Column="1" TextColor="White" Text="{Binding RouteElement.Shipment.RecipientPhoneNumber}" FontSize="20" Margin="0, 5" />
-            <Label Grid.Row="3" Grid.Column="0" TextColor="White" Text="Waga:" FontSize="20" Margin="0, 35, 0 , 5" />
-            <Label Grid.Row="3" Grid.Column="1" TextColor="White" Text="{Binding Weight}" FontSize="20" Margin="0, 35, 0 , 5"  />
-            <Label Grid.Row="4" Grid.Column="0" TextColor="White" Text="Rozmiar:" FontSize="20" Margin="0, 5" />
-            <Label Grid.Row="4" Grid.Column="1" TextColor="White" Text="{Binding Size}" FontSize="20" Margin="0, 5" />
-        </Grid>
-        <Grid ColumnDefinitions="3*, 7*" Grid.Row="4" WidthRequest="150" HeightRequest="45" VerticalOptions="Start">
-            <Button Grid.ColumnSpan="2" BackgroundColor="{StaticResource BattleshipGray}" Command="{Binding FinishShipmentCommand}">
-                <Button.Triggers>
-                    <DataTrigger TargetType="Button" Binding="{Binding StatusValue}" Value="InDelivery">
-                        <Setter Property="BackgroundColor" Value="{StaticResource PigmentGreen}" />
-                    </DataTrigger>
-                </Button.Triggers>
-            </Button>
-            <Image Source="{Binding FinishIconPath}" Grid.Column="0" Margin="3, 0, 0, 0"/>
-            <Label Grid.Column="1" 
+            </Grid>
+            <Grid ColumnDefinitions="3*, 5*" RowDefinitions="Auto, Auto, Auto, Auto, Auto" Grid.Row="3" Margin="40, 10">
+                <Label Grid.Row="0" Grid.Column="0" TextColor="White" Text="Adres:" FontSize="20" HorizontalTextAlignment="Start"/>
+                <VerticalStackLayout Grid.Column="1" Grid.Row="0">
+                    <Label Grid.Row="0" Grid.Column="1" TextColor="White" Text="{Binding City, StringFormat='{0}, '}" FontSize="20" HorizontalTextAlignment="Start"/>
+                    <Label Grid.Row="0" Grid.Column="1" TextColor="White" Text="{Binding Address}" FontSize="20" />
+                </VerticalStackLayout>
+                <Label Grid.Row="1" Grid.Column="0" TextColor="White" Text="Odbiorca:" FontSize="20" Margin="0, 5" />
+                <Label Grid.Row="1" Grid.Column="1" TextColor="White" Text="{Binding RouteElement.Shipment.RecipientName}" FontSize="20" Margin="0, 5" />
+                <Label Grid.Row="2" Grid.Column="0" TextColor="White" Text="Telefon:" FontSize="20" Margin="0, 5" />
+                <Label Grid.Row="2" Grid.Column="1" TextColor="White" Text="{Binding RouteElement.Shipment.RecipientPhoneNumber}" FontSize="20" Margin="0, 5" />
+                <Label Grid.Row="3" Grid.Column="0" TextColor="White" Text="Waga:" FontSize="20" Margin="0, 35, 0 , 5" />
+                <Label Grid.Row="3" Grid.Column="1" TextColor="White" Text="{Binding Weight}" FontSize="20" Margin="0, 35, 0 , 5"  />
+                <Label Grid.Row="4" Grid.Column="0" TextColor="White" Text="Rozmiar:" FontSize="20" Margin="0, 5" />
+                <Label Grid.Row="4" Grid.Column="1" TextColor="White" Text="{Binding Size}" FontSize="20" Margin="0, 5" />
+            </Grid>
+            <Grid ColumnDefinitions="3*, 7*" Grid.Row="4" WidthRequest="150" HeightRequest="45" VerticalOptions="Start">
+                <Button Grid.ColumnSpan="2" BackgroundColor="{StaticResource BattleshipGray}" Command="{Binding FinishShipmentCommand}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding StatusValue}" Value="InDelivery">
+                            <Setter Property="BackgroundColor" Value="{StaticResource PigmentGreen}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+                <Image Source="{Binding FinishIconPath}" Grid.Column="0" Margin="3, 0, 0, 0"/>
+                <Label Grid.Column="1" 
                    TextColor="White" 
                    Text="Zakończ" 
                    VerticalTextAlignment="Center" 
                    HorizontalTextAlignment="Center"
                    FontSize="20"/>
-        </Grid>
-        <VerticalStackLayout Grid.Row="5">
-            <HorizontalStackLayout  Spacing="50" HorizontalOptions="Center">
-                <Grid ColumnDefinitions="*, *, *" VerticalOptions="Center" WidthRequest="140" HorizontalOptions="Center">
-                    <Button Grid.ColumnSpan="3" HeightRequest="60" CornerRadius="15" BackgroundColor="{StaticResource BattleshipGray}"/>
-                    <Image Source="message.svg" Grid.Column="1" HeightRequest="35"/>
-                </Grid>
-                <Grid ColumnDefinitions="*, *, *" VerticalOptions="Center" WidthRequest="140" HorizontalOptions="Center">
-                    <Button Grid.ColumnSpan="3" HeightRequest="60" CornerRadius="15" BackgroundColor="{StaticResource PigmentGreen}"/>
-                    <Image Source="phone.svg" Grid.Column="1" HeightRequest="35"/>
-                </Grid>
-            </HorizontalStackLayout>
-        </VerticalStackLayout>
+            </Grid>
+            <VerticalStackLayout Grid.Row="5">
+                <HorizontalStackLayout  Spacing="50" HorizontalOptions="Center">
+                    <Grid ColumnDefinitions="*, *, *" VerticalOptions="Center" WidthRequest="140" HorizontalOptions="Center">
+                        <Button Grid.ColumnSpan="3" HeightRequest="60" CornerRadius="15" BackgroundColor="{StaticResource BattleshipGray}"/>
+                        <Image Source="message.svg" Grid.Column="1" HeightRequest="35"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="*, *, *" VerticalOptions="Center" WidthRequest="140" HorizontalOptions="Center">
+                        <Button Grid.ColumnSpan="3" HeightRequest="60" CornerRadius="15" BackgroundColor="{StaticResource PigmentGreen}"/>
+                        <Image Source="phone.svg" Grid.Column="1" HeightRequest="35"/>
+                    </Grid>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
 
+        </Grid>
     </Grid>
 </ContentPage>

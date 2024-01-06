@@ -7,6 +7,7 @@ public partial class SchedulePage : ContentPage
 {
     ScheduleViewModel viewModel;
     ProfileService profileService;
+    private readonly MenuAnimation animation;
     bool isButtonPressed = false;
     public SchedulePage(ScheduleViewModel viewModel, ProfileService profileService)
     {
@@ -14,17 +15,32 @@ public partial class SchedulePage : ContentPage
         BindingContext = viewModel;
         this.viewModel = viewModel;
         this.profileService = profileService;
+        animation = new()
+        {
+            layout = MainContent
+        };
+        navbar.MenuClicked += animation.OpenMenu;
+        menu.ContainerClicked += (object sender, EventArgs e) => { animation.CloseMenu(sender, e); navbar.RotateIcon(); };
         navbar.Initialize(this.profileService);
 
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         if (viewModel.shipmentService.route.Count < viewModel.Route.Count)
             viewModel.SetRoute();
         viewModel.IsBusy = false;
         base.OnAppearing();
         navbar.SetImage();
+        if (viewModel.ListEmpty)
+            await viewModel.GetRouteAsync();
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        animation.CloseMenu(null, EventArgs.Empty);
+        if (navbar.menuOpened) navbar.RotateIcon();
     }
 
     protected override bool OnBackButtonPressed()

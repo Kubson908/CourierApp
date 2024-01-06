@@ -19,9 +19,10 @@ public partial class ProfileViewModel : BaseViewModel
     [ObservableProperty]
     string phoneNumber;
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(NoError))]
     bool error;
-    [ObservableProperty]
-    bool noError;
+
+    public bool NoError => !Error;
 
     public ProfileViewModel(ProfileService profileService, ConnectionService connectionService)
     {
@@ -57,14 +58,12 @@ public partial class ProfileViewModel : BaseViewModel
             PhoneNumber = profile.PhoneNumber;
             User = await SecureStorage.Default.GetAsync("user");
             Error = false;
-            NoError = true;
             IsBusy = false;
         }
         catch (Exception)
         {
             await Shell.Current.DisplayAlert("Błąd pobierania", "Nie udało się pobrać danych profilu", "OK");
             Error = true;
-            NoError = false;
             IsBusy = false;
         }
     }
@@ -73,6 +72,18 @@ public partial class ProfileViewModel : BaseViewModel
     public async static Task ChangePassword()
     {
         await Shell.Current.Navigation.PushAsync<ChangePasswordPage>();
+    }
+
+    [RelayCommand]
+    public async Task LogOut()
+    {
+        SecureStorage.RemoveAll();
+        connectionService.Token = null;
+        Email = null;
+        PhoneNumber = null;
+        Error = false;
+        User = null;
+        await Shell.Current.Navigation.PopToRootAsync();
     }
 
 

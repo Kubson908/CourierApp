@@ -5,7 +5,6 @@ namespace CourierAPI.Models.Dto;
 public class LoginDto
 {
     [Required]
-    [EmailAddress]
     public string Login { get; set; } = string.Empty;
 
     [Required]

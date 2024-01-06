@@ -64,10 +64,12 @@
 	  <None Remove="Resources\Fonts\IBMPlexSans-Regular.otf" />
 	  <None Remove="Resources\Images\hamburger.svg" />
 	  <None Remove="Resources\Images\history_icon.svg" />
+	  <None Remove="Resources\Images\logout.svg" />
 	  <None Remove="Resources\Images\package_icon.svg" />
 	  <None Remove="Resources\Images\pencil.svg" />
 	  <None Remove="Resources\Images\profile_circle.svg" />
 	  <None Remove="Resources\Images\profile_icon.svg" />
+	  <None Remove="Resources\Images\quit.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -82,6 +84,9 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="View\ChangePasswordPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\Components\Menu.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\Components\NavBar.xaml">

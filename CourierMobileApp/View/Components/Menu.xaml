@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CourierMobileApp.View.Components.Menu">
+    <Grid BackgroundColor="#fa0c1011">
+        <!--<Grid.Background>
+            <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 1">
+                <GradientStop Color="#666666" Offset="0.0" />
+                <GradientStop Color="#000000" Offset="1.0" />
+            </LinearGradientBrush>
+        </Grid.Background>-->
+
+        <Grid RowDefinitions="*, *" 
+              Margin="0, 52, 0, 0"
+              HorizontalOptions="Start"
+              IsEnabled="False">
+            <VerticalStackLayout HeightRequest="100" Grid.Row="0">
+                <Label Text="Motyw"
+                       FontSize="18"
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
+                <Switch Grid.Row="0" WidthRequest="50"
+                        ThumbColor="#15AB54" OnColor="{StaticResource BattleshipGray}"/>
+            </VerticalStackLayout>
+            <Image Source="quit.svg" Grid.Row="2" WidthRequest="60" Margin="20"
+                   BackgroundColor="Transparent" HorizontalOptions="Start"/>
+            <Button Grid.Row="1" WidthRequest="60" HeightRequest="60" CornerRadius="30"
+                    BackgroundColor="#2dbdbdbd" HorizontalOptions="Start" Margin="20"
+                    Clicked="Quit"/>
+
+        </Grid>
+
+    </Grid>
+</ContentView>

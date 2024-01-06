@@ -7,65 +7,70 @@
              x:DataType="viewmodel:MainPageViewModel"
              x:Class="CourierMobileApp.View.MainPage"
              Shell.NavBarIsVisible="False">
+    <Grid>
 
-    <ScrollView BackgroundColor="#111516">
+        <!-- Menu -->
+        <components:Menu x:Name="menu"/>
+
+        <!-- Main Content -->
         <Grid   RowDefinitions="*,*,*,*"
                 Background="{StaticResource LoggedInBgDark}"
                 Padding="30,0"
-                VerticalOptions="FillAndExpand">
+                x:Name="MainContent">
 
-            <components:NavBar Grid.Row="0" x:Name="navbar"/>
+            <components:NavBar Grid.Row="0" x:Name="navbar" />
             <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="True" Grid.Row="1" Grid.RowSpan="2" HeightRequest="100" Color="#15AB54"/>
             <Frame Grid.Row="1"
-                   BackgroundColor="Transparent"
-                   BorderColor="Transparent"
-                   IsVisible="{Binding IsNotBusy}">
+                    BackgroundColor="Transparent"
+                    BorderColor="Transparent"
+                    IsVisible="{Binding IsNotBusy}">
                 <Grid RowDefinitions="*,*"
-                      VerticalOptions="Center">
+                        VerticalOptions="Center">
                     <Button Grid.RowSpan="2"
                             BackgroundColor="#15AB54"
                             CornerRadius="20"
                             HeightRequest="170"
                             Command="{Binding ScheduleClickedCommand}"/>
                     <Image Source="package_icon.svg"
-                           HeightRequest="50"
-                           Grid.Row="0"
-                           VerticalOptions="End" />
+                            HeightRequest="50"
+                            Grid.Row="0"
+                            VerticalOptions="End" />
                     <Label Text="Harmonogram przesyłek"
-                           TextColor="White"
-                           FontSize="14"
-                           Grid.Row="1"
-                           HorizontalOptions="Center"
-                           WidthRequest="100"
-                           HorizontalTextAlignment="Center"/>
+                            TextColor="White"
+                            FontSize="14"
+                            Grid.Row="1"
+                            HorizontalOptions="Center"
+                            WidthRequest="100"
+                            HorizontalTextAlignment="Center"/>
                 </Grid>
             </Frame>
 
             <Frame Grid.Row="2"
-                   BackgroundColor="Transparent"
-                   BorderColor="Transparent" 
-                   IsVisible="{Binding IsNotBusy}">
+                    BackgroundColor="Transparent"
+                    BorderColor="Transparent" 
+                    IsVisible="{Binding IsNotBusy}">
                 <Grid RowDefinitions="*,*"
-                      VerticalOptions="Center">
+                        VerticalOptions="Center">
                     <Button Grid.RowSpan="2"
                             BackgroundColor="#15AB54"
                             CornerRadius="20"
                             HeightRequest="170"/>
                     <Image Source="history_icon.svg"
-                           HeightRequest="50"
-                           Grid.Row="0"
-                           VerticalOptions="End"/>
+                            HeightRequest="50"
+                            Grid.Row="0"
+                            VerticalOptions="End"/>
                     <Label Text="Historia przesyłek"
-                           TextColor="White"
-                           FontSize="14"
-                           Grid.Row="1"
-                           HorizontalOptions="Center"
-                           WidthRequest="100"
-                           HorizontalTextAlignment="Center"/>
+                            TextColor="White"
+                            FontSize="14"
+                            Grid.Row="1"
+                            HorizontalOptions="Center"
+                            WidthRequest="100"
+                            HorizontalTextAlignment="Center"/>
                 </Grid>
             </Frame>
 
         </Grid>
-    </ScrollView>
+
+    </Grid>
 
 </ContentPage>

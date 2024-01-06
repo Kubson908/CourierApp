@@ -10,66 +10,77 @@
              Title="ProfilePage"
              Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto, *, Auto" 
-          Background="{StaticResource LoggedInBgDark}">
+    <Grid Background="{StaticResource LoggedInBgDark}">
+        <VerticalStackLayout IsVisible="{Binding IsNotBusy}" Padding="0">
+            <Grid ColumnDefinitions="*, *, *">
 
-        <Grid Grid.Row="0" ColumnDefinitions="*, *, *" IsVisible="{Binding IsNotBusy}">
+                <Image Grid.Column="1" Margin="0, 100, 0, 0" WidthRequest="150" Source="{Binding ImgSource}" >
+                    <Image.Clip>
+                        <EllipseGeometry Center="75, 75"
+                                         RadiusX="75"
+                                         RadiusY="75" />
+                    </Image.Clip>
+                </Image>
 
-            <Image Grid.Column="1" Margin="0, 100, 0, 0" WidthRequest="150" Source="{Binding ImgSource}" >
-                <Image.Clip>
-                    <EllipseGeometry Center="75, 75"
-                                     RadiusX="75"
-                                     RadiusY="75" />
-                </Image.Clip>
-            </Image>
-
-            <Frame Grid.Column="1"
-                   WidthRequest="40" HeightRequest="40"
-                   CornerRadius="20" BackgroundColor="{StaticResource BattleshipGray}"
-                   BorderColor="{StaticResource BattleshipGray}"
-                   VerticalOptions="End"
-                   HorizontalOptions="End" >
-                <Image
-                   WidthRequest="30" HeightRequest="30"
-                   Source="pencil.svg" />
+                <Frame Grid.Column="1"
+                       WidthRequest="40" HeightRequest="40"
+                       CornerRadius="20" BackgroundColor="{StaticResource BattleshipGray}"
+                       BorderColor="{StaticResource BattleshipGray}"
+                       VerticalOptions="End"
+                       HorizontalOptions="End" >
+                    <Image
+                       WidthRequest="30" HeightRequest="30"
+                       Source="pencil.svg" />
                 
-            </Frame>
-            <Button WidthRequest="40" HeightRequest="40"
-                    CornerRadius="20" BackgroundColor="Transparent"
-                    Grid.Column="1" 
-                    VerticalOptions="End"
-                    HorizontalOptions="End"
-                    Command="{Binding UploadPhotoCommand}"/>
-        </Grid>
+                </Frame>
+                <Button WidthRequest="40" HeightRequest="40"
+                        CornerRadius="20" BackgroundColor="Transparent"
+                        Grid.Column="1" 
+                        VerticalOptions="End"
+                        HorizontalOptions="End"
+                        Command="{Binding UploadPhotoCommand}"/>
+
+                <ImageButton Source="logout.svg"
+                             VerticalOptions="Start"
+                             Grid.Column="2"
+                             Command="{Binding LogOutCommand}"
+                             Margin="0, 40"
+                             WidthRequest="60"
+                             HeightRequest="60"
+                             Padding="5"
+                             CornerRadius="25"
+                             BackgroundColor="#3d111516"/>
+            </Grid>
         
-        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding NoError}">
+            <VerticalStackLayout Grid.Row="1" IsVisible="{Binding NoError}"
+                                 Spacing="20">
+                <Label HorizontalTextAlignment="Center" 
+                       FontSize="20"
+                       Margin="0, 20, 0, 0"
+                       TextColor="White" 
+                       Text="{Binding User}" />
+                <Label HorizontalTextAlignment="Center" 
+                       FontSize="20"
+                       TextColor="White" 
+                       Text="{Binding Email}" />
+                <Label HorizontalTextAlignment="Center" 
+                       FontSize="20"
+                       TextColor="White" 
+                       Text="{Binding PhoneNumber, StringFormat='Tel: {0}'}" />
+                <Button Text="Zmień hasło" WidthRequest="200" 
+                        FontSize="16" BackgroundColor="#15AB54"
+                        Command="{Binding ChangePasswordCommand}"
+                        Margin="20"/>
+            </VerticalStackLayout>
             <Label HorizontalTextAlignment="Center" 
+                   IsVisible="{Binding Error}"
                    Margin="20" 
                    FontSize="20"
-                   IsVisible="{Binding IsNotBusy}"
-                   TextColor="White" 
-                   Text="{Binding User}" />
-            <Label HorizontalTextAlignment="Center" 
-                   Margin="20" 
-                   FontSize="20"
-                   IsVisible="{Binding IsNotBusy}"
-                   TextColor="White" 
-                   Text="{Binding Email}" />
-            <Label HorizontalTextAlignment="Center" 
-                   Margin="20" 
-                   FontSize="20"
-                   TextColor="White" 
-                   Text="{Binding PhoneNumber, StringFormat='Tel: {0}'}" />
-            <Button Text="Zmień hasło" WidthRequest="200" 
-                    FontSize="16" BackgroundColor="#15AB54"
-                    Command="{Binding ChangePasswordCommand}"/>
+                   TextColor="Red" 
+                   Text="Błąd pobierania danych" />
         </VerticalStackLayout>
-        <Label HorizontalTextAlignment="Center" 
-               IsVisible="{Binding Error}"
-               Margin="20" 
-               FontSize="20"
-               TextColor="Red" 
-               Text="Błąd pobierania danych" />
-        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="True" Grid.Row="0" Grid.RowSpan="3" HeightRequest="100" Color="#15AB54"/>
+        <Grid IsVisible="{Binding IsBusy}" RowDefinitions="*, *, *" >
+            <ActivityIndicator Grid.Row="0" Grid.RowSpan="3" IsRunning="True" HeightRequest="100" Color="#15AB54"/>
+        </Grid>
     </Grid>
 </ContentPage>

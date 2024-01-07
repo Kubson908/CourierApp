@@ -23,10 +23,8 @@
                        Grid.Row="0" CornerRadius="0"
                        VerticalOptions="Fill" />
                 <Frame HeightRequest="200" BackgroundColor="Transparent" CornerRadius="0"
-                        BorderColor="Transparent" Grid.Row="1" x:Name="scanFrame" >
-                    <Label Text="{Binding Label}" TextColor="Red" FontSize="48" FontAttributes="Bold"/>
-                </Frame>
-                    <Frame BackgroundColor="#6d6d6d6d" BorderColor="#6d6d6d6d"
+                        BorderColor="Transparent" Grid.Row="1" x:Name="scanFrame" />
+                <Frame BackgroundColor="#6d6d6d6d" BorderColor="#6d6d6d6d"
                        Grid.Row="2" CornerRadius="0"
                        VerticalOptions="Fill"  />
             </Grid>

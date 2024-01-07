@@ -12,8 +12,8 @@ public class MenuAnimation
         {
             await layout.TranslateTo(100, 0, AnimationDuration, Easing.Linear);
             menuOpened = true;
+            GlobalVars.CanQuit = true;
         }
-            
         else CloseMenu(sender, e);
     }
 
@@ -21,5 +21,6 @@ public class MenuAnimation
     {
         await layout.TranslateTo(0, 0, AnimationDuration, Easing.Linear);
         menuOpened = false;
+        GlobalVars.CanQuit = false;
     }
 }

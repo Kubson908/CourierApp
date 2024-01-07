@@ -56,7 +56,7 @@
                 <Label Grid.Row="4" Grid.Column="0" TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="Rozmiar:" FontSize="20" Margin="0, 5" />
                 <Label Grid.Row="4" Grid.Column="1" TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="{Binding Size}" FontSize="20" Margin="0, 5" />
             </Grid>
-            <Grid ColumnDefinitions="3*, 7*" Grid.Row="4" WidthRequest="150" HeightRequest="45" VerticalOptions="Start" IsVisible="{Binding CanFinish}">
+            <Grid ColumnDefinitions="3*, 7*" Grid.Row="4" WidthRequest="150" HeightRequest="45" VerticalOptions="Start" IsVisible="{Binding NotDelivery}">
                 <Button Grid.ColumnSpan="2" BackgroundColor="{StaticResource BattleshipGray}" Command="{Binding FinishShipmentCommand}">
                     <Button.Triggers>
                         <DataTrigger TargetType="Button" Binding="{Binding StatusValue}" Value="InDelivery">
@@ -74,6 +74,29 @@
                    VerticalTextAlignment="Center" 
                    HorizontalTextAlignment="Center"
                    FontSize="20"/>
+            </Grid>
+            <Grid ColumnDefinitions="*, *" Grid.Row="4" IsVisible="{Binding Delivery}">
+                <Grid Grid.Column="1" ColumnDefinitions="3*, 7*" WidthRequest="150" HeightRequest="45" VerticalOptions="Start">
+                    <Button Grid.ColumnSpan="2" BackgroundColor="{StaticResource BattleshipGray}" Command="{Binding FinishShipmentCommand}">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding StatusValue}" Value="InDelivery">
+                                <Setter Property="BackgroundColor" Value="{StaticResource PigmentGreen}" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Button" Binding="{Binding StatusValue}" Value="InReturn">
+                                <Setter Property="BackgroundColor" Value="#E9920C" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                    <Image Source="{Binding FinishIconPath}" Grid.Column="0" Margin="3, 0, 0, 0"/>
+                    <Label Grid.Column="1" 
+                           TextColor="White" 
+                           Text="Zakończ" 
+                           VerticalTextAlignment="Center" 
+                           HorizontalTextAlignment="Center"
+                           FontSize="20"/>
+                </Grid>
+                <Button Grid.Column="0" WidthRequest="150" HeightRequest="45" Text="Niepowodzenie" BackgroundColor="{StaticResource BattleshipGray}"
+                        Margin="0" VerticalOptions="Start" TextColor="White" FontSize="14" Command="{Binding RecipientAbsentCommand}"/>
             </Grid>
             <Label Grid.Row="4" Text="Aby zmienić status przesyłki musisz rozpocząć trasę"
                    HorizontalTextAlignment="Center" IsVisible="{Binding CanNotFinish}" TextColor="Red"/>

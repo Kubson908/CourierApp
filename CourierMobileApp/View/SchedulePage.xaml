@@ -68,6 +68,9 @@
                                             <DataTrigger TargetType="Image" Binding="{Binding Shipment.Status}" Value="Accepted">
                                                 <Setter Property="Source" Value="pickup.svg" />
                                             </DataTrigger>
+                                            <DataTrigger TargetType="Image" Binding="{Binding Shipment.Status}" Value="InReturn">
+                                                <Setter Property="Source" Value="return_package.svg" />
+                                            </DataTrigger>
                                         </Image.Triggers>
                                     </Image>
                                     <FlexLayout HorizontalOptions="Center" Grid.Column="1">

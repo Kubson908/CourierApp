@@ -56,6 +56,11 @@ public partial class ShipmentViewModel : BaseViewModel
 
     public bool CanNotFinish => !CanFinish;
 
+    [ObservableProperty]
+    bool delivery;
+    [ObservableProperty]
+    public bool notDelivery;
+
     private bool hasPhonePermission = false;
 
     public ShipmentViewModel(ShipmentService shipmentService, RouteElement element)
@@ -72,25 +77,28 @@ public partial class ShipmentViewModel : BaseViewModel
     {
         CanIncrement = index < shipmentService.route.Count - 1;
         CanDecrement = index != 0;
-        Header = RouteElement.Shipment.Status == Status.Accepted ? "Odbiór" : "Dostawa";
+        Header = RouteElement.Shipment.Status == Status.Accepted ? "Odbiór" : 
+            (RouteElement.Shipment.Status == Status.InDelivery ? "Dostawa" : "Zwrot");
         Customer = RouteElement.Shipment.Status == Status.Accepted ? "Nadawca" : "Odbiorca";
-        CustomerName =  RouteElement.Shipment.Status == Status.Accepted ?
-            RouteElement.Shipment.Customer.FirstName + " " + RouteElement.Shipment.Customer.LastName :
-            RouteElement.Shipment.RecipientName;
+        CustomerName =  RouteElement.Shipment.Status == Status.InDelivery ?
+            RouteElement.Shipment.RecipientName :
+            RouteElement.Shipment.Customer.FirstName + " " + RouteElement.Shipment.Customer.LastName;
         StatusValue = RouteElement.Shipment.Status;
-        PhoneNumber = RouteElement.Shipment.Status == Status.Accepted ? RouteElement.Shipment.Customer.PhoneNumber : RouteElement.Shipment.RecipientPhoneNumber;
+        PhoneNumber = RouteElement.Shipment.Status == Status.InDelivery ? RouteElement.Shipment.RecipientPhoneNumber :RouteElement.Shipment.Customer.PhoneNumber ;
         if (PhoneNumber.Length == 9)
         {
             PhoneNumber = PhoneNumber.Insert(3, " ").Insert(7, " ");
         }
-        Address = StatusValue == Status.Accepted ? (RouteElement.Shipment.PickupAddress
-            + (RouteElement.Shipment.PickupApartmentNumber.Length > 0 ? "/" + RouteElement.Shipment.PickupApartmentNumber : ""))
-            : (RouteElement.Shipment.RecipientAddress + (RouteElement.Shipment.RecipientApartmentNumber.Length > 0 ? "/" + RouteElement.Shipment.RecipientApartmentNumber : ""));
-        City = StatusValue == Status.Accepted ? RouteElement.Shipment.PickupCity : RouteElement.Shipment.RecipientCity;
+        Address = StatusValue == Status.InDelivery ? (RouteElement.Shipment.RecipientAddress + (RouteElement.Shipment.RecipientApartmentNumber != null && RouteElement.Shipment.RecipientApartmentNumber.Length > 0 ? "/" + RouteElement.Shipment.RecipientApartmentNumber : ""))
+            : (RouteElement.Shipment.PickupAddress
+            + (RouteElement.Shipment.PickupApartmentNumber != null && RouteElement.Shipment.PickupApartmentNumber.Length > 0 ? "/" + RouteElement.Shipment.PickupApartmentNumber : ""));
+        City = StatusValue == Status.InDelivery ? RouteElement.Shipment.RecipientCity : RouteElement.Shipment.PickupCity;
         Size = sizes[(int)RouteElement.Shipment.Size];
         Weight = weights[(int)RouteElement.Shipment.Weight];
         FinishIconPath = RouteElement.Shipment.Status == Status.Accepted ? "pickup_button.svg" : "delivery_button.svg";
         CanFinish = MauiApplication.Current.Services.GetService<ScheduleViewModel>().IsWorking;
+        Delivery = RouteElement.Shipment.Status == Status.InDelivery && CanFinish;
+        NotDelivery = RouteElement.Shipment.Status != Status.InDelivery && CanFinish;
     }
 
     [RelayCommand]
@@ -134,6 +142,16 @@ public partial class ShipmentViewModel : BaseViewModel
         MainThread.InvokeOnMainThreadAsync(async () =>
         {
             await Shell.Current.Navigation.PushAsync(new Scanner(new ScannerViewModel(RouteElement, true, shipmentService)));
+        });
+    }
+
+    [RelayCommand]
+    public void RecipientAbsent()
+    {
+        MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            bool answer = await Shell.Current.DisplayAlert("Niepowodzenie dostawy", "Czy chcesz oznaczyć próbę dostawy jako nieudaną?", "Tak", "Nie");
+            if (answer) await Shell.Current.Navigation.PushAsync(new Scanner(new ScannerViewModel(RouteElement, false, shipmentService)));
         });
     }
 

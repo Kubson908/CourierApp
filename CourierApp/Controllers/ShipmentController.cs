@@ -260,6 +260,15 @@ public class ShipmentController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPatch("package-not-delivered/{id}")]
+    public async Task<IActionResult> PackageNotDelivered([FromRoute] int id)
+    {
+        ApiUserResponse result = await UpdateShipmentStatus(id, Status.NotDelivered);
+        if (!result.IsSuccess) return BadRequest(result);
+        else if (result.Exception) return StatusCode(StatusCodes.Status500InternalServerError, result);
+        return Ok(result);
+    }
+
     [HttpGet("get-unavailable-dates")]
     public async Task<IActionResult> GetUnavailableDates()
     {
@@ -319,7 +328,8 @@ public class ShipmentController : ControllerBase
                     r.Shipment.Customer!.PhoneNumber
                 }
             }
-        }).ToListAsync();
+        }).Where(r => r.Shipment.Status == Status.Accepted || r.Shipment.Status == Status.InDelivery 
+            || r.Shipment.Status == Status.InReturn).ToListAsync();
         return Ok(route);
     }
 

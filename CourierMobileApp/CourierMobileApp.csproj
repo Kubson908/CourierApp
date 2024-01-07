@@ -49,7 +49,7 @@
 		<MauiImage Update="Resources\Images\profile_icon.svg">
 		  <BaseSize>168,208</BaseSize>
 		</MauiImage>
-		<MauiImage Update="Resources\Images\history_icon.svg">
+		<MauiImage Update="Resources\Images\warehouse_icon.svg">
 		  <BaseSize>168,208</BaseSize>
 		</MauiImage>
 		<MauiImage Update="Resources\Images\hamburger.svg">
@@ -73,7 +73,6 @@
 	  <None Remove="Resources\Images\arrow_right_dark.svg" />
 	  <None Remove="Resources\Images\hamburger.svg" />
 	  <None Remove="Resources\Images\hamburger_dark.svg" />
-	  <None Remove="Resources\Images\history_icon.svg" />
 	  <None Remove="Resources\Images\logout.svg" />
 	  <None Remove="Resources\Images\package_icon.svg" />
 	  <None Remove="Resources\Images\pencil.svg" />
@@ -81,6 +80,8 @@
 	  <None Remove="Resources\Images\profile_circle_dark.svg" />
 	  <None Remove="Resources\Images\profile_icon.svg" />
 	  <None Remove="Resources\Images\quit.svg" />
+	  <None Remove="Resources\Images\return_package.svg" />
+	  <None Remove="Resources\Images\warehouse_icon.svg" />
 	</ItemGroup>
 
 	<ItemGroup>

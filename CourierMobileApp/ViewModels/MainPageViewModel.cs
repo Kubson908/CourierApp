@@ -6,7 +6,7 @@ namespace CourierMobileApp.ViewModels;
 
 public partial class MainPageViewModel : BaseViewModel
 {
-    public readonly ShipmentService shipmentService;
+    private readonly ShipmentService shipmentService;
     public MainPageViewModel(ShipmentService shipmentService)
     {
         this.shipmentService = shipmentService;
@@ -18,6 +18,14 @@ public partial class MainPageViewModel : BaseViewModel
         MainThread.InvokeOnMainThreadAsync(async () =>
         {
             await Shell.Current.Navigation.PushAsync<SchedulePage>();
+        });
+    }
+    [RelayCommand]
+    private static void WarehouseClicked()
+    {
+        MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            await Shell.Current.Navigation.PushAsync(new Scanner(new ScannerViewModel(null, true, MauiApplication.Current.Services.GetService<ShipmentService>()))) ;
         });
     }
 }

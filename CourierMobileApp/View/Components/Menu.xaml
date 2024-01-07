@@ -28,7 +28,7 @@
                    BackgroundColor="Transparent" HorizontalOptions="Start"/>
             <Button Grid.Row="1" WidthRequest="60" HeightRequest="60" CornerRadius="30"
                     BackgroundColor="#2dbdbdbd" HorizontalOptions="Start" Margin="20, 72, 20 , 0"
-                    Clicked="Quit"/>
+                    Clicked="Quit" x:Name="quitButton"/>
         </Grid>
 
     </Grid>

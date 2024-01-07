@@ -21,11 +21,18 @@ public partial class Scanner : ContentPage
 
     protected async void BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
     {
-        BarcodeResult result = e.Results.First();
-        PointF[] pos = result.PointsOfInterest;
-        if (!IsInAllowedArea(pos)) return;
-        cameraBarcodeReaderView.IsDetecting = false;
-        await viewModel.AfterScanAction(e.Results.First().Value);
+        try
+        {
+            BarcodeResult result = e.Results.First();
+            PointF[] pos = result.PointsOfInterest;
+            if (!IsInAllowedArea(pos)) return;
+            cameraBarcodeReaderView.IsDetecting = false;
+            await viewModel.AfterScanAction(e.Results.First().Value);
+        } catch (Exception)
+        {
+            await Shell.Current.DisplayAlert("B³¹d odczytywania kodu", "Nie uda³o siê odczytaæ danych z etykiety", "OK");
+        }
+        
     }
 
     private bool IsInAllowedArea(PointF[] points)

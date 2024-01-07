@@ -12,6 +12,7 @@ public partial class Menu : ContentView
 
     private async void Quit(object sender, EventArgs e)
     {
+        if (!GlobalVars.CanQuit) return;
         if (scheduleViewModel.IsWorking)
         {
             bool answer = await Shell.Current.DisplayAlert("Trasa rozpoczêta", "Czy chcesz przerwaæ trasê?", "Tak", "Nie");
@@ -30,17 +31,18 @@ public partial class Menu : ContentView
         Application.Current.Quit();
     }
 
-    private async void Switch_Toggled(object sender, ToggledEventArgs e)
+   /* public void Open()
     {
-        if (e.Value)
+        if (quitButton.IsEnabled)
         {
-            Application.Current.UserAppTheme = AppTheme.Light;
-            await SecureStorage.Default.SetAsync("Theme", "Light");
+            Close();
         }
         else
-        {
-            Application.Current.UserAppTheme = AppTheme.Dark;
-            await SecureStorage.Default.SetAsync("Theme", "Dark");
-        }
+            quitButton.IsEnabled = true;
     }
+
+    public void Close()
+    {
+        quitButton.IsEnabled = false;
+    }*/
 }

@@ -1,4 +1,5 @@
 ﻿using CourierMobileApp.Models.Dto;
+using Java.Net;
 using Newtonsoft.Json;
 
 namespace CourierMobileApp.Services;
@@ -27,26 +28,13 @@ public class ShipmentService
 
     public async Task<bool> UpdateShipmentStatus(RouteElement routeElement)
     {
-        string url;
-        switch (routeElement.Shipment.Status)
+        string url = routeElement.Shipment.Status switch
         {
-            case Status.Accepted:
-                url = @"api/shipment/pickup-package/" + routeElement.Shipment.Id;
-                break;
-            case Status.InDelivery:
-                url = @"api/shipment/deliver-package/" + routeElement.Shipment.Id;
-                break;
-            case Status.PickedUp or Status.NotDelivered:
-                url = @"api/shipment/store-package/" + routeElement.Shipment.Id;
-                break;
-            case Status.InReturn:
-                url = @"api/shipment/return-package/" + routeElement.Shipment.Id;
-                break;
-            default:
-                url = "";
-                break;
-        }
-
+            Status.Accepted => @"api/shipment/pickup-package/" + routeElement.Shipment.Id,
+            Status.InDelivery => @"api/shipment/deliver-package/" + routeElement.Shipment.Id,
+            Status.InReturn => @"api/shipment/return-package/" + routeElement.Shipment.Id,
+            _ => "",
+        };
         try
         {
             var res = await connectionService.SendAsync(HttpMethod.Patch, url);
@@ -58,6 +46,39 @@ public class ShipmentService
             }
             else return false;
         } catch (Exception)
+        {
+            throw new Exception("Błąd połączenia");
+        }
+    }
+
+    public async Task<bool> RecipientAbsent(RouteElement routeElement)
+    {
+        try
+        {
+            var res = await connectionService.SendAsync(HttpMethod.Patch, @"api/shipment/package-not-delivered/" + routeElement.Shipment.Id);
+            ApiUserResponse response = JsonConvert.DeserializeObject<ApiUserResponse>(await res.Content.ReadAsStringAsync());
+            if (response.IsSuccess)
+            {
+                route.Remove(routeElement);
+                return true;
+            }
+            else return false;
+        }
+        catch (Exception)
+        {
+            throw new Exception("Błąd połączenia");
+        }
+    }
+
+    public async Task<bool> StorePackage(int id)
+    {
+        try
+        {
+            var res = await connectionService.SendAsync(HttpMethod.Patch, @"api/shipment/store-package/" + id);
+            ApiUserResponse response = JsonConvert.DeserializeObject<ApiUserResponse>(await res.Content.ReadAsStringAsync());
+            return response.IsSuccess;
+        }
+        catch (Exception)
         {
             throw new Exception("Błąd połączenia");
         }

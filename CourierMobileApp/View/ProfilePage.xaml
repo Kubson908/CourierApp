@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mct="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
              xmlns:viewmodel="clr-namespace:CourierMobileApp.ViewModels"
              xmlns:model="clr-namespace:CourierMobileApp.Models"
              xmlns:controls="clr-namespace:CourierMobileApp.Controls"
@@ -9,12 +10,16 @@
              x:Class="CourierMobileApp.View.ProfilePage"
              Title="ProfilePage"
              Shell.NavBarIsVisible="False">
+    <ContentPage.Behaviors>
+        <mct:StatusBarBehavior StatusBarStyle="{AppThemeBinding Dark=LightContent, Light=DarkContent}" />
+    </ContentPage.Behaviors>
 
-    <Grid Background="{StaticResource LoggedInBgDark}">
+    <Grid Background="{AppThemeBinding Light={StaticResource LoggedInBgLight}, Dark={StaticResource LoggedInBgDark}}">
         <VerticalStackLayout IsVisible="{Binding IsNotBusy}" Padding="0">
             <Grid ColumnDefinitions="*, *, *">
 
-                <Image Grid.Column="1" Margin="0, 100, 0, 0" WidthRequest="150" x:Name="profileImage" >
+                <Image Grid.Column="1" Margin="0, 100, 0, 0" WidthRequest="150" x:Name="profileImage"
+                       Source="{AppThemeBinding Dark=profile_circle.svg, Light=profile_circle_dark.svg}">
                     <Image.Clip>
                         <EllipseGeometry Center="75, 75"
                                          RadiusX="75"
@@ -56,15 +61,15 @@
                 <Label HorizontalTextAlignment="Center" 
                        FontSize="20"
                        Margin="0, 20, 0, 0"
-                       TextColor="White" 
+                       TextColor="{AppThemeBinding Dark=White, Light=Black}" 
                        Text="{Binding User}" />
                 <Label HorizontalTextAlignment="Center" 
                        FontSize="20"
-                       TextColor="White" 
+                       TextColor="{AppThemeBinding Dark=White, Light=Black}" 
                        Text="{Binding Email}" />
                 <Label HorizontalTextAlignment="Center" 
                        FontSize="20"
-                       TextColor="White" 
+                       TextColor="{AppThemeBinding Dark=White, Light=Black}" 
                        Text="{Binding PhoneNumber, StringFormat='Tel: {0}'}" />
                 <Button Text="Zmień hasło" WidthRequest="200" 
                         FontSize="16" BackgroundColor="#15AB54"

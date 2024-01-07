@@ -5,6 +5,7 @@
 
 
 appsettings.json
+CourierApp/StaticFiles/*
 
 # User-specific files
 *.rsuser

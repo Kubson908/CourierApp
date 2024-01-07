@@ -26,5 +26,5 @@ public class RouteElement
 
 public enum Type
 {
-    Pickup, Delivery
+    Pickup, Delivery, Return
 }

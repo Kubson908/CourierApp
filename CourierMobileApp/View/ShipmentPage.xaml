@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mct="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
              x:Class="CourierMobileApp.View.ShipmentPage"
              xmlns:viewmodel="clr-namespace:CourierMobileApp.ViewModels"
              xmlns:model="clr-namespace:CourierMobileApp.Models"
@@ -9,54 +10,60 @@
              x:DataType="viewmodel:ShipmentViewModel"
              Title="ShipmentPage"
              Shell.NavBarIsVisible="False">
+    <ContentPage.Behaviors>
+        <mct:StatusBarBehavior StatusBarStyle="{AppThemeBinding Dark=LightContent, Light=DarkContent}" />
+    </ContentPage.Behaviors>
     <Grid>
 
         <!-- Menu -->
         <components:Menu x:Name="menu"/>
 
         <!-- Main Content -->
-        <Grid RowDefinitions="2*, 1*, 1*, Auto, 2*, 2*" Background="{StaticResource LoggedInBgDark}" x:Name="MainContent">
+        <Grid x:Name="MainContent" RowDefinitions="2*, 1*, 1*, Auto, 2*, 2*" Background="{AppThemeBinding Light={StaticResource LoggedInBgLight}, Dark={StaticResource LoggedInBgDark}}">
             <components:NavBar Grid.Row="0" Margin="20, 0" x:Name="navbar"/>
 
             <Grid Grid.Row="1" ColumnDefinitions="25,*,25" Margin="25 ,0">
-                <ImageButton Source="arrow_left" Grid.Column="0" WidthRequest="25" HorizontalOptions="Start" 
-                         Command="{Binding ChangeShipmentCommand}" CommandParameter="{Binding FalseValue}"
-                         IsVisible="{Binding CanDecrement}" IsEnabled="{Binding CanDecrement}"/>
-                <Label TextColor="White" Text="{Binding Header}" Grid.Column="1" FontSize="30" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
-                <ImageButton Source="arrow_right" Grid.Column="2" WidthRequest="25" HorizontalOptions="End" 
-                         Command="{Binding ChangeShipmentCommand}" CommandParameter="{Binding TrueValue}"
-                         IsVisible="{Binding CanIncrement}" IsEnabled="{Binding CanIncrement}"/>
+                <ImageButton Source="{AppThemeBinding Dark=arrow_left, Light=arrow_left_dark}" Grid.Column="0" WidthRequest="25" HorizontalOptions="Start" 
+                             Command="{Binding ChangeShipmentCommand}" CommandParameter="{Binding FalseValue}"
+                             IsVisible="{Binding CanDecrement}" IsEnabled="{Binding CanDecrement}"/>
+                <Label TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="{Binding Header}" Grid.Column="1" FontSize="30" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                <ImageButton Source="{AppThemeBinding Dark=arrow_right, Light=arrow_right_dark}" Grid.Column="2" WidthRequest="25" HorizontalOptions="End" 
+                             Command="{Binding ChangeShipmentCommand}" CommandParameter="{Binding TrueValue}"
+                             IsVisible="{Binding CanIncrement}" IsEnabled="{Binding CanIncrement}"/>
             </Grid>
             <Grid ColumnDefinitions="2*, 5*" Grid.Row="2" WidthRequest="150" HeightRequest="45" >
-                <Button Grid.ColumnSpan="2" BackgroundColor="{StaticResource BattleshipGray}"/>
+                <Button Grid.ColumnSpan="2" BackgroundColor="{StaticResource BattleshipGray}" Clicked="Navigate"/>
                 <Image Source="map.svg" Grid.Column="0"/>
                 <Label Grid.Column="1" 
-                   TextColor="White" 
-                   Text="Trasa" 
-                   VerticalTextAlignment="Center" 
-                   HorizontalTextAlignment="Center"
-                   FontSize="20"/>
+                       TextColor="White"
+                       Text="Trasa" 
+                       VerticalTextAlignment="Center" 
+                       HorizontalTextAlignment="Center"
+                       FontSize="20"/>
             </Grid>
             <Grid ColumnDefinitions="3*, 5*" RowDefinitions="Auto, Auto, Auto, Auto, Auto" Grid.Row="3" Margin="40, 10">
-                <Label Grid.Row="0" Grid.Column="0" TextColor="White" Text="Adres:" FontSize="20" HorizontalTextAlignment="Start"/>
+                <Label Grid.Row="0" Grid.Column="0" TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="Adres:" FontSize="20" HorizontalTextAlignment="Start"/>
                 <VerticalStackLayout Grid.Column="1" Grid.Row="0">
-                    <Label Grid.Row="0" Grid.Column="1" TextColor="White" Text="{Binding City, StringFormat='{0}, '}" FontSize="20" HorizontalTextAlignment="Start"/>
-                    <Label Grid.Row="0" Grid.Column="1" TextColor="White" Text="{Binding Address}" FontSize="20" />
+                    <Label Grid.Row="0" Grid.Column="1" TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="{Binding City, StringFormat='{0}, '}" FontSize="20" HorizontalTextAlignment="Start"/>
+                    <Label Grid.Row="0" Grid.Column="1" TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="{Binding Address}" FontSize="20" />
                 </VerticalStackLayout>
-                <Label Grid.Row="1" Grid.Column="0" TextColor="White" Text="{Binding Customer}" FontSize="20" Margin="0, 5" />
-                <Label Grid.Row="1" Grid.Column="1" TextColor="White" Text="{Binding CustomerName}" FontSize="20" Margin="0, 5" />
-                <Label Grid.Row="2" Grid.Column="0" TextColor="White" Text="Telefon:" FontSize="20" Margin="0, 5" />
-                <Label Grid.Row="2" Grid.Column="1" TextColor="White" Text="{Binding PhoneNumber}" FontSize="20" Margin="0, 5" />
-                <Label Grid.Row="3" Grid.Column="0" TextColor="White" Text="Waga:" FontSize="20" Margin="0, 35, 0 , 5" />
-                <Label Grid.Row="3" Grid.Column="1" TextColor="White" Text="{Binding Weight}" FontSize="20" Margin="0, 35, 0 , 5"  />
-                <Label Grid.Row="4" Grid.Column="0" TextColor="White" Text="Rozmiar:" FontSize="20" Margin="0, 5" />
-                <Label Grid.Row="4" Grid.Column="1" TextColor="White" Text="{Binding Size}" FontSize="20" Margin="0, 5" />
+                <Label Grid.Row="1" Grid.Column="0" TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="{Binding Customer}" FontSize="20" Margin="0, 5" />
+                <Label Grid.Row="1" Grid.Column="1" TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="{Binding CustomerName}" FontSize="20" Margin="0, 5" />
+                <Label Grid.Row="2" Grid.Column="0" TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="Telefon:" FontSize="20" Margin="0, 5" />
+                <Label Grid.Row="2" Grid.Column="1" TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="{Binding PhoneNumber}" FontSize="20" Margin="0, 5" />
+                <Label Grid.Row="3" Grid.Column="0" TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="Waga:" FontSize="20" Margin="0, 35, 0 , 5" />
+                <Label Grid.Row="3" Grid.Column="1" TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="{Binding Weight}" FontSize="20" Margin="0, 35, 0 , 5"  />
+                <Label Grid.Row="4" Grid.Column="0" TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="Rozmiar:" FontSize="20" Margin="0, 5" />
+                <Label Grid.Row="4" Grid.Column="1" TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="{Binding Size}" FontSize="20" Margin="0, 5" />
             </Grid>
             <Grid ColumnDefinitions="3*, 7*" Grid.Row="4" WidthRequest="150" HeightRequest="45" VerticalOptions="Start" IsVisible="{Binding CanFinish}">
                 <Button Grid.ColumnSpan="2" BackgroundColor="{StaticResource BattleshipGray}" Command="{Binding FinishShipmentCommand}">
                     <Button.Triggers>
                         <DataTrigger TargetType="Button" Binding="{Binding StatusValue}" Value="InDelivery">
                             <Setter Property="BackgroundColor" Value="{StaticResource PigmentGreen}" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button" Binding="{Binding StatusValue}" Value="InReturn">
+                            <Setter Property="BackgroundColor" Value="#E9920C" />
                         </DataTrigger>
                     </Button.Triggers>
                 </Button>
@@ -73,7 +80,8 @@
             <VerticalStackLayout Grid.Row="5">
                 <HorizontalStackLayout  Spacing="50" HorizontalOptions="Center">
                     <Grid ColumnDefinitions="*, *, *" VerticalOptions="Center" WidthRequest="140" HorizontalOptions="Center">
-                        <Button Grid.ColumnSpan="3" HeightRequest="60" CornerRadius="15" BackgroundColor="{StaticResource BattleshipGray}"/>
+                        <Button Grid.ColumnSpan="3" HeightRequest="60" CornerRadius="15" BackgroundColor="{StaticResource BattleshipGray}"
+                                Clicked="Message"/>
                         <Image Source="message.svg" Grid.Column="1" HeightRequest="35"/>
                     </Grid>
                     <Grid ColumnDefinitions="*, *, *" VerticalOptions="Center" WidthRequest="140" HorizontalOptions="Center">

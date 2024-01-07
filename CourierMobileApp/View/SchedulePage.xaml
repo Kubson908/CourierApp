@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mct="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:viewmodel="clr-namespace:CourierMobileApp.ViewModels"
              xmlns:model="clr-namespace:CourierMobileApp.Models"
@@ -11,6 +12,9 @@
              x:Name="Schedule"
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False">
+    <ContentPage.Behaviors>
+        <mct:StatusBarBehavior StatusBarStyle="{AppThemeBinding Dark=LightContent, Light=DarkContent}" />
+    </ContentPage.Behaviors>
     <Grid>
 
         <!-- Menu -->
@@ -18,25 +22,26 @@
 
         <!-- Main Content -->
         <Grid RowDefinitions="Auto, *, Auto" 
-          Background="{StaticResource LoggedInBgDark}"
+          Background="{AppThemeBinding Light={StaticResource LoggedInBgLight}, Dark={StaticResource LoggedInBgDark}}"
           x:Name="MainContent">
             <components:NavBar Grid.Row="0" Margin="20, 0" x:Name="navbar"/>
             <VerticalStackLayout VerticalOptions="Fill" Grid.Row="1">
-                <Grid ColumnDefinitions="*, 50">
+                <Grid ColumnDefinitions="*, 50" x:Name="dateGrid">
                     <controls:BorderDatePicker MinimumDate="{Binding MinimumDate}"
-                                           Date="{Binding Date}"
-                                           DateSelected="DateSelected"
-                                           TextColor="White"
-                                           CornerRadius="10"
-                                           BorderColor="#E8E8E8"
-                                           BorderWidth="1"
-                                           HeightRequest="50"
-                                           Padding="10"
-                                           FontSize="16"
-                                           BackgroundColor="#848C8E"
-                                           Margin="10, 40, 10, 0"
-                                           Format="dd.MM.yyyy" 
-                                           Grid.ColumnSpan="2"/>
+                                               Date="{Binding Date}"
+                                               DateSelected="DateSelected"
+                                               TextColor="{AppThemeBinding Dark=White, Light=Black}"
+                                               CornerRadius="10"
+                                               BorderColor="#E8E8E8"
+                                               BorderWidth="1"
+                                               HeightRequest="50"
+                                               Padding="10"
+                                               FontSize="16"
+                                               BackgroundColor="{AppThemeBinding Dark=#848C8E, Light=White}"
+                                               Margin="10, 40, 10, 0"
+                                               Format="dd.MM.yyyy" 
+                                               Grid.ColumnSpan="2"
+                                               x:Name="datePicker"/>
                     <Image Source="calendar" Grid.Column="1" Margin="0, 40, 20, 0" />
                 </Grid>
 
@@ -66,7 +71,7 @@
                                         </Image.Triggers>
                                     </Image>
                                     <FlexLayout HorizontalOptions="Center" Grid.Column="1">
-                                        <Label TextColor="White" Text="{Binding Shipment.PickupCity, StringFormat='{0},'}" VerticalOptions="Center" FontSize="18" LineBreakMode="TailTruncation" >
+                                        <Label TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="{Binding Shipment.PickupCity, StringFormat='{0},'}" VerticalOptions="Center" FontSize="18" LineBreakMode="TailTruncation" >
                                             <Label.Triggers>
                                                 <DataTrigger TargetType="Label" Binding="{Binding Shipment.Status}" Value="InDelivery">
                                                     <Setter Property="Text" Value="{Binding Shipment.RecipientCity, StringFormat='{0}, '}" />
@@ -74,7 +79,7 @@
                                             </Label.Triggers>
                                         </Label>
                                         <Label Text=" " VerticalOptions="Center" FontSize="18" LineBreakMode="TailTruncation" />
-                                        <Label TextColor="White" Text="{Binding Shipment.PickupAddress}" VerticalOptions="Center" FontSize="18" LineBreakMode="TailTruncation">
+                                        <Label TextColor="{AppThemeBinding Dark=White, Light=Black}" Text="{Binding Shipment.PickupAddress}" VerticalOptions="Center" FontSize="18" LineBreakMode="TailTruncation">
                                             <Label.Triggers>
                                                 <DataTrigger TargetType="Label" Binding="{Binding Shipment.Status}" Value="InDelivery">
                                                     <Setter Property="Text" Value="{Binding Shipment.RecipientAddress}" />

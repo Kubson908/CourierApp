@@ -16,7 +16,18 @@ public partial class ProfilePage : ContentPage
     private async void LoadPhoto(object sender, EventArgs e)
     {
         string imagePath = await SecureStorage.GetAsync("imagePath");
-        profileImage.Source = ImageSource.FromFile(imagePath);
+        if (imagePath != null && File.Exists(imagePath))
+        {
+            profileImage.Source = ImageSource.FromFile(imagePath);
+        }
+        else
+        {
+            if (Application.Current.UserAppTheme == AppTheme.Light)
+            {
+                profileImage.Source = "profile_circle_dark.svg";
+            }
+            else profileImage.Source = "profile_circle.svg";
+        }
     }
 
     protected override async void OnAppearing()

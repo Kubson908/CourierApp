@@ -18,10 +18,21 @@ public partial class NavBar : ContentView
         this.profileService = profileService;
     }
 
-    public async Task SetImage()
+    public async void SetImage()
     {
         string imagePath = await SecureStorage.GetAsync("imagePath");
-        profileImage.Source = ImageSource.FromFile(imagePath);
+        if (imagePath != null && File.Exists(imagePath))
+        {
+            profileImage.Source = ImageSource.FromFile(imagePath);
+        }
+        else
+        {
+            if (Application.Current.UserAppTheme == AppTheme.Light)
+            {
+                profileImage.Source = "profile_circle_dark.svg";
+            }
+            else profileImage.Source = "profile_circle.svg";
+        }
     }
 
     private async void ProfileClicked(object sender, EventArgs e)

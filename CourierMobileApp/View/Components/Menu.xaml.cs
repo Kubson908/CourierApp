@@ -10,17 +10,6 @@ public partial class Menu : ContentView
         scheduleViewModel = MauiApplication.Current.Services.GetService<ScheduleViewModel>();
     }
 
-    private async void GoToMainPage(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync(nameof(MainPage));
-    }
-
-    private async void GoToSchelude(object sender, EventArgs e)
-    {
-        await Shell.Current.DisplayAlert("Test", Shell.Current.CurrentState.Location.ToString(), "Ok");
-        await Shell.Current.GoToAsync(nameof(SchedulePage));
-    }
-
     private async void Quit(object sender, EventArgs e)
     {
         if (scheduleViewModel.IsWorking)
@@ -39,5 +28,19 @@ public partial class Menu : ContentView
             if (!answer) return;
         }
         Application.Current.Quit();
+    }
+
+    private async void Switch_Toggled(object sender, ToggledEventArgs e)
+    {
+        if (e.Value)
+        {
+            Application.Current.UserAppTheme = AppTheme.Light;
+            await SecureStorage.Default.SetAsync("Theme", "Light");
+        }
+        else
+        {
+            Application.Current.UserAppTheme = AppTheme.Dark;
+            await SecureStorage.Default.SetAsync("Theme", "Dark");
+        }
     }
 }

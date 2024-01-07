@@ -31,7 +31,7 @@
                                      Radius="1">
                 <GradientStop Color="#15ab54"
                                   Offset="0.7" />
-                <GradientStop Color="#0015ab54"
+                <GradientStop Color="#ffffff"
                                   Offset="1.0" />
             </RadialGradientBrush>
 

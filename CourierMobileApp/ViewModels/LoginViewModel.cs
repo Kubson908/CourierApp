@@ -71,6 +71,8 @@ public partial class LoginViewModel : BaseViewModel
         }
         finally
         {
+            Login = string.Empty;
+            Password = string.Empty;
             var authenticated = await SecureStorage.Default.GetAsync("access_token");
             if (authenticated is not null)
             {

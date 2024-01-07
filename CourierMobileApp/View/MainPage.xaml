@@ -6,7 +6,11 @@
              xmlns:viewmodel="clr-namespace:CourierMobileApp.ViewModels"
              x:DataType="viewmodel:MainPageViewModel"
              x:Class="CourierMobileApp.View.MainPage"
-             Shell.NavBarIsVisible="False">
+             Shell.NavBarIsVisible="False"
+             Background="Black">
+    <ContentPage.Behaviors>
+        <mct:StatusBarBehavior StatusBarStyle="{AppThemeBinding Dark=LightContent, Light=DarkContent}" />
+    </ContentPage.Behaviors>
     <Grid>
 
         <!-- Menu -->
@@ -14,7 +18,7 @@
 
         <!-- Main Content -->
         <Grid   RowDefinitions="*,*,*,*"
-                Background="{StaticResource LoggedInBgDark}"
+                Background="{AppThemeBinding Light={StaticResource LoggedInBgLight}, Dark={StaticResource LoggedInBgDark}}"
                 Padding="30,0"
                 x:Name="MainContent">
 

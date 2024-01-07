@@ -47,4 +47,14 @@ public partial class ShipmentPage : ContentPage
     {
         await viewModel.DialNumber();
     }
+
+    private async void Navigate(object sender, EventArgs e)
+    {
+        await viewModel.NavigateToAddress();
+    }
+
+    private async void Message(object sender, EventArgs e)
+    {
+        await viewModel.OpenSMS();
+    }
 }

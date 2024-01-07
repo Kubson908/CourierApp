@@ -24,7 +24,7 @@ public partial class MainPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await navbar.SetImage();
+        navbar.SetImage();
         profileService.user = await SecureStorage.Default.GetAsync("user");
     }
 

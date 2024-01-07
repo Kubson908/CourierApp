@@ -24,7 +24,8 @@ public class ShipmentController : ControllerBase
     [HttpGet("get-registered-shipments")]
     public IActionResult GetRegisteredShipments()
     {
-        IEnumerable<Shipment> shipments = _context.Shipments.Where(s => s.Status == Status.Registered || s.Status == Status.Stored);
+        IEnumerable<Shipment> shipments = _context.Shipments.Where(s => s.Status == Status.Registered 
+                                        || s.Status == Status.Stored || s.Status == Status.StoredToReturn);
         return Ok(shipments);
     }
 
@@ -160,11 +161,14 @@ public class ShipmentController : ControllerBase
                     Order = order,
                     CourierId = dto.CourierId,
                     ShipmentId = shipment.Id,
-                    Type = shipment.Status == 0 ? Models.Type.Pickup : Models.Type.Delivery
+                    Type = shipment.Status == Status.Accepted ? Models.Type.Pickup : 
+                        (shipment.Status == Status.Stored ? Models.Type.Delivery : Models.Type.Return)
                 };
                 order++;
                 await _context.RouteElements.AddAsync(element);
-                var updateResult = await UpdateShipmentStatus(shipment.Id, shipment.Status == Status.Registered ? Status.Accepted : Status.InDelivery);
+                var updateResult = await UpdateShipmentStatus(
+                    shipment.Id, shipment.Status == Status.Registered ? Status.Accepted : 
+                    (shipment.Status == Status.Stored ? Status.InDelivery : Status.InReturn));
                 if (!updateResult.IsSuccess) return StatusCode(StatusCodes.Status500InternalServerError, new ApiUserResponse
                 {
                     Message = updateResult.Message,
@@ -282,7 +286,7 @@ public class ShipmentController : ControllerBase
         string courierId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
         /*string dateString = date.ToString("dd.MM.yyyy");*/
 
-        var route = await _context.RouteElements.Where(r => r.RouteDate == date).Select(r => new
+        var route = await _context.RouteElements.Where(r => r.RouteDate == date && r.CourierId == courierId).Select(r => new
         {
             r.Id,
             r.RouteDate,

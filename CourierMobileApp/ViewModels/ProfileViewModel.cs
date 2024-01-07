@@ -32,10 +32,9 @@ public partial class ProfileViewModel : BaseViewModel
     {
         MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            IsBusy = true;
             var uploadFile = await MediaPicker.PickPhotoAsync();
             if (uploadFile == null) return;
-
+            IsBusy = true;
             ApiUserResponse response = await connectionService.UploadPhotoAsync(uploadFile);
             if (!response.IsSuccess) await Shell.Current.DisplayAlert("Błąd przesyłania", response.Message, "OK");
             else
@@ -89,6 +88,11 @@ public partial class ProfileViewModel : BaseViewModel
     [RelayCommand]
     public async Task LogOut()
     {
+        string filePath = await SecureStorage.Default.GetAsync("imagePath");
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
         SecureStorage.RemoveAll();
         connectionService.Token = null;
         Email = null;

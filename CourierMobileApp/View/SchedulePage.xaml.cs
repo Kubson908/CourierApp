@@ -21,7 +21,6 @@ public partial class SchedulePage : ContentPage
         };
         navbar.MenuClicked += (object sender, EventArgs e) => { animation.OpenMenu(sender, e); navbar.RotateIcon(); };
         navbar.Initialize(this.profileService);
-
     }
 
     protected override void OnAppearing()

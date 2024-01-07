@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mct="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
              xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              xmlns:viewmodel="clr-namespace:CourierMobileApp.ViewModels"
              x:DataType="viewmodel:ScannerViewModel"
              x:Class="CourierMobileApp.View.Scanner"
              Shell.NavBarIsVisible="False"
              Title="Scanner">
-    <ScrollView Background="{StaticResource LoggedInBgDark}">
+    <ContentPage.Behaviors>
+        <mct:StatusBarBehavior StatusBarStyle="{AppThemeBinding Dark=LightContent, Light=DarkContent}" />
+    </ContentPage.Behaviors>
+    <Grid Background="{AppThemeBinding Light={StaticResource LoggedInBgLight}, Dark={StaticResource LoggedInBgDark}}">
         <Grid RowDefinitions="*, 500, *" Padding="0,0" VerticalOptions="Center">
 
             <zxing:CameraBarcodeReaderView
@@ -28,6 +32,6 @@
             </Grid>
             
         </Grid>
-    </ScrollView>
+    </Grid>
     
 </ContentPage>

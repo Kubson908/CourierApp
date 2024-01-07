@@ -83,7 +83,9 @@ public partial class ShipmentViewModel : BaseViewModel
         {
             PhoneNumber = PhoneNumber.Insert(3, " ").Insert(7, " ");
         }
-        Address = StatusValue == Status.Accepted ? RouteElement.Shipment.PickupAddress : RouteElement.Shipment.RecipientAddress;
+        Address = StatusValue == Status.Accepted ? (RouteElement.Shipment.PickupAddress
+            + (RouteElement.Shipment.PickupApartmentNumber.Length > 0 ? "/" + RouteElement.Shipment.PickupApartmentNumber : ""))
+            : (RouteElement.Shipment.RecipientAddress + (RouteElement.Shipment.RecipientApartmentNumber.Length > 0 ? "/" + RouteElement.Shipment.RecipientApartmentNumber : ""));
         City = StatusValue == Status.Accepted ? RouteElement.Shipment.PickupCity : RouteElement.Shipment.RecipientCity;
         Size = sizes[(int)RouteElement.Shipment.Size];
         Weight = weights[(int)RouteElement.Shipment.Weight];
@@ -133,5 +135,28 @@ public partial class ShipmentViewModel : BaseViewModel
         {
             await Shell.Current.Navigation.PushAsync(new Scanner(new ScannerViewModel(RouteElement, true, shipmentService)));
         });
+    }
+
+    public async Task NavigateToAddress()
+    {
+        var address = City + " " + Address;
+        var placemark = new Placemark
+        {
+            Thoroughfare = address,
+        };
+        try
+        {
+            await Map.Default.OpenAsync(placemark);
+        } catch (Exception)
+        {
+            await Shell.Current.DisplayAlert("Brak aplikacji GPS", "Nie znaleziono dostępnej aplikacji GPS do uruchomienia", "OK");
+        }
+    }
+
+    public async Task OpenSMS()
+    {
+        var text = Config.SMSMessage;
+        var message = new SmsMessage(text ?? "", PhoneNumber);
+        await Sms.Default.ComposeAsync(message);
     }
 }

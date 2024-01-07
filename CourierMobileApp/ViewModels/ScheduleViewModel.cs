@@ -59,14 +59,17 @@ public partial class ScheduleViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    public async Task GetRouteAsync()
+    public void GetRouteAsync()
     {
-        ListEmpty = false;
-        IsBusy = true;
-        await shipmentService.GetRouteAsync(Date);
-        SetRoute();
-        IsBusy = false;
-        ListEmpty = Route.Count == 0;
+        MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            ListEmpty = false;
+            IsBusy = true;
+            await shipmentService.GetRouteAsync(Date);
+            SetRoute();
+            IsBusy = false;
+            ListEmpty = Route.Count == 0;
+        });
     }
     [RelayCommand]
     public void GoToDetailsAsync(RouteElement element)

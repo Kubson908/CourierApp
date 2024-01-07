@@ -2,9 +2,10 @@
 using CourierAPI.Models.Dto;
 using CourierAPI.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
+using PdfSharp.Drawing;
+using SkiaSharp;
+using System.Drawing;
 using System.Security.Claims;
 
 namespace CourierAPI.Controllers;
@@ -76,6 +77,7 @@ public class CourierController : ControllerBase
             {
                 await postedFile.CopyToAsync(fileStream);
             }
+            CropImage(upload);
             var imageBytes = await System.IO.File.ReadAllBytesAsync(upload);
             ApiUserResponse response = new()
             {
@@ -87,4 +89,23 @@ public class CourierController : ControllerBase
         }
         return BadRequest("File is empty");
     }
+
+    private void CropImage(string upload)
+    {
+        using var originalBitmap = SKBitmap.Decode(upload);
+        int newSize = Math.Min(originalBitmap.Width, originalBitmap.Height);
+        using var croppedBitmap = new SKBitmap(new SKImageInfo(newSize, newSize));
+        using (var canvas = new SKCanvas(croppedBitmap))
+        {
+            var sourceRect = new SKRect(0, 0, newSize, newSize);
+            canvas.DrawBitmap(originalBitmap, sourceRect, sourceRect);
+        }
+
+        using var image = SKImage.FromBitmap(croppedBitmap);
+        using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+        using var stream = new FileStream(upload, FileMode.Create);
+        data.SaveTo(stream);
+    }
+
+
 }

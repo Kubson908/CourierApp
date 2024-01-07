@@ -17,7 +17,7 @@ public class ShipmentService
     {
         ApiParameters parameters = new()
         {
-            Date = DateOnly.FromDateTime(date)
+            Date = DateOnly.FromDateTime(date).ToString("dd.MM.yyyy")
         };
         string url = $"api/shipment/get-courier-route";
         var routeData = await connectionService.SendAsync(HttpMethod.Get, url, queryParams: parameters);

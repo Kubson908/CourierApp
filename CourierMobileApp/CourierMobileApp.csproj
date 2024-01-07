@@ -15,7 +15,7 @@
 		<ApplicationTitle>CourierMobileApp</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.couriermobileapp</ApplicationId>
+		<ApplicationId>com.kuba.couriermobileapp</ApplicationId>
 		<ApplicationIdGuid>fbbb39d5-3969-41c7-acf9-c73b40588b64</ApplicationIdGuid>
 
 		<!-- Versions -->

@@ -50,8 +50,17 @@ public partial class LoginViewModel : BaseViewModel
             await SecureStorage.Default.SetAsync("email", response.Email);
             if (!string.IsNullOrEmpty(response.Image))
             {
-                await SecureStorage.Default.SetAsync("profile_image", response.Image);
-                profileService.SetImage();
+                string filePath = await SecureStorage.Default.GetAsync("imagePath");
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+                string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                string fileName = $"courier_profile{DateTime.Now.Ticks}.png";
+                filePath = Path.Combine(folderPath, fileName);
+                File.WriteAllBytes(filePath, Convert.FromBase64String(response.Image));
+                await SecureStorage.Default.SetAsync("imagePath", filePath);
+                /*profileService.SetImage();*/
             }
             profileService.user = response.User;
         }

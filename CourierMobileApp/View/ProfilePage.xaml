@@ -14,7 +14,7 @@
         <VerticalStackLayout IsVisible="{Binding IsNotBusy}" Padding="0">
             <Grid ColumnDefinitions="*, *, *">
 
-                <Image Grid.Column="1" Margin="0, 100, 0, 0" WidthRequest="150" Source="{Binding ImgSource}" >
+                <Image Grid.Column="1" Margin="0, 100, 0, 0" WidthRequest="150" x:Name="profileImage" >
                     <Image.Clip>
                         <EllipseGeometry Center="75, 75"
                                          RadiusX="75"
@@ -31,7 +31,6 @@
                     <Image
                        WidthRequest="30" HeightRequest="30"
                        Source="pencil.svg" />
-                
                 </Frame>
                 <Button WidthRequest="40" HeightRequest="40"
                         CornerRadius="20" BackgroundColor="Transparent"
@@ -70,7 +69,7 @@
                 <Button Text="Zmień hasło" WidthRequest="200" 
                         FontSize="16" BackgroundColor="#15AB54"
                         Command="{Binding ChangePasswordCommand}"
-                        Margin="20"/>
+                        Margin="20" TextColor="White"/>
             </VerticalStackLayout>
             <Label HorizontalTextAlignment="Center" 
                    IsVisible="{Binding Error}"

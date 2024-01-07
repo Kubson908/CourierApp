@@ -8,5 +8,5 @@ namespace CourierMobileApp.Models.Dto;
 
 public class ApiParameters
 {
-    public DateOnly Date { get; set; }
+    public string Date { get; set; }
 }

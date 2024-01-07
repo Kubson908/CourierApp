@@ -277,12 +277,12 @@ public class ShipmentController : ControllerBase
     }
 
     [HttpGet("get-courier-route"), Authorize(Roles = "Courier")]
-    public async Task<IActionResult> GetCourierRoute([FromQuery] DateOnly date)
+    public async Task<IActionResult> GetCourierRoute([FromQuery] string date)
     {
         string courierId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-        string dateString = date.ToString("dd.MM.yyyy");
+        /*string dateString = date.ToString("dd.MM.yyyy");*/
 
-        var route = await _context.RouteElements.Where(r => r.RouteDate == dateString).Select(r => new
+        var route = await _context.RouteElements.Where(r => r.RouteDate == date).Select(r => new
         {
             r.Id,
             r.RouteDate,

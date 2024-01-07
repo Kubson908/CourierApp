@@ -21,14 +21,11 @@ public partial class MainPage : ContentPage
         navbar.Initialize(this.profileService);
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-        navbar.SetImage();
-        MainThread.InvokeOnMainThreadAsync(async () =>
-        {
-            profileService.user = await SecureStorage.Default.GetAsync("user");
-        });
+        await navbar.SetImage();
+        profileService.user = await SecureStorage.Default.GetAsync("user");
     }
 
     protected override void OnDisappearing()

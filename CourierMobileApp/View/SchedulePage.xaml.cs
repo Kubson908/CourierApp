@@ -24,7 +24,7 @@ public partial class SchedulePage : ContentPage
 
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         if (viewModel.shipmentService.route.Count < viewModel.Route.Count)
             viewModel.SetRoute();
@@ -32,7 +32,7 @@ public partial class SchedulePage : ContentPage
         base.OnAppearing();
         navbar.SetImage();
         if (viewModel.ListEmpty)
-            await viewModel.GetRouteAsync();
+            viewModel.GetRouteAsync();
     }
 
     protected override void OnDisappearing()
@@ -51,9 +51,9 @@ public partial class SchedulePage : ContentPage
         return true;
     }
 
-    private async void DateSelected(object sender, DateChangedEventArgs e)
+    private void DateSelected(object sender, DateChangedEventArgs e)
     {
-        await viewModel.GetRouteAsync();
+        viewModel.GetRouteAsync();
     }
 
     private async Task HoldAndRun()

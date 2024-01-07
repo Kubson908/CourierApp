@@ -11,19 +11,17 @@ public partial class NavBar : ContentView
 	public NavBar()
 	{
 		InitializeComponent();
-        
     }
 
     public void Initialize(ProfileService profileService)
     {
         this.profileService = profileService;
-        if (profileService.imageSource == null) profileService.SetImage();
-        ProfileImage.Source = profileService.imageSource;
     }
 
-    public void SetImage()
+    public async Task SetImage()
     {
-        ProfileImage.Source = profileService.imageSource;
+        string imagePath = await SecureStorage.GetAsync("imagePath");
+        profileImage.Source = ImageSource.FromFile(imagePath);
     }
 
     private async void ProfileClicked(object sender, EventArgs e)

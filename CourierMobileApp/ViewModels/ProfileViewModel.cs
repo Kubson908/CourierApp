@@ -8,10 +8,8 @@ namespace CourierMobileApp.ViewModels;
 
 public partial class ProfileViewModel : BaseViewModel
 {
-    private readonly ProfileService profileService;
+    public event EventHandler PhotoChanged;
     private readonly ConnectionService connectionService;
-    [ObservableProperty]
-    ImageSource imgSource;
     [ObservableProperty]
     string user;
     [ObservableProperty]
@@ -24,26 +22,40 @@ public partial class ProfileViewModel : BaseViewModel
 
     public bool NoError => !Error;
 
-    public ProfileViewModel(ProfileService profileService, ConnectionService connectionService)
+    public ProfileViewModel(ConnectionService connectionService)
     {
-        this.profileService = profileService;
         this.connectionService = connectionService;
     }
 
     [RelayCommand]
-    public async Task UploadPhoto()
+    public void UploadPhoto()
     {
-        var uploadFile = await MediaPicker.PickPhotoAsync();
-        if (uploadFile == null) return;
-
-        ApiUserResponse response = await connectionService.UploadPhotoAsync(uploadFile);
-        if (!response.IsSuccess) await Shell.Current.DisplayAlert("Błąd przesyłania", response.Message, "OK");
-        else
+        MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            await SecureStorage.Default.SetAsync("profile_image", response.Image);
-            profileService.SetImage();
-            ImgSource = profileService.imageSource;
-        }
+            IsBusy = true;
+            var uploadFile = await MediaPicker.PickPhotoAsync();
+            if (uploadFile == null) return;
+
+            ApiUserResponse response = await connectionService.UploadPhotoAsync(uploadFile);
+            if (!response.IsSuccess) await Shell.Current.DisplayAlert("Błąd przesyłania", response.Message, "OK");
+            else
+            {
+                string filePath = await SecureStorage.Default.GetAsync("imagePath");
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+                string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                string fileName = $"courier_profile{DateTime.Now.Ticks}.png";
+                filePath = Path.Combine(folderPath, fileName);
+                File.WriteAllBytes(filePath, Convert.FromBase64String(response.Image));
+                await SecureStorage.Default.SetAsync("imagePath", filePath);
+                /*profileService.SetImage();*/
+                /*ImgSource = profileService.imageSource;*/
+            }
+            PhotoChanged.Invoke(this, EventArgs.Empty);
+            IsBusy = false;
+        });
     }
 
     public async Task GetProfileData()

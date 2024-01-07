@@ -3,10 +3,9 @@ using CourierAPI.Models.Dto;
 using CourierAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PdfSharp.Drawing;
 using SkiaSharp;
-using System.Drawing;
 using System.Security.Claims;
+using System.Xml.Linq;
 
 namespace CourierAPI.Controllers;
 
@@ -98,7 +97,21 @@ public class CourierController : ControllerBase
         using (var canvas = new SKCanvas(croppedBitmap))
         {
             var sourceRect = new SKRect(0, 0, newSize, newSize);
-            canvas.DrawBitmap(originalBitmap, sourceRect, sourceRect);
+            if (originalBitmap.Height < originalBitmap.Width)
+            {
+                var rotatedBitmap = new SKBitmap(originalBitmap.Height, originalBitmap.Width);
+                canvas.RotateDegrees(90);
+                canvas.Translate(0, -originalBitmap.Height);
+                canvas.DrawBitmap(originalBitmap, 0, 0);
+                originalBitmap.Resize(rotatedBitmap.Info, SKFilterQuality.High);
+                originalBitmap.Erase(SKColors.Transparent);
+                rotatedBitmap.CopyTo(originalBitmap);
+            }
+            else
+            {
+                canvas.DrawBitmap(originalBitmap, sourceRect, sourceRect);
+            }
+            
         }
 
         using var image = SKImage.FromBitmap(croppedBitmap);
@@ -106,6 +119,4 @@ public class CourierController : ControllerBase
         using var stream = new FileStream(upload, FileMode.Create);
         data.SaveTo(stream);
     }
-
-
 }

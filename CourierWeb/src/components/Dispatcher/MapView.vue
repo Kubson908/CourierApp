@@ -66,16 +66,14 @@ const emit = defineEmits(["submit"]);
     </div>
     <div
       id="drop-container"
-      :class="
-        courier ? ' blockdrop-container-active' : 'drop-container-inactive'
-      "
+      :class="courier ? 'fixed-width' : 'drop-container-inactive'"
     >
       <h3 class="pigment-green-text">
         Kurier {{ courier?.firstName + " " + courier?.lastName }}
       </h3>
-      <div class="top">
+      <div class="top scrollable">
         <draggable
-          class="list-group"
+          class="list-group scrollable"
           item-key="order"
           tag="transition-group"
           :component-data="{
@@ -91,12 +89,15 @@ const emit = defineEmits(["submit"]);
               :src="
                 shipment.status == 0
                   ? '/src/assets/pickup.svg'
-                  : '/src/assets/delivery.svg'
+                  : shipment.status == 3
+                  ? '/src/assets/delivery.svg'
+                  : '/src/assets/return.svg'
               "
+              style="height: 50%; margin: auto; margin-left: 5px"
             />
             <div class="flex">
               {{
-                shipment.status == 0
+                shipment.status == 0 || shipment?.status == 7
                   ? shipment.pickupApartmentNumber
                     ? shipment.pickupAddress +
                       "/" +
@@ -118,12 +119,14 @@ const emit = defineEmits(["submit"]);
           </div>
         </draggable>
       </div>
-      <button v-if="route.length >= 2" class="submit" @click="emit('submit')">
-        Zatwierdź
-      </button>
-      <button v-if="route.length >= 2" class="submit" @click="sort">
-        Sortuj
-      </button>
+      <div>
+        <button v-if="route.length >= 2" class="submit" @click="emit('submit')">
+          Zatwierdź
+        </button>
+        <button v-if="route.length >= 2" class="submit" @click="sort">
+          Sortuj
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -173,9 +176,6 @@ const emit = defineEmits(["submit"]);
 .drop-container-inactive {
   transform: translateX(100%);
   width: 0%;
-}
-.drop-container-active {
-  width: 20%;
 }
 #popup {
   position: absolute;
@@ -286,7 +286,27 @@ td {
 .draggable button::after {
   content: "✖";
 }
-
+.fixed-width {
+  height: 90%;
+}
+.scrollable {
+  max-height: 90%;
+  overflow-y: auto;
+}
+.scrollable::-webkit-scrollbar {
+  width: 10px;
+}
+.scrollable::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: #bdbdbd;
+}
+.scrollable::-webkit-scrollbar-thumb {
+  background: #15ab54;
+  border-radius: 10px;
+}
+.scrollable::-webkit-scrollbar-thumb:hover {
+  background: #129448;
+}
 .bottom {
   height: 100%;
 }

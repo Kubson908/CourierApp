@@ -27,7 +27,7 @@ export const manageCoordinates = async (shipments: Array<Shipment>) => {
       });
     })
     .map((s: Shipment): AddressInfo => {
-      if (s.status == 0)
+      if (s.status == 0 || s.status == 7)
         return {
           id: s.id!,
           status: s.status,

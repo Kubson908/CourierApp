@@ -89,7 +89,9 @@ export const createMap = (
               ? "/src/assets/multiple_packages.svg"
               : localCoord.status == 0
               ? "/src/assets/pickup.svg"
-              : "/src/assets/delivery.svg",
+              : localCoord.status == 3
+              ? "/src/assets/delivery.svg"
+              : "/src/assets/return.svg",
           anchor: [0.5, 1],
         }),
         zIndex: 100,
@@ -143,12 +145,23 @@ const addEventListeners = (map: Map, shipments: Array<Shipment>) => {
           imgSrc:
             shipment?.status == 0
               ? "/src/assets/pickup.svg"
-              : "/src/assets/delivery.svg",
+              : shipment?.status == 3
+              ? "/src/assets/delivery.svg"
+              : "/src/assets/return.svg",
           titleClass:
-            shipment?.status == 0 ? "gray-text" : "pigment-green-text",
-          title: shipment?.status == 0 ? "Odbiór" : "Dostawa",
-          address:
             shipment?.status == 0
+              ? "gray-text"
+              : shipment?.status == 3
+              ? "pigment-green-text"
+              : "orange-text",
+          title:
+            shipment?.status == 0
+              ? "Odbiór"
+              : shipment?.status == 3
+              ? "Dostawa"
+              : "Zwrot",
+          address:
+            shipment?.status == 0 || shipment?.status == 7
               ? shipment?.pickupAddress +
                 (shipment?.pickupApartmentNumber
                   ? "/" + shipment?.pickupApartmentNumber
@@ -158,11 +171,11 @@ const addEventListeners = (map: Map, shipments: Array<Shipment>) => {
                   ? "/" + shipment?.recipientApartmentNumber
                   : ""),
           city:
-            shipment!.status == 0
+            shipment!.status == 0 || shipment?.status == 7
               ? shipment!.pickupCity
               : shipment!.recipientCity,
           postalCode:
-            shipment!.status == 0
+            shipment!.status == 0 || shipment?.status == 7
               ? shipment!.pickupPostalCode
               : shipment!.recipientPostalCode,
         });
@@ -211,7 +224,11 @@ const addEventListeners = (map: Map, shipments: Array<Shipment>) => {
 
       draggedElement = document.createElement("img");
       draggedElement.src =
-        status == 0 ? "/src/assets/pickup.svg" : "/src/assets/delivery.svg";
+        status == 0
+          ? "/src/assets/pickup.svg"
+          : status == 3
+          ? "/src/assets/delivery.svg"
+          : "/src/assets/return.svg";
       draggedElement.style.position = "fixed";
       draggedElement.style.height = "50px";
       draggedElement!.style.left = "-100px";

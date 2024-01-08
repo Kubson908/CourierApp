@@ -144,7 +144,9 @@ button:focus-visible {
 .gray-text {
   color: #848c8e;
 }
-
+.orange-text {
+  color: #e9920c;
+}
 .gray-placeholder::placeholder {
   color: #bdbdbd;
   opacity: 1;

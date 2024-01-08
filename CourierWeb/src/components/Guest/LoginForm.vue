@@ -6,12 +6,18 @@ import { router, unauthorized, user, loading } from "../../main";
 const login = ref("");
 const password = ref("");
 const rememberMe = ref(false);
+const errorMessage = ref<string | null>(null);
 
 onBeforeMount(() => {
   if (user.isLoggedIn) router.push("/");
 });
 
 const signIn = async () => {
+  if (login.value.length == 0 || password.value.length == 0) {
+    errorMessage.value = "Podaj dane logowania";
+    return;
+  }
+  errorMessage.value = null;
   try {
     loading.value = true;
     const res = await unauthorized.post("/auth/login", {
@@ -52,8 +58,6 @@ const signIn = async () => {
 
 const forgotPassword = ref<boolean>(false);
 
-const errorMessage = ref<string>("");
-
 const confirmEmail = ref<boolean>(false);
 
 const back = () => {
@@ -81,6 +85,7 @@ const back = () => {
           placeholder="Hasło"
           type="password"
         />
+        <span v-if="errorMessage" class="red-text">{{ errorMessage }}</span>
         <div>
           <input
             name="remember_me"
@@ -94,9 +99,6 @@ const back = () => {
         <button class="submit center mt-10" type="submit" @click="signIn">
           Zaloguj
         </button>
-        <div v-if="errorMessage" class="red-text">
-          {{ errorMessage }}
-        </div>
         <a class="pointer" @click="forgotPassword = true">Nie pamiętam hasła</a>
       </form>
     </div>
@@ -106,6 +108,9 @@ const back = () => {
       :forgotPassword="false"
     />
     <ForgotPassword v-else @back="back()" />
+    <div v-if="loading" class="loading">
+      <img src="/src/assets/loading.gif" class="loading-icon" />
+    </div>
   </div>
 </template>
 
@@ -152,5 +157,22 @@ const back = () => {
 }
 .pointer:active {
   color: purple;
+}
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100%;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  background-color: white;
+  border-radius: 12px;
+}
+.loading-icon {
+  align-self: center;
+  margin: auto;
+  height: 150px;
 }
 </style>

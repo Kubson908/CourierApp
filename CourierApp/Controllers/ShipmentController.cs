@@ -329,7 +329,7 @@ public class ShipmentController : ControllerBase
                 }
             }
         }).Where(r => r.Shipment.Status == Status.Accepted || r.Shipment.Status == Status.InDelivery 
-            || r.Shipment.Status == Status.InReturn).ToListAsync();
+            || r.Shipment.Status == Status.InReturn).OrderBy(s => s.Order).ToListAsync();
         return Ok(route);
     }
 

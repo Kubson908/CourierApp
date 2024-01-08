@@ -5,8 +5,7 @@ namespace CourierMobileApp.View;
 
 public partial class MainPage : ContentPage
 {
-    private readonly ProfileService profileService;/*
-    private readonly uint AnimationDuration = 400u;*/
+    private readonly ProfileService profileService;
     private readonly MenuAnimation animation;
     public MainPage(MainPageViewModel mainPageViewModel, ProfileService profileService, ProfileViewModel profileViewModel)
     {

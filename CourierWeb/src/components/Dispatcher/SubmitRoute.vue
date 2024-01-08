@@ -5,13 +5,13 @@ const emit = defineEmits(["submit", "cancelSubmit"]);
 <template>
   <div class="fog">
     <div class="modal">
-      <h3 class="pigment-green-text">Czy zatwierdzić trasę?</h3>
+      <h3 class="pigment-green-text">Czy zapisać trasę?</h3>
       <div class="button-container">
-        <button @click="emit('cancelSubmit')" class="submit spacing">
+        <button @click="emit('cancelSubmit')" class="submit">
           Anuluj
         </button>
         <button @click="emit('submit')" class="pigment-green submit spacing">
-          Zatwierdź
+          Zapisz
         </button>
       </div>
     </div>
@@ -36,11 +36,5 @@ const emit = defineEmits(["submit", "cancelSubmit"]);
 .button-container {
   width: 60%;
   margin: auto;
-  display: grid;
-  grid-auto-flow: column;
-  grid-column-gap: 0px;
-}
-.spacing {
-  width: 90%;
 }
 </style>

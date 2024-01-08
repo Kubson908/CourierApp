@@ -7,7 +7,7 @@ import { manageCoordinates } from "../../geocoding";
 import { Courier, LocalCoords } from "../../typings";
 import { route, removeFeatures } from "./map";
 
-const showMap = ref<boolean>(true);
+const showMap = ref<boolean>(false);
 const shipments = ref<Array<Shipment>>([]);
 const localCoords = ref<Array<LocalCoords>>([]);
 const couriers = ref<Array<Courier>>();
@@ -15,30 +15,41 @@ const unavailableDates = ref<{ [id: string]: Array<Date> }>({});
 const selectedCourier = ref<Courier | null>(null);
 const selectedDate = ref<string>();
 
+const loading = ref<boolean>(false);
+
+const getShipmentsList = async () => {
+  const getShipments = await authorized.get(
+    "/shipment/get-registered-shipments"
+  );
+  shipments.value = getShipments.data;
+};
+
 onBeforeMount(async () => {
+  loading.value = true;
   let tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   if (tomorrow.getDay() === 0) {
     tomorrow.setDate(tomorrow.getDate() + 1);
   }
   selectedDate.value = formatDate(tomorrow);
+  try {
+    await getShipmentsList();
 
-  const getShipments = await authorized.get(
-    "/shipment/get-registered-shipments"
-  );
-  shipments.value = getShipments.data;
+    const getUnavailableDates = await authorized.get(
+      "/shipment/get-unavailable-dates"
+    );
+    unavailableDates.value = getUnavailableDates.data;
 
-  const getUnavailableDates = await authorized.get(
-    "/shipment/get-unavailable-dates"
-  );
-  unavailableDates.value = getUnavailableDates.data;
+    await manageCoordinates(shipments.value!);
+    const stringCoords = localStorage.getItem("localCoords");
+    localCoords.value = stringCoords ? JSON.parse(stringCoords) : [];
 
-  await manageCoordinates(shipments.value!);
-  const stringCoords = localStorage.getItem("localCoords");
-  localCoords.value = stringCoords ? JSON.parse(stringCoords) : [];
-
-  const getCouriers = await authorized.get("/admin/get-couriers");
-  couriers.value = getCouriers.data;
+    const getCouriers = await authorized.get("/admin/get-couriers");
+    couriers.value = getCouriers.data;
+  } catch (error: any) {
+  } finally {
+    loading.value = false;
+  }
 });
 
 const formatDate = (date: Date) => {
@@ -70,7 +81,9 @@ const validateDate = (event: Event) => {
 const iconSource = (shipment: Shipment) => {
   return shipment.status == 0
     ? "/src/assets/pickup.svg"
-    : "/src/assets/delivery.svg";
+    : shipment.status == 3
+    ? "/src/assets/delivery.svg"
+    : "/src/assets/return.svg";
 };
 
 // const size: Array<string> = ["Bardzo mały", "Mały", "Średni", "Duży"];
@@ -99,9 +112,13 @@ const submit = async () => {
         return r.id!;
       })
     );
+    route.value.forEach((route) => {
+      localCoords.value = localCoords.value.filter((l) => l.id != route.id);
+    });
     route.value = [];
   }
   console.log(res);
+  await getShipmentsList();
 };
 </script>
 
@@ -143,23 +160,31 @@ const submit = async () => {
         onkeydown="return false"
       />
     </div>
+    <h2 class="black-text" v-if="shipments.length == 0 && !loading && !showMap">
+      Brak nowych przesyłek
+    </h2>
     <div class="shipments-list" v-if="!showMap">
       <div v-for="shipment in shipments">
         <div class="list-element">
           <img :src="iconSource(shipment)" />
           {{
-            shipment.status == 0
+            shipment.status == 0 || shipment.status == 7
               ? shipment.pickupAddress
               : shipment.recipientAddress
           }}
           {{
-            shipment.status == 0 ? shipment.pickupCity : shipment.recipientCity
+            shipment.status == 0 || shipment.status == 7
+              ? shipment.pickupCity
+              : shipment.recipientCity
           }}
         </div>
         <hr v-if="shipments[shipments.length - 1] != shipment" />
       </div>
+      <div v-if="loading && shipments.length == 0">
+        <img src="/src/assets/loading.gif" class="loading" />
+      </div>
     </div>
-    <div v-else class="map-container">
+    <div v-else-if="!loading" class="map-container">
       <MapView
         @closeMap="showMap = false"
         :localCoords="localCoords"

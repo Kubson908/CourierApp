@@ -61,20 +61,21 @@ public partial class ProfileViewModel : BaseViewModel
     {
         IsBusy = true;
         string url = $"api/auth/get-profile-info";
-        var res = await connectionService.SendAsync(HttpMethod.Get, url);
         try
         {
+            var res = await connectionService.SendAsync(HttpMethod.Get, url);
             ProfileInfoDto profile = JsonConvert.DeserializeObject<ProfileInfoDto>(await res.Content.ReadAsStringAsync());
             Email = profile.Email;
             PhoneNumber = profile.PhoneNumber;
             User = await SecureStorage.Default.GetAsync("user");
             Error = false;
-            IsBusy = false;
         }
         catch (Exception)
         {
             await Shell.Current.DisplayAlert("Błąd pobierania", "Nie udało się pobrać danych profilu", "OK");
             Error = true;
+        } finally
+        {
             IsBusy = false;
         }
     }

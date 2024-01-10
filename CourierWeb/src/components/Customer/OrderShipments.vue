@@ -58,6 +58,7 @@ const verifyShipment: () => boolean = () => {
     "status",
     "price",
     "additionalDetails",
+    "deliveryAttempts",
   ];
   let shipment = shipments[shipments.length - 1];
   let status: boolean = true;
@@ -330,10 +331,10 @@ const removeShipment = () => {
                 :class="activeShipment!.size == null ? 'gray' : 'black'"
               >
                 <option value="null" selected hidden>Rozmiar przesyłki</option>
-                <option value="0" class="option">Bardzo mały</option>
-                <option value="1" class="option">Mały</option>
-                <option value="2" class="option">Średni</option>
-                <option value="3" class="option">Duży</option>
+                <option value="0" class="option">Bardzo mały (do 20x15x5)</option>
+                <option value="1" class="option">Mały (do 40x30x15)</option>
+                <option value="2" class="option">Średni (do 60x45x30)</option>
+                <option value="3" class="option">Duży (powyżej 60x45x30)</option>
               </select>
             </td>
             <td>

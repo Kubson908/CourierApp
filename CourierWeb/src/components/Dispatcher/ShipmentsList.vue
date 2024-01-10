@@ -39,7 +39,7 @@ onBeforeMount(async () => {
       "/shipment/get-unavailable-dates"
     );
     unavailableDates.value = getUnavailableDates.data;
-
+    console.log(unavailableDates.value);
     await manageCoordinates(shipments.value!);
     const stringCoords = localStorage.getItem("localCoords");
     localCoords.value = stringCoords ? JSON.parse(stringCoords) : [];
@@ -58,7 +58,7 @@ const formatDate = (date: Date) => {
   const day = ("0" + date.getDate()).slice(-2);
   return `${year}-${month}-${day}`;
 };
-
+// TODO: dodac jakis lepszy date picker i blokować w nim zajęte daty przy zmianie kuriera
 const validateDate = (event: Event) => {
   const date = new Date((event.target as HTMLInputElement).value);
   let tomorrow = new Date();

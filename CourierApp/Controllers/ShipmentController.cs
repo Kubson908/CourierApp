@@ -2,6 +2,7 @@
 using CourierAPI.Helpers;
 using CourierAPI.Models;
 using CourierAPI.Models.Dto;
+using CourierAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +16,12 @@ namespace CourierAPI.Controllers;
 public class ShipmentController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly EmailService emailService;
 
-    public ShipmentController(ApplicationDbContext context)
+    public ShipmentController(ApplicationDbContext context, EmailService emailService)
     {
         _context = context;
+        this.emailService = emailService;
     }
 
     [HttpGet("get-registered-shipments")]
@@ -33,7 +36,7 @@ public class ShipmentController : ControllerBase
     public async Task<IActionResult> RegisterShipments([FromBody] RegisterShipmentsDto dto)
     {
         PriceListHelper.PriceList ??= await _context.PriceList.FirstAsync();
-        if (dto.Shipments.Count() == 0 || dto.Shipments is null)
+        if (!dto.Shipments.Any() || dto.Shipments is null)
         {
             return BadRequest();
         }
@@ -41,6 +44,17 @@ public class ShipmentController : ControllerBase
         List<int> ids = new();
         try
         {
+            Customer? user = await _context.Customers.FindAsync(id);
+            if (user == null)
+            {
+                return BadRequest(new ApiUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid user",
+                });
+            }
+            List<LabelShipmentDto> labels = new();
+            float price = 0;
             Order order = new()
             {
                 OrderDate = DateTime.Now,
@@ -57,8 +71,32 @@ public class ShipmentController : ControllerBase
                 shipment.OrderId = order.Id;
                 shipment.DeliveryAttempts = 0;
                 await _context.Shipments.AddAsync(shipment);
+                price += (float)size! + (float)weight!;
+                labels.Add(new LabelShipmentDto
+                {
+                    Id = shipment.Id,
+                    Size = shipment.Size,
+                    Weight = shipment.Weight,
+                    CustomerEmail = user.Email,
+                    CustomerPhone = user.PhoneNumber,
+                    RecipientEmail = shipment.RecipientEmail,
+                    RecipientPhone = shipment.RecipientPhoneNumber,
+                });
             }
             await _context.SaveChangesAsync();
+            var shipments = dto.Shipments.ToList();
+            for (int i = 0; i < labels.Count; i++)
+            {
+                labels[i].Id = shipments[i].Id;
+            }
+            try
+            {
+                await emailService.SendLabels(user.Email!, labels);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             ids = dto.Shipments.Select(s => s.Id).ToList();
             return StatusCode(StatusCodes.Status201Created, ids);
         }
@@ -77,7 +115,7 @@ public class ShipmentController : ControllerBase
     public async Task<IActionResult> RepeatOrder([FromBody] RegisterShipmentsDto dto)
     {
         PriceListHelper.PriceList ??= await _context.PriceList.FirstAsync();
-        if (dto.Shipments.Count() == 0 || dto.Shipments is null)
+        if (!dto.Shipments.Any() || dto.Shipments is null)
         {
             return BadRequest();
         }
@@ -155,7 +193,7 @@ public class ShipmentController : ControllerBase
             int order = 1;
             foreach (var shipment in dto.Shipments)
             {
-                RouteElement element = new RouteElement
+                RouteElement element = new()
                 {
                     RouteDate = dto.Date.ToString(),
                     Order = order,
@@ -281,8 +319,7 @@ public class ShipmentController : ControllerBase
             await _context.RouteElements
                 .ForEachAsync((element) =>
                 {
-                    Console.WriteLine(element.RouteDate);
-                    if (DateOnly.Parse(element.RouteDate.ToString()).CompareTo(today) > 0 && !dates[id].Contains(element.RouteDate))
+                    if (element.CourierId == id && DateOnly.Parse(element.RouteDate.ToString()).CompareTo(today) > 0 && !dates[id].Contains(element.RouteDate))
                         dates[id].Add(element.RouteDate);
                 }, CancellationToken.None);
         }
@@ -336,7 +373,8 @@ public class ShipmentController : ControllerBase
     [HttpGet("generate-label")]
     public IActionResult GeneratePDF([FromQuery] int[] idList)
     {
-        List<LabelShipmentDto> shipments = _context.Shipments.Where(s => idList.Contains(s.Id)).Select(s => new LabelShipmentDto
+        string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        List<LabelShipmentDto> shipments = _context.Shipments.Where(s => s.CustomerId == userId && idList.Contains(s.Id)).Select(s => new LabelShipmentDto
         {
             Id = s.Id,
             Size = s.Size,
@@ -346,16 +384,9 @@ public class ShipmentController : ControllerBase
             RecipientEmail = s.RecipientEmail,
             RecipientPhone = s.RecipientPhoneNumber,
         }).ToList();
-        PdfDocument document = PDFLabelHelper.GeneratePDF(shipments);
-
-        byte[]? response = null;
-        using(MemoryStream ms = new())
-        {
-            document.Save(ms);
-            response = ms.ToArray();
-        }
-        string Filename = "Label_" + idList[0] + ".pdf";
-        return File(response, "application/pdf", Filename);
+        if (shipments.Count == 0) return BadRequest();
+        FileInfoDto result = PDFLabelHelper.GenerateLabels(shipments);
+        return File(result.Bytes, result.Type, result.Name);
     }
 
     [HttpGet("get-price-list")]

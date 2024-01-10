@@ -27,7 +27,7 @@ const formatDate = (date: string) => {
   <div class="black-text background">
     <div v-if="!loading">
       <h1 class="pigment-green-text">Historia zamówień</h1>
-      <div v-for="order in orders">
+      <div v-for="order in orders" v-if="orders.length > 0">
         <div class="list-element">
           <span class="col">Ilość przesyłek: {{ order.shipmentCount }}</span>
           <span class="col">{{ formatDate(order.orderDate) }}</span>
@@ -39,6 +39,7 @@ const formatDate = (date: string) => {
         </div>
         <hr v-if="orders[orders.length - 1] != order" class="divider" />
       </div>
+      <h2 v-else class="black-text">Brak zamówień w historii</h2>
     </div>
     <div v-else>
       <img src="/src/assets/loading.gif" class="loading" />

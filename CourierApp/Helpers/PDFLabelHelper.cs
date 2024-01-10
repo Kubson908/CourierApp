@@ -19,13 +19,65 @@ using PdfSharp.Drawing.BarCodes;
 using PdfSharp.Drawing.Layout;
 using PdfSharp.Fonts;
 using PdfSharp.Pdf;
+using System.IO.Compression;
 using System.Text;
 
 namespace CourierAPI.Helpers;
 
 public static class PDFLabelHelper
 {
-    public static PdfDocument GeneratePDF(List<LabelShipmentDto> shipments)
+    public static FileInfoDto GenerateLabels(List<LabelShipmentDto> shipments)
+    {
+        if (shipments.Count == 1)
+        {
+            PdfDocument document = GeneratePDF(shipments.First());
+            byte[]? response = null;
+            using (MemoryStream ms = new())
+            {
+                document.Save(ms);
+                response = ms.ToArray();
+            }
+            string fileName = "Label_" + shipments.First().Id + ".pdf";
+            return new FileInfoDto
+            {
+                Bytes = response,
+                Type = "application/pdf",
+                Name = fileName,
+            };
+        }
+        string archiveName = "Labels_" + DateOnly.FromDateTime(DateTime.Now) + ".zip";
+        byte[] result;
+        using (MemoryStream zipArchiveMemoryStream = new())
+        {
+            using (ZipArchive zipArchive = new(zipArchiveMemoryStream, ZipArchiveMode.Create, true))
+            {
+                foreach (LabelShipmentDto shipment in shipments)
+                {
+                    PdfDocument document = GeneratePDF(shipment);
+                    byte[]? file = null;
+                    using (MemoryStream ms = new())
+                    {
+                        document.Save(ms);
+                        file = ms.ToArray();
+                    }
+                    string fileName = "Label_" + shipment.Id + ".pdf";
+                    ZipArchiveEntry entry = zipArchive.CreateEntry(fileName);
+                    using Stream entryStream = entry.Open();
+                    entryStream.Write(file, 0, file.Length);
+                }
+            }
+            zipArchiveMemoryStream.Seek(0, SeekOrigin.Begin);
+            result = zipArchiveMemoryStream.ToArray();
+        }
+        return new FileInfoDto
+        {
+            Bytes = result,
+            Type = "application/zip",
+            Name = archiveName
+        };
+    }
+
+    public static PdfDocument GeneratePDF(LabelShipmentDto shipment)
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         if (GlobalFontSettings.FontResolver == null)
@@ -33,32 +85,30 @@ public static class PDFLabelHelper
         PdfDocument document = new();
         document.Info.Title = "Etykieta przesyłki";
         XFont font = new("Verdana", 18, XFontStyleEx.Regular);
-        foreach (LabelShipmentDto shipment in shipments)
+
+        var barcodeText = "PC" + shipment.Id + "-" + (int)shipment.Size + "-" + (int)shipment.Weight;
+        PdfPage page = document.AddPage();
+        page.Size = PdfSharp.PageSize.A5;
+
+        Code3of9Standard bc39 = new(barcodeText, new XSize(200, 100))
         {
-            var barcodeText = "PC" + shipment.Id + "-" + (int)shipment.Size + "-" + (int)shipment.Weight;
-            PdfPage page = document.AddPage();
-            page.Size = PdfSharp.PageSize.A5;
+            TextLocation = TextLocation.None
+        };
 
-            Code3of9Standard bc39 = new(barcodeText, new XSize(200, 100))
-            {
-                TextLocation = TextLocation.None
-            };
+        XGraphics gfx = XGraphics.FromPdfPage(page);
+        gfx.DrawBarCode(bc39, XBrushes.Black, font, new XPoint(page.Width/2 - bc39.Size.Width/2, page.Height - 150));
 
-            XGraphics gfx = XGraphics.FromPdfPage(page);
-            gfx.DrawBarCode(bc39, XBrushes.Black, font, new XPoint(page.Width/2 - bc39.Size.Width/2, page.Height - 150));
+        XTextFormatter tf = new(gfx);
 
-            XTextFormatter tf = new(gfx);
+        XRect rect = new(10, 10, 450, 220);
+        gfx.DrawRectangle(XBrushes.Transparent, rect);
+        string text = "Nadawca: " + shipment.CustomerEmail + "\n" + "Tel: " + FormatPhoneNumber(shipment.CustomerPhone ?? "Brak");
+        tf.DrawString(text, font, XBrushes.Black, rect, XStringFormats.TopLeft);
 
-            XRect rect = new(10, 10, 450, 220);
-            gfx.DrawRectangle(XBrushes.Transparent, rect);
-            string text = "Nadawca: " + shipment.CustomerEmail + "\n" + "Tel: " + FormatPhoneNumber(shipment.CustomerPhone ?? "Brak");
-            tf.DrawString(text, font, XBrushes.Black, rect, XStringFormats.TopLeft);
-
-            XRect rect2 = new(10, 240, 450, 220);
-            gfx.DrawRectangle(XBrushes.Transparent, rect2);
-            text = "Odbiorca: " + shipment.RecipientEmail + "\n" + "Tel: " + FormatPhoneNumber(shipment.RecipientPhone ?? "Brak");
-            tf.DrawString(text, font, XBrushes.Black, rect2, XStringFormats.TopLeft);
-        }
+        XRect rect2 = new(10, 240, 450, 220);
+        gfx.DrawRectangle(XBrushes.Transparent, rect2);
+        text = "Odbiorca: " + shipment.RecipientEmail + "\n" + "Tel: " + FormatPhoneNumber(shipment.RecipientPhone ?? "Brak");
+        tf.DrawString(text, font, XBrushes.Black, rect2, XStringFormats.TopLeft);
 
         return document;
     }

@@ -110,12 +110,18 @@ const showAddCourier = ref(false);
     </teleport>
     <br />
   </div>
-  <div v-else>
+  <div v-else class="background">
     <img src="/src/assets/loading.gif" class="loading" />
   </div>
 </template>
 
 <style scoped>
+.background {
+  width: 100vw;
+  height: 100vh;
+  background: #ffffff;
+  position: fixed;
+}
 .adminDiv {
   color: black;
   display: grid;
@@ -141,6 +147,6 @@ const showAddCourier = ref(false);
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -100%);
 }
 </style>

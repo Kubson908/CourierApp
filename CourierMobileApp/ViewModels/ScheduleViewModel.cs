@@ -65,10 +65,19 @@ public partial class ScheduleViewModel : BaseViewModel
         {
             ListEmpty = false;
             IsBusy = true;
-            await shipmentService.GetRouteAsync(Date);
-            SetRoute();
-            IsBusy = false;
-            ListEmpty = Route.Count == 0;
+            try
+            {
+                await shipmentService.GetRouteAsync(Date);
+                SetRoute();
+
+            } catch (Exception)
+            {
+                await Shell.Current.DisplayAlert("Błąd połączenia", "Nie udało się pobrać harmonogramu ze względu na błąd połączenia z serwerem", "OK");
+            } finally
+            {
+                IsBusy = false;
+                ListEmpty = Route.Count == 0;
+            }
         });
     }
     [RelayCommand]

@@ -34,6 +34,7 @@ public class ApplicationDbContext : IdentityDbContext
             Id = "00000000-0000-0000-0000-000000000001",
             UserName = "admin",
             NormalizedUserName = "ADMIN",
+            Email = "admin@admin.com",
             EmailConfirmed = true,
         };
 

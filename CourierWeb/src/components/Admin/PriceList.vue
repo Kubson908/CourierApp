@@ -53,6 +53,7 @@ const submit = async () => {
               <input
                 v-model="priceList.verySmallSize"
                 class="rounded-input center"
+                type="number"
               />
             </td>
             <td class="black-text currency">zł</td>
@@ -63,6 +64,7 @@ const submit = async () => {
               <input
                 v-model="priceList.smallSize"
                 class="rounded-input center"
+                type="number"
               />
             </td>
             <td class="black-text currency">zł</td>
@@ -73,6 +75,7 @@ const submit = async () => {
               <input
                 v-model="priceList.mediumSize"
                 class="rounded-input center"
+                type="number"
               />
             </td>
             <td class="black-text currency">zł</td>
@@ -83,6 +86,7 @@ const submit = async () => {
               <input
                 v-model="priceList.largeSize"
                 class="rounded-input center"
+                type="number"
               />
             </td>
             <td class="black-text currency">zł</td>
@@ -96,6 +100,7 @@ const submit = async () => {
               <input
                 v-model="priceList.lightWeight"
                 class="rounded-input center"
+                type="number"
               />
             </td>
             <td class="black-text currency">zł</td>
@@ -106,6 +111,7 @@ const submit = async () => {
               <input
                 v-model="priceList.mediumWeight"
                 class="rounded-input center"
+                type="number"
               />
             </td>
             <td class="black-text currency">zł</td>
@@ -116,6 +122,7 @@ const submit = async () => {
               <input
                 v-model="priceList.heavyWeight"
                 class="rounded-input center"
+                type="number"
               />
             </td>
             <td class="black-text currency">zł</td>

@@ -13,21 +13,21 @@
     </ContentPage.Behaviors>
     <Grid Background="{AppThemeBinding Light={StaticResource LoggedInBgLight}, Dark={StaticResource LoggedInBgDark}}">
         <Grid RowDefinitions="*, 500, *" Padding="0,0" VerticalOptions="Center">
-
-            <zxing:CameraBarcodeReaderView
-                Grid.Row="1"
+            <Frame Grid.Row="1" Padding="0" CornerRadius="0">
+                <zxing:CameraBarcodeReaderView
+                
                 x:Name="cameraBarcodeReaderView"
                 BarcodesDetected="BarcodesDetected" HeightRequest="500" />
-            <Grid RowDefinitions="*, 200, *" Grid.Row="1" Padding="0">
-                <Frame BackgroundColor="#6d6d6d6d" BorderColor="#6d6d6d6d"
-                       Grid.Row="0" CornerRadius="0"
-                       VerticalOptions="Fill" />
+            </Frame>
+            
+            <VerticalStackLayout Grid.Row="1" Padding="0" Margin="0" >
+                <Frame BackgroundColor="#6d6d6d6d" BorderColor="#6d6d6d6d" CornerRadius="0"
+                       HeightRequest="150"/>
                 <Frame HeightRequest="200" BackgroundColor="Transparent" CornerRadius="0"
-                        BorderColor="Transparent" Grid.Row="1" x:Name="scanFrame" />
-                <Frame BackgroundColor="#6d6d6d6d" BorderColor="#6d6d6d6d"
-                       Grid.Row="2" CornerRadius="0"
-                       VerticalOptions="Fill"  />
-            </Grid>
+                       BorderColor="Transparent" Grid.Row="1" x:Name="scanFrame" />
+                <Frame BackgroundColor="#6d6d6d6d" BorderColor="#6d6d6d6d" CornerRadius="0"
+                       HeightRequest="150"/>
+            </VerticalStackLayout>
             
         </Grid>
     </Grid>

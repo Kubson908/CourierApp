@@ -73,6 +73,7 @@ const submitNumber = async () => {
 };
 
 const changePassword = ref<boolean>(false);
+// TODO: dodac snackbar z komunikatem o zmianie hasla lub numeru
 </script>
 
 <template>
@@ -101,10 +102,19 @@ const changePassword = ref<boolean>(false);
           <button class="submit black" @click="changePassword = true">
             Zmień hasło
           </button>
-          <button class="submit pigment-green" @click="router.push('/history')">
-            Archiwum zamówień
+          <button
+            class="submit pigment-green"
+            v-if="user.roles.includes('Customer')"
+            @click="router.push('/history')"
+          >
+            Historia zamówień
           </button>
         </div>
+      </div>
+      <div v-else>
+        <button class="submit black" @click="changePassword = true">
+          Zmień hasło
+        </button>
       </div>
     </div>
     <div v-else-if="editNumber && !loading" class="cover">

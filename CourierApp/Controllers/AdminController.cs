@@ -3,9 +3,7 @@ using CourierAPI.Helpers;
 using CourierAPI.Models;
 using CourierAPI.Models.Dto;
 using CourierAPI.Services;
-using CourierAPI.Websocket;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

@@ -34,7 +34,8 @@ public class ConnectionService
         };
         _client = new HttpClient(handler)
         {
-            BaseAddress = new Uri(Config.ApiPath)
+            BaseAddress = new Uri(Config.ApiPath),
+            Timeout = TimeSpan.FromSeconds(10)
         };
         SetTokenAsync();
     }

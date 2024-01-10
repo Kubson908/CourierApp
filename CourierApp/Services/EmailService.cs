@@ -1,7 +1,6 @@
-﻿using CourierAPI.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using CourierAPI.Helpers;
+using CourierAPI.Models.Dto;
 using MimeKit;
-using Newtonsoft.Json.Linq;
 
 namespace CourierAPI.Services;
 
@@ -34,6 +33,17 @@ public class EmailService
         };
 
         await SendEmail(email, "Reset hasła", body);
+    }
+
+    public async Task SendLabels(string email, List<LabelShipmentDto> shipments)
+    {
+        FileInfoDto file = PDFLabelHelper.GenerateLabels(shipments);
+        string bodyFragment = shipments.Count > 1 ? "<p>W załączniku dołączono etykiety przesyłek</p>" : "<p>W załączniku dołączono etykietę przeyłki</p>";
+        var builder = new BodyBuilder();
+        builder.HtmlBody = "<h3>Dziękujemy za zarejestrowanie przesyłek</h3>" +
+                "<p>Szczegóły zamówienia możesz zobaczyć w historii zamówień na swoim profilu użytkownika</p>" + bodyFragment;
+        builder.Attachments.Add(file.Name, file.Bytes, new ContentType("application", file.Type.Split("/")[1]));
+        await SendEmail(email, "Potwierdzenie zamówienia", builder.ToMessageBody());
     }
 
     private async Task SendEmail(string email, string subject, MimeEntity body)

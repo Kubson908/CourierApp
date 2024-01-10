@@ -12,6 +12,9 @@ const logout = () => {
 <template>
   <ul>
     <li v-if="!user.roles.includes('Admin')"><a href="/">Strona główna</a></li>
+    <li v-if="user.roles.includes('Customer')">
+      <a href="/order">Zamów</a>
+    </li>
     <li v-if="!user.isLoggedIn" class="float-right">
       <a href="/login">Logowanie</a>
     </li>

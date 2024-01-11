@@ -10,7 +10,7 @@ namespace CourierAPI.Websocket;
 public class WebsocketMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger<WebsocketController> _logger;
+    private readonly ILogger<WebsocketMiddleware> _logger;
     private readonly WorkService _workService;
 
     public List<WebsocketInfo> connections;
@@ -21,7 +21,7 @@ public class WebsocketMiddleware
         "api/courier/end-route"
     };
 
-    public WebsocketMiddleware(RequestDelegate next, ILogger<WebsocketController> logger, WorkService workService)
+    public WebsocketMiddleware(RequestDelegate next, ILogger<WebsocketMiddleware> logger, WorkService workService)
     {
         _next = next;
         _logger = logger;

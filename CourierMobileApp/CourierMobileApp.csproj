@@ -71,6 +71,7 @@
 	  <None Remove="Resources\Fonts\IBMPlexSans-Regular.otf" />
 	  <None Remove="Resources\Images\arrow_left_dark.svg" />
 	  <None Remove="Resources\Images\arrow_right_dark.svg" />
+	  <None Remove="Resources\Images\calendar_dark.svg" />
 	  <None Remove="Resources\Images\hamburger.svg" />
 	  <None Remove="Resources\Images\hamburger_dark.svg" />
 	  <None Remove="Resources\Images\logout.svg" />

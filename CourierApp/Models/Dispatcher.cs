@@ -6,8 +6,8 @@ namespace CourierAPI.Models;
 public class Dispatcher : IdentityUser
 {
     [Required]
-    public string FirstName { get; set; } = string.Empty;
+    public required string FirstName { get; set; }
 
     [Required]
-    public string LastName { get; set; } = string.Empty;
+    public required string LastName { get; set; }
 }

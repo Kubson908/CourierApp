@@ -32,7 +32,9 @@ const submit = async () => {
   try {
     loading.value = true;
     const url =
-      props.role == "Dispatcher" ? "/auth/add-dispatcher" : "/auth/add-courier";
+      props.role == "Dispatcher"
+        ? "/admin/add-dispatcher"
+        : "/admin/add-courier";
     console.log("test");
     await authorized.post(url, {
       firstName: firstName.value,

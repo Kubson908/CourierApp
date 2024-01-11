@@ -13,10 +13,10 @@ namespace CourierAPI.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private IUserService<AddCourierDto, LoginDto, Courier> _courierService;
-    private IUserService<AddDispatcherDto, LoginDto, Dispatcher> _dispatcherService;
-    private IUserService<RegisterDto, LoginDto, Customer> _customerService;
-    private AdminService _adminService;
+    private readonly IUserService<AddCourierDto, LoginDto, Courier> _courierService;
+    private readonly IUserService<AddDispatcherDto, LoginDto, Dispatcher> _dispatcherService;
+    private readonly IUserService<RegisterDto, LoginDto, Customer> _customerService;
+    private readonly AdminService _adminService;
 
     public AuthController(IUserService<AddCourierDto, LoginDto, Courier> courierService,
         IUserService<AddDispatcherDto, LoginDto, Dispatcher> dispatcherService,
@@ -75,35 +75,10 @@ public class AuthController : ControllerBase
     {
         if (dto.Password == null || dto.ConfirmPassword == null || dto.Password != dto.ConfirmPassword)
             return BadRequest();
-        // TODO: dodac reset hasla dla kuriera i dyspozytora
         var token = HttpContext.Request.Headers.Authorization.ToString().Replace(" ", "+");
         ApiUserResponse result = await _customerService.ResetPassword(token!, dto.Password!);
         if (result.IsSuccess) return Ok(result);
         return BadRequest(result);
-    }
-
-    [HttpPatch("reset-dispatcher-password/{id}")]
-    public async Task<IActionResult> ResetDispatcherPassword([FromRoute] string id, [FromBody] ResetPasswordDto dto)
-    {
-        if (dto.Password == null || dto.ConfirmPassword == null || dto.Password != dto.ConfirmPassword)
-            return BadRequest();
-        ApiUserResponse response = await _dispatcherService.ResetPassword(id, dto.Password);
-        if (response.Exception) 
-            return StatusCode(StatusCodes.Status500InternalServerError, response);
-        if (response.IsSuccess) return Ok(response);
-        return BadRequest(response);
-    }
-
-    [HttpPatch("reset-courier-password/{id}")]
-    public async Task<IActionResult> ResetCourierPassword([FromRoute] string id, [FromBody] ResetPasswordDto dto)
-    {
-        if (dto.Password == null || dto.ConfirmPassword == null || dto.Password != dto.ConfirmPassword)
-            return BadRequest();
-        ApiUserResponse response = await _courierService.ResetPassword(id, dto.Password);
-        if (response.Exception)
-            return StatusCode(StatusCodes.Status500InternalServerError, response);
-        if (response.IsSuccess) return Ok(response);
-        return BadRequest(response);
     }
 
     [HttpPost("login")]
@@ -136,20 +111,6 @@ public class AuthController : ControllerBase
         return Unauthorized(result);
     }
 
-    [HttpPost("add-courier"), Authorize(Roles = "Admin")]
-    public async Task<IActionResult> AddCourierAsync([FromBody] AddCourierDto model)
-    {
-        if (!ModelState.IsValid)
-        {
-            return UnprocessableEntity(ModelState);
-        }
-        var result = await _courierService.RegisterAsync(model);
-
-        if (result.IsSuccess) return Ok(result);
-
-        return BadRequest(result);
-    }
-
     [HttpPost("login-courier")]
     public async Task<IActionResult> LoginCourierAsync([FromBody] LoginDto model)
     {
@@ -163,18 +124,6 @@ public class AuthController : ControllerBase
             return Ok(result);
 
         return Unauthorized(result);
-    }
-
-    [HttpPost("add-dispatcher"), Authorize(Roles = "Admin")]
-    public async Task<IActionResult> AddDispatcher([FromBody] AddDispatcherDto dto)
-    {
-        if (!ModelState.IsValid)
-        {
-            return UnprocessableEntity(ModelState);
-        }
-        var result = await _dispatcherService.RegisterAsync(dto);
-        if (result.IsSuccess) return Ok(result);
-        return BadRequest(result);
     }
 
     [HttpGet("refresh-token"), Authorize]

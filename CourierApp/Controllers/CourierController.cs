@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SkiaSharp;
 using System.Security.Claims;
-using System.Xml.Linq;
 
 namespace CourierAPI.Controllers;
 
@@ -13,14 +12,11 @@ namespace CourierAPI.Controllers;
 [ApiController]
 public class CourierController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
     private readonly IWebHostEnvironment _environment;
     private readonly WorkService _workService;
 
-    public CourierController(ApplicationDbContext context, 
-        IWebHostEnvironment environment, WorkService workService)
+    public CourierController(IWebHostEnvironment environment, WorkService workService)
     {
-        _context = context;
         _environment = environment;
         _workService = workService;
     }
@@ -89,7 +85,7 @@ public class CourierController : ControllerBase
         return BadRequest("File is empty");
     }
 
-    private void CropImage(string upload)
+    private static void CropImage(string upload)
     {
         using var originalBitmap = SKBitmap.Decode(upload);
         int newSize = Math.Min(originalBitmap.Width, originalBitmap.Height);

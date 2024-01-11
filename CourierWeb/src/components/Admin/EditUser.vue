@@ -94,8 +94,8 @@ const resetPassword = async () => {
   errorMessage.value = null;
   const url: string =
     props.user.role == "Dispatcher"
-      ? "/auth/reset-dispatcher-password/"
-      : "/auth/reset-courier-password/";
+      ? "/admin/reset-dispatcher-password/"
+      : "/admin/reset-courier-password/";
   try {
     const res = await authorized.patch(url + props.user.id, {
       password: newPassword.value,

@@ -9,6 +9,7 @@ public partial class SchedulePage : ContentPage
     ProfileService profileService;
     private readonly MenuAnimation animation;
     bool isButtonPressed = false;
+    private bool DarkTheme { set => Refresh(); }
     public SchedulePage(ScheduleViewModel viewModel, ProfileService profileService)
     {
         InitializeComponent();
@@ -21,6 +22,13 @@ public partial class SchedulePage : ContentPage
         };
         navbar.MenuClicked += (object sender, EventArgs e) => { animation.OpenMenu(sender, e); navbar.RotateIcon(); };
         navbar.Initialize(this.profileService);
+        Application.Current.RequestedThemeChanged += (sender, args) => { DarkTheme = Application.Current.RequestedTheme == AppTheme.Dark; };
+    }
+
+    private void Refresh()
+    {
+        Content = null;
+        InitializeComponent();
     }
 
     protected override void OnAppearing()

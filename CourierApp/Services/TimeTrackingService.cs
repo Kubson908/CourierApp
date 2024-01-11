@@ -2,7 +2,7 @@
 
 public class TimeTrackingService : BackgroundService
 {
-    private WorkService workService;
+    private readonly WorkService workService;
 
     public TimeTrackingService(WorkService workService)
     {

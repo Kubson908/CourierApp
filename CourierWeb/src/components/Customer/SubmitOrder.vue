@@ -10,6 +10,8 @@ const props = defineProps<{
 }>();
 const loading = ref<boolean>(false);
 //TODO: dodac jakies lepsze podsumowanie
+// TODO: dodac mozliwosc przegladania cennika dla klienta (moze gdzies na stronie glownej)
+// TODO: ekran zmiany hasła u kuriera
 </script>
 
 <template>

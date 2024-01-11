@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿/*using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.WebSockets;
 using System.Text;
@@ -53,3 +53,4 @@ public class WebsocketController : ControllerBase
         _logger.Log(LogLevel.Information, "WebSocket connection closed");
     }
 }
+*/

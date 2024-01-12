@@ -80,8 +80,7 @@ public static class PDFLabelHelper
     public static PdfDocument GeneratePDF(LabelShipmentDto shipment)
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-        if (GlobalFontSettings.FontResolver == null)
-            GlobalFontSettings.FontResolver = new FileFontResolver();
+        GlobalFontSettings.FontResolver ??= new FileFontResolver();
         PdfDocument document = new();
         document.Info.Title = "Etykieta przesyłki";
         XFont font = new("Verdana", 18, XFontStyleEx.Regular);

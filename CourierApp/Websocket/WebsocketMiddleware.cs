@@ -11,10 +11,12 @@ public class WebsocketMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<WebsocketMiddleware> _logger;
+#pragma warning disable IDE0052 // Remove unread private members
     private readonly WorkService _workService;
+#pragma warning restore IDE0052 // Remove unread private members
 
     public List<WebsocketInfo> connections;
-    JwtSecurityTokenHandler handler;
+    readonly JwtSecurityTokenHandler handler;
     readonly List<string> endpoints = new()
     {
         "api/courier/check-in",
@@ -87,92 +89,89 @@ public class WebsocketMiddleware
             Id = wsId,
             Connection = ws,
         });
-        _logger.Log(LogLevel.Information, wsId + ": WebSocket connection established" + "\nTotal connections: " + connections.Count());
+        _logger.Log(LogLevel.Information, wsId + ": WebSocket connection established" + "\nTotal connections: " + connections.Count);
 
         while (true)
+        {
+            if (ct.IsCancellationRequested)
             {
-                if (ct.IsCancellationRequested)
-                {
-                    return;
-                }
-                string data = string.Empty;
-                try
-                {
-                    data = await ReadStringAsync(ws, ct);
-                } catch (OperationCanceledException)
+                return;
+            }
+            string data = string.Empty;
+            try
+            {
+                data = await ReadStringAsync(ws, ct);
+            } catch (OperationCanceledException)
+            {
+                break;
+            }
+            var con = connections.First(c => c.Id == wsId);
+            if (string.IsNullOrEmpty(data))
+            {
+                if (ws.State != WebSocketState.Open)
                 {
                     break;
                 }
-                var con = connections.First(c => c.Id == wsId);
-                if (string.IsNullOrEmpty(data))
-                {
-                    if (ws.State != WebSocketState.Open)
-                    {
-                        break;
-                    }
 
-                    continue;
-                }
-                if (!con.IsAuthenticated && handler.CanReadToken(data))
-                {
-                    var token = handler.ReadJwtToken(data);
-                    con.IsAuthenticated = true;
-                    con.Roles = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-                    con.UserId = token.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-                    continue;
-                }
-                Console.WriteLine(wsId + ": " + data);
-                foreach (var item in connections.Where(c => c.Roles != null && c.Roles.Contains("Staff")))
-                {
-                    if (item.Connection != null && item.Connection.State != WebSocketState.Open)
-                    {
-                        continue;
-                    }
-
-                    await SendStringAsync(item.Connection ?? ws, data, ct);
-                }
+                continue;
             }
-            connections.Remove(connections.First(c => c.Id == wsId));
-            if (ws.State != WebSocketState.Aborted )
-                try
+            if (!con.IsAuthenticated && handler.CanReadToken(data))
+            {
+                var token = handler.ReadJwtToken(data);
+                con.IsAuthenticated = true;
+                con.Roles = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+                con.UserId = token.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+                continue;
+            }
+            Console.WriteLine(wsId + ": " + data);
+            foreach (var item in connections.Where(c => c.Roles != null && c.Roles.Contains("Staff")))
+            {
+                if (item.Connection != null && item.Connection.State != WebSocketState.Open)
                 {
-                    await ws.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "UserDisconnected", ct);
-                }  
-                catch (TaskCanceledException) { } catch (OperationCanceledException) { } catch (WebSocketException) { }
-            _logger.Log(LogLevel.Information, wsId + ": WebSocket connection closed"
-                            + "\nTotal connections: " + connections.Count());
-            ws.Dispose();
+                    continue;
+                }
+
+                await SendStringAsync(item.Connection ?? ws, data, ct);
+            }
+        }
+        connections.Remove(connections.First(c => c.Id == wsId));
+        if (ws.State != WebSocketState.Aborted )
+            try
+            {
+                await ws.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "UserDisconnected", ct);
+            }  
+            catch (TaskCanceledException) { } catch (OperationCanceledException) { } catch (WebSocketException) { }
+        _logger.Log(LogLevel.Information, wsId + ": WebSocket connection closed"
+                        + "\nTotal connections: " + connections.Count);
+        ws.Dispose();
     }
-    async Task<string> ReadStringAsync(WebSocket ws, CancellationToken ct = default)
+
+    static async Task<string> ReadStringAsync(WebSocket ws, CancellationToken ct = default)
     {
         var buffer = new ArraySegment<byte>(new byte[1024 * 8]);
 
-        using (MemoryStream ms = new())
+        using MemoryStream ms = new();
+        WebSocketReceiveResult receiveResult;
+
+        do
         {
-            WebSocketReceiveResult receiveResult;
+            ct.ThrowIfCancellationRequested();
 
-            do
-            {
-                ct.ThrowIfCancellationRequested();
+            receiveResult = await ws.ReceiveAsync(buffer, ct);
 
-                receiveResult = await ws.ReceiveAsync(buffer, ct);
+            if (buffer.Array != null) ms.Write(buffer.Array, buffer.Offset, receiveResult.Count);
+        } while (!receiveResult.EndOfMessage);
 
-                if (buffer.Array != null) ms.Write(buffer.Array, buffer.Offset, receiveResult.Count);
-            } while (!receiveResult.EndOfMessage);
+        ms.Seek(0, SeekOrigin.Begin);
 
-            ms.Seek(0, SeekOrigin.Begin);
+        if (receiveResult.MessageType != WebSocketMessageType.Text)
+            return string.Empty;
 
-            if (receiveResult.MessageType != WebSocketMessageType.Text)
-                return string.Empty;
-
-            using (StreamReader reader = new StreamReader(ms, System.Text.Encoding.UTF8))
-            {
-                return await reader.ReadToEndAsync();
-            }
-        }
+        using StreamReader reader = new(ms, System.Text.Encoding.UTF8);
+        return await reader.ReadToEndAsync();
     }
 
-    Task SendStringAsync(WebSocket ws, string data, CancellationToken ct = default)
+    static Task SendStringAsync(WebSocket ws, string data, CancellationToken ct = default)
     {
         var buffer = System.Text.Encoding.UTF8.GetBytes(data);
         var segment = new ArraySegment<byte>(buffer);

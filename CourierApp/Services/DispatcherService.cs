@@ -11,11 +11,11 @@ using System.Text.RegularExpressions;
 
 namespace CourierAPI.Services;
 
-public class DispatcherService : IUserService<AddDispatcherDto, LoginDto, Dispatcher>
+public partial class DispatcherService : IUserService<AddDispatcherDto, LoginDto, Dispatcher>
 {
     private readonly UserManager<Dispatcher> _userManager;
     private readonly IConfiguration _configuration;
-    private ApplicationDbContext _context;
+    private readonly ApplicationDbContext _context;
 
     public DispatcherService(UserManager<Dispatcher> userManager, 
         IConfiguration configuration, ApplicationDbContext context)
@@ -73,7 +73,7 @@ public class DispatcherService : IUserService<AddDispatcherDto, LoginDto, Dispat
         };
     }
 
-    private bool IsValidEmail(string email)
+    private static bool IsValidEmail(string email)
     {
         string regex = @"^[^@\s]+@[^@\s]+\.(com|net|org|gov)$";
         return Regex.IsMatch(email, regex, RegexOptions.IgnoreCase);
@@ -199,11 +199,11 @@ public class DispatcherService : IUserService<AddDispatcherDto, LoginDto, Dispat
         };
     }
 
-    private bool VerifyPassword(string password)
+    private static bool VerifyPassword(string password)
     {
         if (password.Length < 8) return false;
-        if (!Regex.IsMatch(password, @"\d")) return false;
-        if (!Regex.IsMatch(password, @"[A-Z]")) return false;
+        if (!DigitRegex().IsMatch(password)) return false;
+        if (!CapitalLetterRegex().IsMatch(password)) return false;
         return true;
     }
 
@@ -379,4 +379,9 @@ public class DispatcherService : IUserService<AddDispatcherDto, LoginDto, Dispat
             };
         }
     }
+
+    [GeneratedRegex("\\d")]
+    private static partial Regex DigitRegex();
+    [GeneratedRegex("[A-Z]")]
+    private static partial Regex CapitalLetterRegex();
 }

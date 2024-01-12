@@ -1,6 +1,4 @@
 ﻿using CourierAPI.Models.Dto;
-using CourierAPI.Websocket;
-using System.Reflection;
 
 namespace CourierAPI.Services;
 
@@ -24,7 +22,7 @@ public class WorkService
             {
                 try
                 {
-                    ChangeStatus(workTime.CourierId, workTime.Status);
+                    ChangeStatus(workTime);
                 }
                 catch (Exception ex)
                 {
@@ -34,20 +32,20 @@ public class WorkService
         }
     }
 
-    public void ChangeStatus(string id, WorkStatus status)
+    public void ChangeStatus(WorkTime workTime)
     {
-        WorkTimes.First(t => t.CourierId == id).Status = 
-            status == WorkStatus.Active ? WorkStatus.RecentlyActive : WorkStatus.Inactive;
+        workTime.Status = workTime.Status == WorkStatus.Active ? 
+            WorkStatus.RecentlyActive : WorkStatus.Inactive;
 
-        if (status == WorkStatus.RecentlyActive)
+        if (workTime.Status == WorkStatus.RecentlyActive)
         {
-            WorkStatusEventArgs args = new(WorkTimes.First(t => t.CourierId == id));
-            DeleteWorkTime(id);
+            WorkStatusEventArgs args = new(workTime);
+            DeleteWorkTime(workTime.CourierId);
             Inactive?.Invoke(this, args);
         }
-        else if (status == WorkStatus.Active)
+        else if (workTime.Status == WorkStatus.Active)
         {
-            WorkStatusEventArgs args = new(WorkTimes.First(t => t.CourierId == id));
+            WorkStatusEventArgs args = new(workTime);
             RecentlyActive?.Invoke(this, args);
         }
     }

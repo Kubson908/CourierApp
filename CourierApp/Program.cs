@@ -96,12 +96,14 @@ builder.Services.AddHostedService<TimeTrackingService>();
 
 var app = builder.Build();
 
+app.UseSwagger();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
+    
     app.UseSwaggerUI();
 }
+app.UseHttpsRedirection();
 
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -113,7 +115,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseCors("AllowSpecificOrigins");
 
-app.UseHttpsRedirection();
+
 
 app.UseAuthorization();
 

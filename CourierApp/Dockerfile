@@ -8,13 +8,13 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["CourierAPI.csproj", "."]
-RUN dotnet restore "./CourierApp.csproj"
+RUN dotnet restore "./CourierAPI.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "CourierApp.csproj" -c Release -o /app/build
+RUN dotnet build "CourierAPI.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "CourierApp.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "CourierAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

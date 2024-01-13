@@ -19,16 +19,17 @@
                 x:Name="cameraBarcodeReaderView"
                 BarcodesDetected="BarcodesDetected" HeightRequest="500" />
             </Frame>
-            
+
             <VerticalStackLayout Grid.Row="1" Padding="0" Margin="0" >
                 <Frame BackgroundColor="#6d6d6d6d" BorderColor="#6d6d6d6d" CornerRadius="0"
                        HeightRequest="150"/>
                 <Frame HeightRequest="200" BackgroundColor="Transparent" CornerRadius="0"
-                       BorderColor="Transparent" Grid.Row="1" x:Name="scanFrame" />
+                       BorderColor="Transparent" Grid.Row="1" x:Name="scanFrame" Padding="0" >
+                    <RoundRectangle VerticalOptions="End" Fill="#aa15ab54" HeightRequest="4" x:Name="anim"/>
+                </Frame>
                 <Frame BackgroundColor="#6d6d6d6d" BorderColor="#6d6d6d6d" CornerRadius="0"
-                       HeightRequest="150"/>
+                       HeightRequest="150" />
             </VerticalStackLayout>
-            
         </Grid>
     </Grid>
     

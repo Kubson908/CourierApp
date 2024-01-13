@@ -86,12 +86,12 @@ export const createMap = (
         image: new Icon({
           src:
             marker.get("multiple") == true
-              ? "/src/assets/multiple_packages.svg"
+              ? "multiple_packages.svg"
               : localCoord.status == 0
-              ? "/src/assets/pickup.svg"
+              ? "pickup.svg"
               : localCoord.status == 3
-              ? "/src/assets/delivery.svg"
-              : "/src/assets/return.svg",
+              ? "delivery.svg"
+              : "return.svg",
           anchor: [0.5, 1],
         }),
         zIndex: 100,
@@ -225,10 +225,10 @@ const addEventListeners = (map: Map, shipments: Array<Shipment>) => {
       draggedElement = document.createElement("img");
       draggedElement.src =
         status == 0
-          ? "/src/assets/pickup.svg"
+          ? "pickup.svg"
           : status == 3
-          ? "/src/assets/delivery.svg"
-          : "/src/assets/return.svg";
+          ? "delivery.svg"
+          : "return.svg";
       draggedElement.style.position = "fixed";
       draggedElement.style.height = "50px";
       draggedElement!.style.left = "-100px";

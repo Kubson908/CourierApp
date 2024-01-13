@@ -5,7 +5,9 @@ namespace CourierMobileApp.View;
 
 public partial class Scanner : ContentPage
 {
-    private ScannerViewModel viewModel;
+    private readonly ScannerViewModel viewModel;
+    private event EventHandler Top;
+    private event EventHandler Bottom;
     public Scanner(ScannerViewModel viewModel)
     {
         InitializeComponent();
@@ -17,6 +19,9 @@ public partial class Scanner : ContentPage
             AutoRotate = true,
             Multiple = false
         };
+        Top += Down;
+        Bottom += Up;
+        Up(null, EventArgs.Empty);
     }
 
     protected async void BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
@@ -37,9 +42,9 @@ public partial class Scanner : ContentPage
 
     private bool IsInAllowedArea(PointF[] points)
     {
-        double left = scanFrame.X;
+        /*double left = scanFrame.X;*/
         double top = cameraBarcodeReaderView.Height - scanFrame.Y;
-        double right = left + scanFrame.Width;
+        /*double right = left + scanFrame.Width;*/
         double bottom = top - scanFrame.Height;
 
         foreach (var point in points)
@@ -48,5 +53,17 @@ public partial class Scanner : ContentPage
                 return false;
         }
         return true;
+    }
+
+    public async void Up(object sender, EventArgs args)
+    {
+        await anim.TranslateTo(0, -196, 1500u, Easing.CubicInOut);
+        Top.Invoke(this, args);
+    }
+
+    public async void Down(object sender, EventArgs args)
+    {
+        await anim.TranslateTo(0, 0, 1500u, Easing.CubicInOut);
+        Bottom.Invoke(this, args);
     }
 }

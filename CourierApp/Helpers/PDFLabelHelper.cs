@@ -139,11 +139,11 @@ public class FileFontResolver : IFontResolver
         {
             if (isBold)
             {
-                return new FontResolverInfo("StaticResources/Fonts/Verdana-Bold.ttf");
+                return new FontResolverInfo("StaticFiles/Verdana-Bold.ttf");
             }
             else
             {
-                return new FontResolverInfo("StaticResources/Fonts/Verdana-Regular.ttf");
+                return new FontResolverInfo("StaticFiles/Verdana-Regular.ttf");
             }
         }
         return null;

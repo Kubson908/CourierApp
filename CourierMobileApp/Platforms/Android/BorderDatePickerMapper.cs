@@ -17,23 +17,30 @@ public class BorderDatePickerMapper
             var castedView = (BorderDatePicker)view;
 
             var temp = new GradientDrawable();
-
-            temp.SetCornerRadius((int)handler.MauiContext?.Context.ToPixels(castedView.CornerRadius));
-
-            temp.SetStroke((int)handler.MauiContext?.Context.ToPixels(castedView.BorderWidth), castedView.BorderColor.ToAndroid());
-
-            if (castedView.BackgroundColor is not null)
+            try
             {
-                temp.SetColor(castedView.BackgroundColor.ToAndroid());
+                temp.SetCornerRadius((int)handler.MauiContext?.Context.ToPixels(castedView.CornerRadius));
+
+                temp.SetStroke((int)handler.MauiContext?.Context.ToPixels(castedView.BorderWidth), castedView.BorderColor.ToAndroid());
+
+                if (castedView.BackgroundColor is not null)
+                {
+                    temp.SetColor(castedView.BackgroundColor.ToAndroid());
+                }
+                castedHandler.PlatformView?.SetBackground(temp);
+
+                var paddingLeft = (int)handler.MauiContext?.Context.ToPixels(castedView.Padding.Left);
+                var paddingTop = (int)handler.MauiContext?.Context.ToPixels(castedView.Padding.Top);
+                var paddingRight = (int)handler.MauiContext?.Context.ToPixels(castedView.Padding.Right);
+                var paddingBottom = (int)handler.MauiContext?.Context.ToPixels(castedView.Padding.Bottom);
+
+                castedHandler.PlatformView?.SetPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
-            castedHandler.PlatformView?.SetBackground(temp);
-
-            var paddingLeft = (int)handler.MauiContext?.Context.ToPixels(castedView.Padding.Left);
-            var paddingTop = (int)handler.MauiContext?.Context.ToPixels(castedView.Padding.Top);
-            var paddingRight = (int)handler.MauiContext?.Context.ToPixels(castedView.Padding.Right);
-            var paddingBottom = (int)handler.MauiContext?.Context.ToPixels(castedView.Padding.Bottom);
-
-            castedHandler.PlatformView?.SetPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+            
         }
     }
 }

@@ -7,8 +7,10 @@ const getWebSocket = (message_ref: any) => {
   });
 
   webSocket.addEventListener("message", (event) => {
+    console.log(event);
     message_ref.value = event;
   });
+  console.log(webSocket);
   return webSocket;
 };
 

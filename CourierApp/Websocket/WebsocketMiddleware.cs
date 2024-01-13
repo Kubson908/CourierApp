@@ -192,7 +192,6 @@ public class WebsocketMiddleware
         {
             if (item.Connection != null && item.Connection.State != WebSocketState.Open || item.Connection == null)
                 continue;
-
             await item.Connection.SendAsync(segment, WebSocketMessageType.Text, true, ct);
         }
     }

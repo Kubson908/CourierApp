@@ -6,6 +6,7 @@ using CourierAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CourierAPI.Controllers;
 
@@ -17,15 +18,19 @@ public class AdminController : ControllerBase
     private readonly IUserService<AddDispatcherDto, LoginDto, Dispatcher> _dispatcherService;
     private readonly IUserService<AddCourierDto, LoginDto, Courier> _courierService;
     private readonly WorkService _workService;
+    private readonly IWebHostEnvironment _environment;
 
     public AdminController(ApplicationDbContext context, IUserService<AddDispatcherDto, LoginDto, Dispatcher> dispatcherService,
-        WorkService workService, IUserService<AddCourierDto, LoginDto, Courier> courierService)
+        WorkService workService, IUserService<AddCourierDto, LoginDto, Courier> courierService, IWebHostEnvironment environment)
     {
         _context = context;
         _dispatcherService = dispatcherService;
         _workService = workService;
         _courierService = courierService;
+        _environment = environment;
     }
+
+
 
     [HttpGet("get-dispatchers"), Authorize(Roles = "Admin")]
     public ActionResult GetDispatchers()
@@ -167,5 +172,24 @@ public class AdminController : ControllerBase
         PriceListHelper.PriceList = newPriceList;
         await _context.SaveChangesAsync();
         return Ok(priceList);
+    }
+
+    // Workaround for missing font on Azure App Service
+    [HttpPost("upload-font"), Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UploadImage([FromForm] IFormFile postedFile)
+    {
+        if (postedFile == null) return BadRequest("File is null");
+        string fileName = "Verdana-Regular.ttf";
+        string path = Path.Combine(_environment.ContentRootPath, "StaticFiles");
+        if (postedFile.Length > 0)
+        {
+            string upload = Path.Combine(path, fileName);
+            using (Stream fileStream = new FileStream(upload, FileMode.Create))
+            {
+                await postedFile.CopyToAsync(fileStream);
+            }
+            return Ok("font uploaded");
+        }
+        return BadRequest("File is empty");
     }
 }

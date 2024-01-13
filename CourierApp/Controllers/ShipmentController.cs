@@ -4,10 +4,12 @@ using CourierAPI.Models;
 using CourierAPI.Models.Dto;
 using CourierAPI.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PdfSharp.Pdf;
+using System.Globalization;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace CourierAPI.Controllers;
 
@@ -195,7 +197,7 @@ public class ShipmentController : ControllerBase
             {
                 RouteElement element = new()
                 {
-                    RouteDate = dto.Date.ToString(),
+                    RouteDate = dto.Date.ToString("dd.MM.yyyy"),
                     Order = order,
                     CourierId = dto.CourierId,
                     ShipmentId = shipment.Id,
@@ -262,12 +264,19 @@ public class ShipmentController : ControllerBase
         
     }
 
+    private async Task DeleteRouteElement(int id)
+    {
+        _context.RouteElements.Remove(_context.RouteElements.First(r => r.ShipmentId == id));
+        await _context.SaveChangesAsync();
+    }
+
     [HttpPatch("deliver-package/{id}")]
     public async Task<IActionResult> DeliverPackage([FromRoute] int id)
     {
         ApiUserResponse result = await UpdateShipmentStatus(id, Status.Delivered);
         if (!result.IsSuccess) return BadRequest(result);
         else if (result.Exception) return StatusCode(StatusCodes.Status500InternalServerError, result);
+        await DeleteRouteElement(id);
         return Ok(result);
     }
 
@@ -277,6 +286,7 @@ public class ShipmentController : ControllerBase
         ApiUserResponse result = await UpdateShipmentStatus(id, Status.PickedUp);
         if (!result.IsSuccess) return BadRequest(result);
         else if (result.Exception) return StatusCode(StatusCodes.Status500InternalServerError, result);
+        await DeleteRouteElement(id);
         return Ok(result);
     }
 
@@ -295,6 +305,7 @@ public class ShipmentController : ControllerBase
         ApiUserResponse result = await UpdateShipmentStatus(id, Status.Returned);
         if (!result.IsSuccess) return BadRequest(result);
         else if (result.Exception) return StatusCode(StatusCodes.Status500InternalServerError, result);
+        await DeleteRouteElement(id);
         return Ok(result);
     }
 
@@ -304,10 +315,11 @@ public class ShipmentController : ControllerBase
         ApiUserResponse result = await UpdateShipmentStatus(id, Status.NotDelivered);
         if (!result.IsSuccess) return BadRequest(result);
         else if (result.Exception) return StatusCode(StatusCodes.Status500InternalServerError, result);
+        await DeleteRouteElement(id);
         return Ok(result);
     }
 
-    [HttpGet("get-unavailable-dates")]
+    [HttpGet("get-unavailable-dates"), Authorize(Roles = "Dispatcher")]
     public async Task<IActionResult> GetUnavailableDates()
     {
         List<string> courierIds = _context.Couriers.Select(c => c.Id).ToList();
@@ -317,10 +329,13 @@ public class ShipmentController : ControllerBase
         {
             dates.Add(id, new List<string>());
             await _context.RouteElements
-                .ForEachAsync((element) =>
-                {
-                    if (element.CourierId == id && DateOnly.Parse(element.RouteDate.ToString()).CompareTo(today) > 0 && !dates[id].Contains(element.RouteDate))
-                        dates[id].Add(element.RouteDate);
+            .ForEachAsync((element) =>
+            {
+                DateTime dateTime = DateTime.ParseExact(element.RouteDate, "dd.MM.yyyy", CultureInfo.InvariantCulture);
+                    if (element.CourierId == id && 
+                        DateOnly.FromDateTime(dateTime).CompareTo(today) > 0 && 
+                        !dates[id].Contains(element.RouteDate))
+                            dates[id].Add(element.RouteDate);
                 }, CancellationToken.None);
         }
         return Ok(dates);

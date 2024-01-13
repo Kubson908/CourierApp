@@ -80,10 +80,10 @@ const validateDate = (event: Event) => {
 
 const iconSource = (shipment: Shipment) => {
   return shipment.status == 0
-    ? "/src/assets/pickup.svg"
+    ? "pickup.svg"
     : shipment.status == 3
-    ? "/src/assets/delivery.svg"
-    : "/src/assets/return.svg";
+    ? "delivery.svg"
+    : "return.svg";
 };
 
 // const size: Array<string> = ["Bardzo mały", "Mały", "Średni", "Duży"];
@@ -216,6 +216,8 @@ const submit = async () => {
   height: fit-content;
   margin-top: 12vh;
   margin-bottom: 0;
+  margin-left: auto;
+  margin-right: auto;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
   padding: 0 !important;

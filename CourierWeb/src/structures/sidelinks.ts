@@ -5,17 +5,17 @@ export const sidelinks: {
     {
       link: "/administration",
       title: "Pracownicy",
-      icon: "/src/assets/people.svg",
+      icon: "people.svg",
     },
     {
       link: "/price-list",
       title: "Cennik",
-      icon: "/src/assets/price-list.svg",
+      icon: "price-list.svg",
     },
   ],
   dispatcher: [
-    { link: "/shipments", title: "Przesyłki", icon: "/src/assets/package.svg" },
-    { link: "/couriers", title: "Kurierzy", icon: "/src/assets/people.svg" },
+    { link: "/shipments", title: "Przesyłki", icon: "package.svg" },
+    { link: "/couriers", title: "Kurierzy", icon: "people.svg" },
   ],
 };
 

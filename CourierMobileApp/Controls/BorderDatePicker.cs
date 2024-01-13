@@ -13,7 +13,6 @@ class BorderDatePicker : DatePicker
     public static BindableProperty CustomHeightProperty =
             BindableProperty.Create(nameof(CustomHeight), typeof(int), typeof(BorderEntry), 0);
 
-
     public int CornerRadius
     {
         get => (int)GetValue(CornerRadiusProperty);

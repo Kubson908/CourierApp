@@ -88,10 +88,10 @@ const emit = defineEmits(["submit"]);
             <img
               :src="
                 shipment.status == 0
-                  ? '/src/assets/pickup.svg'
+                  ? 'pickup.svg'
                   : shipment.status == 3
-                  ? '/src/assets/delivery.svg'
-                  : '/src/assets/return.svg'
+                  ? 'delivery.svg'
+                  : 'return.svg'
               "
               style="height: 50%; margin: auto; margin-left: 5px"
             />
@@ -120,7 +120,14 @@ const emit = defineEmits(["submit"]);
         </draggable>
       </div>
       <div>
-        <button v-if="route.length >= 2" class="submit" @click="emit('submit')">
+        <button
+          v-if="route.length >= 2"
+          class="submit pigment-green"
+          @click="
+            emit('submit');
+            closePopup();
+          "
+        >
           Zatwierdź
         </button>
         <button v-if="route.length >= 2" class="submit" @click="sort">

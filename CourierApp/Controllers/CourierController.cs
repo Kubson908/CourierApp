@@ -1,5 +1,4 @@
-﻿using CourierAPI.Data;
-using CourierAPI.Models.Dto;
+﻿using CourierAPI.Models.Dto;
 using CourierAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

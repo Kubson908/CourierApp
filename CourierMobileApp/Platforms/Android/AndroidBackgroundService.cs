@@ -48,21 +48,7 @@ public class AndroidBackgroundService : Service
         {
             try
             {
-                // TODO: Wysylanie requesta CheckIn  
                 await ForegroundServiceHandler.CheckIn();
-
-                /*location = await ForegroundServiceHandler.locationService.GetLocationAsync();*/
-                /*if (location is null)
-                {
-                    *//*await SnackbarService.ShowSnackbar("Utracono połączenie GPS", null, "OK", TimeSpan.FromSeconds(20), Color.FromArgb("#7e2320"), true)*//*
-                    ;
-                    OnServiceStopped();
-                }*/
-                /*status = await ForegroundServiceHandler.locationService.CheckDistanceAsync(location);
-                if (!status)
-                {
-                    OnServiceStopped();
-                }*/
             }
             catch (Exception)
             {
@@ -134,7 +120,7 @@ public class AndroidBackgroundService : Service
            .SetSmallIcon(Resource.Drawable.package_icon)
            .SetColor(144244122)
            .SetOngoing(true)
-           /*.SetContentText("Lokalizacja jest rejestrowana")*/
+           .SetContentText("Status aktywności jest udostępniany")
            .Build();
 
         StartForeground(SERVICE_RUNNING_NOTIFICATION_ID, notification);
@@ -153,7 +139,7 @@ public class AndroidBackgroundService : Service
            .SetSmallIcon(Resource.Drawable.logout)
            .SetPriority(5)
            .SetColor(000000000)
-           .SetVibrate(new long[] { 100, 200, 300, 400, 500 })
+           .SetVibrate(new long[] { 100, 200, 100, 200 })
            .Build();
 #pragma warning restore CA1422 // Validate platform compatibility
 

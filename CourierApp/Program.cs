@@ -19,6 +19,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+            policy.WithOrigins("http://localhost:4173").AllowAnyHeader().AllowAnyMethod();
         });
 });
 
@@ -125,6 +126,8 @@ var webSocketOptions = new WebSocketOptions
     KeepAliveInterval = TimeSpan.FromMinutes(5)
 };
 webSocketOptions.AllowedOrigins.Add("http://localhost:5173");
+webSocketOptions.AllowedOrigins.Add("http://localhost:4173");
+webSocketOptions.AllowedOrigins.Add("https://courier-app-zlqq.onrender.com");
 
 app.UseWebSockets(webSocketOptions);
 app.UseMiddleware<WebsocketMiddleware>();

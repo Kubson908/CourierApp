@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { prefix } from "../../config";
+import { prefix } from "../../structures/config";
 import { Courier } from "../../typings";
 
 const props = defineProps<{

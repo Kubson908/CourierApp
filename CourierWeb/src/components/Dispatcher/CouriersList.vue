@@ -3,7 +3,7 @@ import { onBeforeMount, onBeforeUnmount, ref, watch } from "vue";
 import { getCouriers, couriers } from "./couriers";
 import { getWebSocket } from "./websocket";
 import { user } from "../../main";
-import { prefix } from "../../config";
+import { prefix } from "../../structures/config";
 import { CourierInfo } from ".";
 import { Courier } from "../../typings";
 

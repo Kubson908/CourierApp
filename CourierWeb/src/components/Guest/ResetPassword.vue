@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import axios from "axios";
-import { prefix } from "../../config";
+import { prefix } from "../../structures/config";
 import { useRoute } from "vue-router";
 import { loading } from "../../main";
 

@@ -2,7 +2,7 @@
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
-import { prefix } from "../../config";
+import { prefix } from "../../structures/config";
 import { loading, router } from "../../main";
 
 const token = useRoute().query.token?.toString()!;

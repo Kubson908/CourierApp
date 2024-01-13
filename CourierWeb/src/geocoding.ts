@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Shipment } from "./typings/shipment";
 import { LocalCoords } from "./typings";
-import { geocodingKey, googleApi } from "./config";
+import { geocodingKey, googleApi } from "./structures/config";
 
 type AddressInfo = {
   id: number;

@@ -6,7 +6,6 @@
 
 appsettings.json
 CourierApp/StaticFiles/*
-config.ts
 
 # User-specific files
 *.rsuser

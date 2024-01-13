@@ -157,3 +157,4 @@ const showModal = (courier: Courier) => {
   width: fit-content !important;
 }
 </style>
+../../structures/config

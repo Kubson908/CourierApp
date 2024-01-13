@@ -1,6 +1,6 @@
 import { createApp, reactive, ref } from "vue";
 import axios from "axios";
-import { prefix } from "./config";
+import { prefix } from "./structures/config";
 import "./style.css";
 import App from "./App.vue";
 import { PriceList, User } from "./typings";

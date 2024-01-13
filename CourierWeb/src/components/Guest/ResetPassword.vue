@@ -122,3 +122,4 @@ const resetPasword = async () => {
   color: purple;
 }
 </style>
+../../structures/config

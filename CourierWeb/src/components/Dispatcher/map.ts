@@ -14,7 +14,7 @@ import {
   openServiceApi,
   openServiceKey,
   warehouseCoordinates,
-} from "../../config";
+} from "../../structures/config";
 
 const center = ref([20.46, 53.76]);
 const projection = ref("EPSG:4326");

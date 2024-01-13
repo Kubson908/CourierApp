@@ -1,4 +1,4 @@
-import { webSocketUrl } from "../../config";
+import { webSocketUrl } from "../../structures/config";
 
 const getWebSocket = (message_ref: any) => {
   const webSocket = new WebSocket(webSocketUrl);

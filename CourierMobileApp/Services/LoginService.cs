@@ -1,16 +1,10 @@
 ﻿using CourierMobileApp.Models.Dto;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace CourierMobileApp.Services;
 
 public class LoginService
 {
-    ConnectionService connectionService;
+    readonly ConnectionService connectionService;
     public LoginService(ConnectionService connectionService)
     {
         this.connectionService = connectionService;

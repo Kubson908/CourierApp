@@ -4,8 +4,8 @@ namespace CourierMobileApp.ViewModels;
 
 public partial class ScannerViewModel : BaseViewModel
 {
-    private RouteElement routeElement;
-    private bool finish;
+    private readonly RouteElement routeElement;
+    private readonly bool finish;
     private readonly ShipmentService shipmentService;
 
     public ScannerViewModel(RouteElement routeElement, bool finish, ShipmentService shipmentService)

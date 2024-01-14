@@ -13,12 +13,12 @@ export const manageCoordinates = async (shipments: Array<Shipment>) => {
   let localCoords: Array<LocalCoords> = JSON.parse(
     localStorage.getItem("localCoords") ?? "[]"
   ) as Array<LocalCoords>;
-  const oldShipments = localCoords.filter((local) => {
+  const oldLocalCoords = localCoords.filter((local) => {
     return shipments.some((shipment) => {
       return shipment.id === local.id && shipment.status === local.status;
     });
   });
-  localCoords = [...oldShipments];
+  localCoords = [...oldLocalCoords];
 
   const newShipments = shipments
     .filter((shipment) => {

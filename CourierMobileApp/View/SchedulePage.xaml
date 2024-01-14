@@ -113,7 +113,7 @@
             <Frame CornerRadius="30" Grid.Row="2" HeightRequest="50" Margin="10, 70" Padding="0" IsVisible="{Binding CanStartRoute}">
                 <Grid Padding="0" Margin="0">
                     <Button Text="{Binding RouteButtonString}" BackgroundColor="{Binding ButtonColor}" 
-                            Margin="0" Pressed="btn_Pressed" Released="btn_Released" TextColor="White"/>
+                            Margin="0" Pressed="Btn_Pressed" Released="Btn_Released" TextColor="White"/>
                     <ProgressBar x:Name="progressBar" Progress="0" ScaleY="20" ProgressColor="#4dffffff"/>
                 </Grid>
             </Frame>

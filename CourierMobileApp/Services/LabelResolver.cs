@@ -6,7 +6,7 @@ public static class LabelResolver
 {
     public static int? GetShipmentId(string label)
     {
-        Regex regex = new Regex(Config.LabelRegex);
+        Regex regex = new(Config.LabelRegex);
         Match match = regex.Match(label);
         if (match.Success)
         {

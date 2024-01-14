@@ -9,21 +9,18 @@ namespace CourierMobileApp.View;
 public partial class SchedulePage : ContentPage
 {
     readonly ScheduleViewModel viewModel;
-    readonly ProfileService profileService;
     private readonly MenuAnimation animation;
     bool isButtonPressed = false;
-    public SchedulePage(ScheduleViewModel viewModel, ProfileService profileService)
+    public SchedulePage(ScheduleViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;
         this.viewModel = viewModel;
-        this.profileService = profileService;
         animation = new()
         {
             layout = MainContent
         };
         navbar.MenuClicked += (object sender, EventArgs e) => { animation.OpenMenu(sender, e); navbar.RotateIcon(); };
-        navbar.Initialize(this.profileService);
     }
 
     protected override void OnAppearing()
@@ -79,13 +76,13 @@ public partial class SchedulePage : ContentPage
         }
     }
 
-    private async void btn_Pressed(object sender, EventArgs e)
+    private async void Btn_Pressed(object sender, EventArgs e)
     {
         isButtonPressed = true;
         await HoldAndRun();
     }
 
-    private void btn_Released(object sender, EventArgs e)
+    private void Btn_Released(object sender, EventArgs e)
     {
         isButtonPressed = false;
     }

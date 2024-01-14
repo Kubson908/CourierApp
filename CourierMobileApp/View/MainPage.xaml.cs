@@ -5,26 +5,22 @@ namespace CourierMobileApp.View;
 
 public partial class MainPage : ContentPage
 {
-    private readonly ProfileService profileService;
     private readonly MenuAnimation animation;
-    public MainPage(MainPageViewModel mainPageViewModel, ProfileService profileService)
+    public MainPage(MainPageViewModel mainPageViewModel)
     {
         InitializeComponent();
         BindingContext = mainPageViewModel;
-        this.profileService = profileService;
         animation = new()
         {
             layout = MainContent
         };
         navbar.MenuClicked += (object sender, EventArgs e) => { animation.OpenMenu(sender, e); navbar.RotateIcon(); };
-        navbar.Initialize(this.profileService);
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
         navbar.SetImage();
-        profileService.user = await SecureStorage.Default.GetAsync("user");
     }
 
     protected override void OnDisappearing()

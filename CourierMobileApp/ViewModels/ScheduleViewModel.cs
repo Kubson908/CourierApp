@@ -7,7 +7,7 @@ namespace CourierMobileApp.ViewModels;
 
 public partial class ScheduleViewModel : BaseViewModel
 {
-    IBackgroundService foregroundServiceHandler;
+    readonly IBackgroundService foregroundServiceHandler;
     public readonly ShipmentService shipmentService;
     [ObservableProperty]
     DateTime date;
@@ -28,9 +28,8 @@ public partial class ScheduleViewModel : BaseViewModel
     public Color ButtonColor => IsWorking ? Color.FromArgb("#848C8E") : Color.FromArgb("#15AB54");
 
     public ObservableCollection<RouteElement> Route { get; set; }
-    private readonly ProfileService profileService;
 
-    public ScheduleViewModel(ShipmentService shipmentService, ProfileService profileService, IBackgroundService backgroundService)
+    public ScheduleViewModel(ShipmentService shipmentService, IBackgroundService backgroundService)
     {
         Title = "Harmonogram";
         Route = new ObservableCollection<RouteElement>();
@@ -43,7 +42,6 @@ public partial class ScheduleViewModel : BaseViewModel
         ListEmpty = Route.Count == 0;
         MinimumDate = DateTime.Today;
         Date = DateTime.Today;
-        this.profileService = profileService;
         foregroundServiceHandler.ServiceStopped += (object sender, EventArgs e) => { IsWorking = false; };
         foregroundServiceHandler.ServiceStarted += (object sender, EventArgs e) => { IsWorking = true; };
     }
@@ -85,7 +83,7 @@ public partial class ScheduleViewModel : BaseViewModel
     {
         MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            await Shell.Current.Navigation.PushAsync(new ShipmentPage(new ShipmentViewModel(shipmentService, element), profileService));
+            await Shell.Current.Navigation.PushAsync(new ShipmentPage(new ShipmentViewModel(shipmentService, element)));
         });
     }
 

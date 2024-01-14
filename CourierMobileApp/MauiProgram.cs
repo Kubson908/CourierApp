@@ -32,8 +32,6 @@ namespace CourierMobileApp
             builder.Services.AddSingleton<MainPageViewModel>();
             builder.Services.AddSingleton<ConnectionService>();
 
-            builder.Services.AddSingleton<ProfileService>();
-
             builder.Services.AddSingleton<LoginPage>();
             builder.Services.AddSingleton<LoginViewModel>();
             builder.Services.AddSingleton<LoginService>();
@@ -51,8 +49,6 @@ namespace CourierMobileApp
 
             builder.Services.AddTransient<Scanner>();
             builder.Services.AddTransient<ScannerViewModel>();
-
-            builder.Services.AddSingleton<LocationService>();
 
 #if ANDROID
             builder.Services.AddSingleton<IBackgroundService, ForegroundServiceHandler>();

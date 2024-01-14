@@ -39,7 +39,6 @@ onBeforeMount(async () => {
       "/shipment/get-unavailable-dates"
     );
     unavailableDates.value = getUnavailableDates.data;
-    console.log(unavailableDates.value);
     await manageCoordinates(shipments.value!);
     const stringCoords = localStorage.getItem("localCoords");
     localCoords.value = stringCoords ? JSON.parse(stringCoords) : [];
@@ -100,25 +99,28 @@ const routesClearConfirmation = () => {
 const confirmSubmit = ref<boolean>(false);
 
 const submit = async () => {
-  const res = await authorized.post("/shipment/set-route", {
-    courierId: selectedCourier.value!.id,
-    date: selectedDate.value,
-    shipments: route.value,
-  });
-  if (res.status < 300) {
-    confirmSubmit.value = false;
-    removeFeatures(
-      route.value.map((r) => {
-        return r.id!;
-      })
-    );
-    route.value.forEach((route) => {
-      localCoords.value = localCoords.value.filter((l) => l.id != route.id);
+  try {
+    const res = await authorized.post("/shipment/set-route", {
+      courierId: selectedCourier.value!.id,
+      date: selectedDate.value,
+      shipments: route.value,
     });
-    route.value = [];
+    if (res.status < 300) {
+      confirmSubmit.value = false;
+      removeFeatures(
+        route.value.map((r) => {
+          return r.id!;
+        })
+      );
+      route.value.forEach((route) => {
+        localCoords.value = localCoords.value.filter((l) => l.id != route.id);
+      });
+      route.value = [];
+    }
+    await getShipmentsList();
+  } catch {
+    alert("Nie udało się zapisać trasy");
   }
-  console.log(res);
-  await getShipmentsList();
 };
 </script>
 

@@ -15,15 +15,12 @@ public partial class LoginViewModel : BaseViewModel
     [ObservableProperty]
     public string loginValidator;
 
-    private readonly ProfileService profileService;
-
-    public LoginViewModel(LoginService loginService, ProfileService profileService)
+    public LoginViewModel(LoginService loginService)
     {
         Title = "Logowanie";
         this.loginService = loginService;
         Login = string.Empty;
         Password = string.Empty;
-        this.profileService = profileService;
     }
 
     [RelayCommand]
@@ -62,7 +59,6 @@ public partial class LoginViewModel : BaseViewModel
                 await SecureStorage.Default.SetAsync("imagePath", filePath);
                 /*profileService.SetImage();*/
             }
-            profileService.user = response.User;
         }
         catch (Exception ex)
         {

@@ -49,7 +49,7 @@ public class ConnectionService
         return queryParams;
     }
 
-    public async Task<HttpResponseMessage> SendAsync(HttpMethod method, string url, object body = null, object queryParams = null, string contentType = null) // dodać query params
+    public async Task<HttpResponseMessage> SendAsync(HttpMethod method, string url, object body = null, object queryParams = null, string contentType = null)
     {
         var content = body != null ? new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, contentType ?? "application/json") : null;
         url = url.StartsWith("/") ? url : "/" + url;

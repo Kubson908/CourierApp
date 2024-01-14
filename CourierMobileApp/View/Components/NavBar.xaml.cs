@@ -5,17 +5,11 @@ namespace CourierMobileApp.View.Components;
 
 public partial class NavBar : ContentView
 {
-    private ProfileService profileService;
     public EventHandler MenuClicked;
     public bool menuOpened = false;
 	public NavBar()
 	{
 		InitializeComponent();
-    }
-
-    public void Initialize(ProfileService profileService)
-    {
-        this.profileService = profileService;
     }
 
     public async void SetImage()

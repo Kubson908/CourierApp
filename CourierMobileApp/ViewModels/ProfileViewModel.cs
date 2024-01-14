@@ -49,8 +49,6 @@ public partial class ProfileViewModel : BaseViewModel
                 filePath = Path.Combine(folderPath, fileName);
                 File.WriteAllBytes(filePath, Convert.FromBase64String(response.Image));
                 await SecureStorage.Default.SetAsync("imagePath", filePath);
-                /*profileService.SetImage();*/
-                /*ImgSource = profileService.imageSource;*/
             }
             PhotoChanged.Invoke(this, EventArgs.Empty);
             IsBusy = false;

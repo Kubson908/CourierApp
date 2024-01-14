@@ -6,20 +6,17 @@ namespace CourierMobileApp.View;
 public partial class ShipmentPage : ContentPage
 {
     readonly ShipmentViewModel viewModel;
-    ProfileService profileService;
     private readonly MenuAnimation animation;
-    public ShipmentPage(ShipmentViewModel shipmentViewModel, ProfileService profileService)
+    public ShipmentPage(ShipmentViewModel shipmentViewModel)
     {
         InitializeComponent();
         BindingContext = shipmentViewModel;
         viewModel = shipmentViewModel;
-        this.profileService = profileService;
         animation = new()
         {
             layout = MainContent
         };
         navbar.MenuClicked += (object sender, EventArgs e) => { animation.OpenMenu(sender, e); navbar.RotateIcon(); };
-        navbar.Initialize(this.profileService);
     }
 
     protected override void OnAppearing()

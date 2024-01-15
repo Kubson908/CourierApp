@@ -91,7 +91,7 @@ const submit = async () => {
   }
 };
 
-const registered = ref<boolean>(false);
+const registered = ref<boolean>(true);
 </script>
 
 <template>
@@ -144,7 +144,7 @@ const registered = ref<boolean>(false);
         <span class="red-text" v-if="passwordErrorMessage">
           {{ passwordErrorMessage }}
         </span>
-        <button type="submit" class="submit center">Zarejestruj</button>
+        <button type="submit" class="submit center pigment-green">Zarejestruj</button>
       </form>
     </div>
     <EmailSent v-else :email="email" :forgotPassword="false" />

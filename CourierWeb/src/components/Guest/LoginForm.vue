@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { EmailSent, ForgotPassword } from ".";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, onBeforeUnmount, ref } from "vue";
 import { router, unauthorized, user, loading } from "../../main";
 
 const login = ref("");
@@ -64,6 +64,12 @@ const back = () => {
   forgotPassword.value = false;
   errorMessage.value = "";
 };
+
+onBeforeUnmount(() => {
+  password.value = "";
+  errorMessage.value = null;
+  login.value = "";
+});
 </script>
 
 <template>

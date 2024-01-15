@@ -6,7 +6,7 @@ public class ServiceBinder : Binder
 {
     public ServiceBinder(AndroidBackgroundService service)
     {
-        this.Service = service;
+        Service = service;
     }
 
     public AndroidBackgroundService Service { get; private set; }

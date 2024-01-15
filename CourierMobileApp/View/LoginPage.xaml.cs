@@ -17,4 +17,9 @@ public partial class LoginPage : ContentPage
         await viewModel.VerifyOnAppearing();
         base.OnAppearing();
     }
+
+    private async void ForgotPassword_Tapped(object sender, TappedEventArgs e)
+    {
+        await Shell.Current.DisplayAlert("Reset has³a", "Aby zresetowaæ has³o skontaktuj siê z administratorem", "OK");
+    }
 }

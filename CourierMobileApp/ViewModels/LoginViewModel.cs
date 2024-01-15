@@ -57,7 +57,6 @@ public partial class LoginViewModel : BaseViewModel
                 filePath = Path.Combine(folderPath, fileName);
                 File.WriteAllBytes(filePath, Convert.FromBase64String(response.Image));
                 await SecureStorage.Default.SetAsync("imagePath", filePath);
-                /*profileService.SetImage();*/
             }
         }
         catch (Exception ex)
@@ -97,8 +96,6 @@ public partial class LoginViewModel : BaseViewModel
             return Task.CompletedTask;
         }
     }
-
-    // TODO: Dodaæ funkcjê "Nie pamiêtam has³a"
 
     public async Task VerifyOnAppearing()
     {

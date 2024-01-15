@@ -8,32 +8,24 @@ namespace CourierMobileApp.Platforms.Android;
 [Service]
 public class AndroidBackgroundService : Service
 {
-    public const int SERVICE_RUNNING_NOTIFICATION_ID = 10001;
-    /*Location location;*/
-    /*bool status;*/
+    public const int notificationId = 10001;
     Timer timer;
     Binder binder;
     public ForegroundServiceHandler ForegroundServiceHandler { get; set; }
     public override IBinder OnBind(Intent intent)
     {
-        this.binder = new ServiceBinder(this);
-        return this.binder;
+        binder = new ServiceBinder(this);
+        return binder;
     }
 
     private void OnServiceStopped()
     {
-        if (ForegroundServiceHandler is not null)
-        {
-            ForegroundServiceHandler.InvokeServiceStoppedEvent(this);
-        }
+        ForegroundServiceHandler?.InvokeServiceStoppedEvent(this);
     }
 
     private void OnServiceStarted()
     {
-        if (ForegroundServiceHandler is not null)
-        {
-            ForegroundServiceHandler.InvokeServiceStartedEvent(this);
-        }
+        ForegroundServiceHandler?.InvokeServiceStartedEvent(this);
     }
 
     [return: GeneratedEnum]
@@ -123,7 +115,7 @@ public class AndroidBackgroundService : Service
            .SetContentText("Status aktywności jest udostępniany")
            .Build();
 
-        StartForeground(SERVICE_RUNNING_NOTIFICATION_ID, notification);
+        StartForeground(notificationId, notification);
     }
 
     public void ServiceStoppedNotification()

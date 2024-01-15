@@ -73,7 +73,11 @@
                TextDecorations="Underline"
                FontSize="16"
                HorizontalTextAlignment="Center"
-               Margin="0, 15, 0, 0" />
+               Margin="0, 15, 0, 0" >
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="ForgotPassword_Tapped" />
+                </Label.GestureRecognizers>
+            </Label>
         </VerticalStackLayout>
         <StackLayout IsVisible="{Binding IsBusy}" Grid.Row="0" Grid.RowSpan="2">
             <ActivityIndicator Grid.Row="0" IsVisible="{Binding IsBusy}" IsRunning="True" VerticalOptions="CenterAndExpand" HeightRequest="100" Color="#15AB54"/>

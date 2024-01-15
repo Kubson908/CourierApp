@@ -7,16 +7,14 @@ namespace CourierMobileApp.Platforms.Android;
 public class ForegroundServiceHandler : IBackgroundService
 {
     bool _isStarted = false;
-    static Context context = Platform.CurrentActivity.ApplicationContext;
+    static readonly Context context = Platform.CurrentActivity.ApplicationContext;
     public event EventHandler ServiceStopped;
     public event EventHandler ServiceStarted;
     public ServiceConnection conn;
-    /*public LocationService locationService;*/
     public ConnectionService apiConnection;
 
-    public ForegroundServiceHandler(/*LocationService locationService, */ConnectionService apiConnection)
+    public ForegroundServiceHandler(ConnectionService apiConnection)
     {
-        /*this.locationService = locationService;*/
         this.apiConnection = apiConnection;
     }
 
@@ -36,7 +34,7 @@ public class ForegroundServiceHandler : IBackgroundService
             return;
         }
 
-        Intent intent = new Intent(context, typeof(AndroidBackgroundService));
+        Intent intent = new(context, typeof(AndroidBackgroundService));
         conn = new ServiceConnection(this, intent);
         if (_isStarted)
         {

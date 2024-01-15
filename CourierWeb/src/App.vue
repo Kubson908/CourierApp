@@ -17,9 +17,14 @@ onBeforeMount(async () => {
     localStorage.setItem("expireDate", res.data.expireDate);
   }
 });
+
+const message = "Aby skorzystać z aplikacji uruchom ją na komputerze";
 </script>
 
 <template width="100%">
+  <h1 class="black-text invalid-device">
+    {{ message }}
+  </h1>
   <NavBar id="navbar" />
   <SideBar
     id="sidebar"
@@ -39,16 +44,6 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
-#loading {
-  z-index: 99;
-  position: fixed;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
 #navbar {
   z-index: 1000;
   position: fixed;
@@ -61,10 +56,23 @@ onBeforeMount(async () => {
 .content {
   margin-left: 3%;
 }
-
 .center {
   text-align: center;
   min-height: 94.5vh;
   margin-top: 5.5vh !important;
+}
+.invalid-device {
+  display: none;
+}
+@media screen and (max-width: 600px) {
+  #navbar,
+  #sidebar,
+  .center {
+    display: none;
+  }
+  .invalid-device {
+    display: block;
+    text-align: center;
+  }
 }
 </style>

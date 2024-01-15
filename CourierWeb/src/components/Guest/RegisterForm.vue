@@ -28,7 +28,7 @@ const validateEmail = (): boolean => {
     emailErrorMessage.value = null;
     return true;
   }
-  emailErrorMessage.value = "Nieprawidłowy adres email";
+  emailErrorMessage.value = "Nieprawidłowy adres e-mail";
   return false;
 };
 

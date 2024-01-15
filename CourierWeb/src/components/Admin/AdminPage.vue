@@ -6,6 +6,7 @@ import { Courier } from "../../typings";
 
 const dispatchers = ref<any>(null);
 const couriers = ref<Array<Courier>>();
+const error = ref<boolean>(false);
 
 const fetchData = async () => {
   loading.value = true;
@@ -30,6 +31,7 @@ const fetchData = async () => {
     loading.value = false;
   } catch {
     loading.value = false;
+    error.value = true;
   }
 };
 
@@ -48,7 +50,7 @@ const showAddCourier = ref(false);
 </script>
 
 <template>
-  <div v-if="!loading">
+  <div v-if="!loading && !error">
     <h1 class="pigment-green-text">Dyspozytorzy</h1>
     <div class="adminDiv">
       <UserCard
@@ -110,8 +112,11 @@ const showAddCourier = ref(false);
     </teleport>
     <br />
   </div>
-  <div v-else class="background">
+  <div v-else-if="loading" class="background">
     <img src="/src/assets/loading.gif" class="loading" />
+  </div>
+  <div v-else class="red-text">
+    <h1>Nie udało się pobrać danych</h1>
   </div>
 </template>
 
@@ -142,6 +147,7 @@ const showAddCourier = ref(false);
 }
 .divider {
   margin: 0 100px;
+  margin-top: 10px;
 }
 .loading {
   position: absolute;

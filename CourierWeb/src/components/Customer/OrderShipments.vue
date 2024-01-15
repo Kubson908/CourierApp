@@ -347,7 +347,7 @@ const removeShipment = () => {
               >
                 <option value="null" selected hidden>Waga</option>
                 <option value="0" class="option">Lekka (do 5 kg)</option>
-                <option value="1" class="option">Średnia (10 - 15 kg)</option>
+                <option value="1" class="option">Średnia (5 - 15 kg)</option>
                 <option value="2" class="option">Ciężka (powyżej 15 kg)</option>
               </select>
             </td>

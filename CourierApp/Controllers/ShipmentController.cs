@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace CourierAPI.Controllers;
 
@@ -192,12 +193,13 @@ public class ShipmentController : ControllerBase
     {
         try
         {
+            DateOnly date = DateOnly.FromDateTime(DateTime.Parse(dto.Date));
             int order = 1;
             foreach (var shipment in dto.Shipments)
             {
                 RouteElement element = new()
                 {
-                    RouteDate = dto.Date.ToString("dd.MM.yyyy"),
+                    RouteDate = date.ToString("dd.MM.yyyy"),
                     Order = order,
                     CourierId = dto.CourierId,
                     ShipmentId = shipment.Id,
@@ -323,7 +325,7 @@ public class ShipmentController : ControllerBase
     public async Task<IActionResult> GetUnavailableDates()
     {
         List<string> courierIds = _context.Couriers.Select(c => c.Id).ToList();
-        DateOnly today = new();
+        DateOnly today = DateOnly.FromDateTime(DateTime.Today);
         Dictionary<string, List<string>> dates = new();
         foreach (string id in courierIds)
         {

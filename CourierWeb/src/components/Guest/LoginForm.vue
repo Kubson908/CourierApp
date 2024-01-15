@@ -96,7 +96,11 @@ const back = () => {
           <label class="black-text" for="rememberMe">Zapamiętaj mnie</label>
         </div>
 
-        <button class="submit center mt-10" type="submit" @click="signIn">
+        <button
+          class="submit pigment-green center mt-10"
+          type="submit"
+          @click="signIn"
+        >
           Zaloguj
         </button>
         <a class="pointer" @click="forgotPassword = true">Nie pamiętam hasła</a>
@@ -151,12 +155,13 @@ const back = () => {
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
+  color: #15ab54;
 }
 .pointer:hover {
   text-decoration: underline;
 }
 .pointer:active {
-  color: purple;
+  color: #0f7238;
 }
 .loading {
   position: absolute;

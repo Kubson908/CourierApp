@@ -67,7 +67,11 @@ li a {
 }
 li a:hover,
 .profile-icon:hover {
-  background-color: #111;
+  background-color: #464a4b;
+}
+
+li a:active {
+  background-color: #282829;
 }
 
 .float-right {

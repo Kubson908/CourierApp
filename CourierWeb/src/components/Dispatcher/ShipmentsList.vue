@@ -11,9 +11,9 @@ const showMap = ref<boolean>(false);
 const shipments = ref<Array<Shipment>>([]);
 const localCoords = ref<Array<LocalCoords>>([]);
 const couriers = ref<Array<Courier>>();
-const unavailableDates = ref<{ [id: string]: Array<Date> }>({});
+const unavailableDates = ref<{ [id: string]: Array<string> }>({});
 const selectedCourier = ref<Courier | null>(null);
-const selectedDate = ref<string>();
+const selectedDate = ref<string | null>(null);
 
 const loading = ref<boolean>(false);
 
@@ -23,10 +23,10 @@ const getShipmentsList = async () => {
   );
   shipments.value = getShipments.data;
 };
-
+let tomorrow = new Date();
 onBeforeMount(async () => {
   loading.value = true;
-  let tomorrow = new Date();
+
   tomorrow.setDate(tomorrow.getDate() + 1);
   if (tomorrow.getDay() === 0) {
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -58,6 +58,36 @@ const formatDate = (date: Date) => {
   return `${year}-${month}-${day}`;
 };
 // TODO: dodac jakis lepszy date picker i blokować w nim zajęte daty przy zmianie kuriera
+
+const datePickerFormat = (date: Date) => {
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  return `${day < 10 ? "0" + day : day}.${
+    month < 10 ? "0" + month : month
+  }.${year}`;
+};
+
+const disabledDates = ref<Array<string>>([]);
+
+const filterDates = () => {
+  disabledDates.value = [];
+  unavailableDates.value[selectedCourier.value?.id!].forEach((e: string) => {
+    const [day, month, year] = e.split(".");
+    disabledDates.value.push(`${month}/${day}/${year}`);
+  });
+  if (selectedDate.value) {
+    const [selYear, selMonth, selDay] = selectedDate.value
+      .toString()
+      .split("-");
+    let selected = `${selMonth}/${selDay}/${selYear}`;
+    if (disabledDates.value.includes(selected)) {
+      selectedDate.value = null;
+    }
+  }
+};
+
 const validateDate = (event: Event) => {
   const date = new Date((event.target as HTMLInputElement).value);
   let tomorrow = new Date();
@@ -97,6 +127,14 @@ const routesClearConfirmation = () => {
 };
 
 const confirmSubmit = ref<boolean>(false);
+
+const validateSubmit = () => {
+  if (selectedDate.value) {
+    confirmSubmit.value = true;
+    return;
+  }
+  alert("Nie wybrano daty");
+};
 
 const submit = async () => {
   try {
@@ -143,24 +181,44 @@ const submit = async () => {
         Widok listy
       </button>
       <select
+        @change="filterDates"
         v-model="selectedCourier"
         :class="
-          selectedCourier == null ? 'gray rounded-input' : 'white rounded-input'
+          selectedCourier == null
+            ? 'gray rounded-input'
+            : 'black-text rounded-input'
         "
-        style="height: 34px"
       >
         <option value="null" selected hidden>Wybierz kuriera</option>
-        <option v-for="courier in couriers" :key="courier.id" :value="courier">
+        <option
+          v-for="courier in couriers"
+          :key="courier.id"
+          :value="courier"
+          class="black-text"
+        >
           {{ courier.firstName + " " + courier.lastName }}
         </option>
       </select>
-      <input
+      <VueDatePicker
+        v-model="selectedDate"
+        class="calendar"
+        placeholder="Wybierz datę"
+        @input="validateDate"
+        :disabled-dates="disabledDates"
+        :format="datePickerFormat"
+        :min-date="tomorrow"
+        :enable-time-picker="false"
+        :day-names="['pon', 'wt', 'śr', 'cz', 'pt', 'sob', 'nd']"
+        select-text="Wybierz"
+        cancel-text="Anuluj"
+      />
+      <!-- <input
         type="date"
         v-model="selectedDate"
         @input="validateDate"
         class="rounded-input"
         onkeydown="return false"
-      />
+      /> -->
     </div>
     <h2 class="black-text" v-if="shipments.length == 0 && !loading && !showMap">
       Brak nowych przesyłek
@@ -193,7 +251,7 @@ const submit = async () => {
         :shipments="shipments"
         :courier="selectedCourier"
         :date="selectedDate!"
-        @submit="confirmSubmit = true"
+        @submit="validateSubmit"
       />
     </div>
     <SubmitRoute
@@ -205,10 +263,14 @@ const submit = async () => {
 </template>
 
 <style scoped>
+.gray {
+  color: gray;
+}
 .map-container {
   height: 64vh;
 }
 .vh20 {
+  min-height: fit-content;
   height: 20vh;
   margin: 0 !important;
 }
@@ -217,9 +279,11 @@ const submit = async () => {
   width: 60%;
   height: fit-content;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 8vh;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
   padding: 0 !important;
@@ -256,15 +320,36 @@ const submit = async () => {
 }
 .rounded-input {
   border-radius: 10px;
-  height: 30px;
+  height: 35px;
   width: 20%;
   margin: 5px;
   background-color: #f6f6f6;
-  border: solid 2px #e8e8e8;
-  color: black;
+  border: solid 1px #e8e8e8;
   text-align: center;
+  font-size: 1rem;
+}
+.calendar {
+  display: inline-block;
+  width: 20%;
+  margin: 5px;
+  height: 30px;
+  border-radius: 10px;
 }
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
+}
+
+.dp__theme_light {
+  --dp-background-color: #f6f6f6;
+  --dp-text-color: #212121;
+  --dp-hover-color: #f3f3f3;
+  --dp-hover-text-color: #212121;
+  --dp-hover-icon-color: #959595;
+  --dp-primary-color: #1976d2;
+  --dp-primary-disabled-color: #6bacea;
+  --dp-primary-text-color: #f8f5f5;
+  --dp-secondary-color: #c0c4cc;
+  --dp-border-color: #e8e8e8;
+  --dp-border-radius: 10px;
 }
 </style>

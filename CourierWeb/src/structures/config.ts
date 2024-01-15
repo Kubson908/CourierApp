@@ -1,4 +1,4 @@
-const prefix: string = "https://courier-app.azurewebsites.net"; //https://courier-app.azurewebsites.net | https://localhost:7119
+const prefix: string = "https://courier-app.azurewebsites.net"; //https://courier-app.azurewebsites.net | https://localhost:7119 | http://localhost:5274
 const geocodingKey: string = "AIzaSyDeqlvcFnk9C6KlHhw4G5NohIZyOAyucMg";
 const googleApi: string = "https://maps.googleapis.com/maps/api/geocode/json";
 const openServiceKey: string =

@@ -65,8 +65,8 @@ const sendEmail = async () => {
           type="text"
         />
         <br />
-        <button class="submit" @click="emit('back')">Wróć</button>
-        <button type="submit" class="submit pigment-green">Wyślij</button>
+        <button class="submit space" @click="emit('back')">Wróć</button>
+        <button type="submit" class="submit pigment-green space">Wyślij</button>
       </form>
       <div v-if="loading">
         <img src="/src/assets/loading.gif" height="30" />
@@ -102,5 +102,9 @@ const sendEmail = async () => {
 }
 .back:active {
   color: purple;
+}
+.space {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 </style>

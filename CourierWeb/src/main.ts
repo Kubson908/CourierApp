@@ -10,6 +10,9 @@ import OpenLayersMap, {
   type Vue3OpenlayersGlobalOptions,
 } from "vue3-openlayers";
 
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+
 export const loading = ref<boolean>(false);
 
 export const user = reactive<User>({
@@ -66,4 +69,8 @@ const mapOptions: Vue3OpenlayersGlobalOptions = {
 
 export const priceList = ref<PriceList | null>(null);
 
-createApp(App).use(router).use(OpenLayersMap, mapOptions).mount("#app");
+createApp(App)
+  .use(router)
+  .use(OpenLayersMap, mapOptions)
+  .component("VueDatePicker", VueDatePicker)
+  .mount("#app");

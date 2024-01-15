@@ -16,19 +16,78 @@ const password = ref<string>("");
 const confirmPassword = ref<string>("");
 const phoneNumber = ref<string>("");
 
-const passwordError = ref<boolean>(false);
-
 const loading = ref<boolean>(false);
 
-/*TODO: walidacja danych */
+const phoneErrorMessage = ref<string | null>(null);
+const passwordErrorMessage = ref<string | null>(null);
+const emailErrorMessage = ref<string | null>(null);
+
+const validatePassword: () => boolean = () => {
+  if (password.value.length < 8) return false;
+  if (!/\d/.test(password.value)) return false;
+  if (!/[A-Z]/.test(password.value)) return false;
+  return true;
+};
+
+const validateEmail = (): boolean => {
+  var validRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  if (email.value.match(validRegex)) {
+    emailErrorMessage.value = null;
+    return true;
+  }
+  if (email.value.length == 0) {
+    emailErrorMessage.value = "Podaj adres e-mail";
+    return false;
+  }
+  emailErrorMessage.value = "Nieprawidłowy adres e-mail";
+  return false;
+};
+
+const validateNumber: () => boolean = () => {
+  const cleanedPhoneNumber: string = phoneNumber.value
+    .replace(/\s/g, "")
+    .replace("+", "");
+  if (!/^\d+$/.test(cleanedPhoneNumber)) {
+    phoneErrorMessage.value = "Nieprawidłowy numer telefonu";
+    return false;
+  }
+  if (![9, 11].includes(cleanedPhoneNumber.length)) {
+    phoneErrorMessage.value = "Nieprawidłowy numer telefonu";
+    return false;
+  }
+  if (cleanedPhoneNumber.length === 11 && !/^48/.test(cleanedPhoneNumber)) {
+    phoneErrorMessage.value = "Nieprawidłowy numer telefonu";
+    return false;
+  }
+  phoneErrorMessage.value = null;
+  return true;
+};
+
 const submit = async () => {
-  // const valid = ((await data) as any).valid;
-  // if (!valid) return;
-  if (password.value !== confirmPassword.value) {
-    passwordError.value = true;
+  if (!validatePassword()) {
+    passwordErrorMessage.value =
+      "Hasło powinno składać się z co najmniej 8 znaków i zawierać przynajmniej jedną wielkią literę i jedną cyfrę";
+    validateNumber();
+    validateEmail();
     return;
   }
-  passwordError.value = false;
+  if (password.value != confirmPassword.value) {
+    passwordErrorMessage.value = "Hasła nie są identyczne";
+    validateNumber();
+    validateEmail();
+    return;
+  }
+  if (!validateNumber()) {
+    validateEmail();
+    return;
+  }
+  if (!validateEmail()) {
+    return;
+  }
+  passwordErrorMessage.value = null;
+  emailErrorMessage.value = null;
+  phoneErrorMessage.value = null;
   try {
     loading.value = true;
     const url =
@@ -62,11 +121,6 @@ const submit = async () => {
         {{ props.role == "Dispatcher" ? "Dodaj dyspozytora" : "Dodaj kuriera" }}
       </h2>
       <form @submit.prevent="submit" class="flex-col">
-        <!-- <select v-model="role" class="add-user-input">
-          <option disabled value="">--Rola--</option>
-          <option value="Dispatcher">Dyspozytor</option>
-          <option value="Courier">Kurier</option>
-        </select> -->
         <input
           class="add-user-input center"
           type="text"
@@ -91,6 +145,9 @@ const submit = async () => {
           placeholder="Email"
           v-model="email"
         />
+        <span class="red-text center-text" v-if="emailErrorMessage">
+          {{ emailErrorMessage }}
+        </span>
         <input
           class="add-user-input center"
           type="password"
@@ -103,8 +160,8 @@ const submit = async () => {
           placeholder="Powtórz hasło"
           v-model="confirmPassword"
         />
-        <span class="red-text center" v-if="passwordError">
-          Hasła nie są identyczne
+        <span class="red-text center-text" v-if="passwordErrorMessage">
+          {{ passwordErrorMessage }}
         </span>
         <input
           class="add-user-input center"
@@ -112,6 +169,9 @@ const submit = async () => {
           placeholder="Telefon"
           v-model="phoneNumber"
         />
+        <span class="red-text center-text" v-if="phoneErrorMessage">
+          {{ phoneErrorMessage }}
+        </span>
         <div class="center mt-10 mb-10">
           <button class="submit center spacing" @click="close">Anuluj</button>
           <button type="submit" class="submit center pigment-green spacing">
@@ -152,7 +212,9 @@ const submit = async () => {
 .modal::-webkit-scrollbar-thumb:hover {
   background: #129448;
 }
-
+.center-text {
+  text-align: center;
+}
 .add-user-form {
   width: 40%;
   height: 90%;

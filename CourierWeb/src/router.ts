@@ -66,7 +66,14 @@ export const routes: Array<Route> = [
   {
     path: "/order",
     component: OrderShipments,
-    meta: { roles: ["Customer"] },
+    meta: { roles: null },
+    beforeEnter: () => {
+      if (!user.roles.includes("Customer")) {
+        return {
+          path: "/login",
+        };
+      }
+    },
   },
   {
     path: "/order-registered",

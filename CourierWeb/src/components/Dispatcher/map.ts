@@ -144,10 +144,10 @@ const addEventListeners = (map: Map, shipments: Array<Shipment>) => {
           id: name,
           imgSrc:
             shipment?.status == 0
-              ? "/src/assets/pickup.svg"
+              ? "pickup.svg"
               : shipment?.status == 3
-              ? "/src/assets/delivery.svg"
-              : "/src/assets/return.svg",
+              ? "delivery.svg"
+              : "return.svg",
           titleClass:
             shipment?.status == 0
               ? "gray-text"

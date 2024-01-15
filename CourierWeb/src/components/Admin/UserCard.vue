@@ -14,7 +14,7 @@ const edit = () => {
     <div class="info">
       <h3>{{ props.user.firstName + " " + props.user.lastName }}</h3>
     </div>
-    <button @click="edit" class="submit">Edytuj</button>
+    <button @click="edit" class="submit mb-10">Edytuj</button>
   </div>
 </template>
 

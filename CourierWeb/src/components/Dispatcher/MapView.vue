@@ -122,7 +122,7 @@ const emit = defineEmits(["submit"]);
       <div>
         <button
           v-if="route.length >= 2"
-          class="submit pigment-green"
+          class="submit pigment-green space"
           @click="
             emit('submit');
             closePopup();
@@ -130,7 +130,7 @@ const emit = defineEmits(["submit"]);
         >
           Zatwierdź
         </button>
-        <button v-if="route.length >= 2" class="submit" @click="sort">
+        <button v-if="route.length >= 2" class="submit space" @click="sort">
           Sortuj
         </button>
       </div>
@@ -319,5 +319,8 @@ td {
 }
 .top {
   min-height: 40%;
+}
+.space {
+  margin: 3px;
 }
 </style>

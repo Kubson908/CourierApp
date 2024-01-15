@@ -57,7 +57,7 @@ onBeforeMount(async () => {
                 ? (prices.verySmallSize + prices.lightWeight)
                     .toString()
                     .substring(0, 4)
-                : "test"
+                : "8.99"
             }}
           </td>
           <td>
@@ -66,7 +66,7 @@ onBeforeMount(async () => {
                 ? (prices.smallSize + prices.lightWeight)
                     .toString()
                     .substring(0, 5)
-                : "test"
+                : "13.99"
             }}
           </td>
           <td>
@@ -75,7 +75,7 @@ onBeforeMount(async () => {
                 ? (prices.mediumSize + prices.lightWeight)
                     .toString()
                     .substring(0, 5)
-                : "test"
+                : "18.99"
             }}
           </td>
           <td>
@@ -84,7 +84,7 @@ onBeforeMount(async () => {
                 ? (prices.largeSize + prices.lightWeight)
                     .toString()
                     .substring(0, 5)
-                : "test"
+                : "23.99"
             }}
           </td>
         </tr>
@@ -96,7 +96,7 @@ onBeforeMount(async () => {
                 ? (prices.verySmallSize + prices.mediumWeight)
                     .toString()
                     .substring(0, 5)
-                : "test"
+                : "11.99"
             }}
           </td>
           <td>
@@ -105,7 +105,7 @@ onBeforeMount(async () => {
                 ? (prices.smallSize + prices.mediumWeight)
                     .toString()
                     .substring(0, 5)
-                : "test"
+                : "16.99"
             }}
           </td>
           <td>
@@ -114,7 +114,7 @@ onBeforeMount(async () => {
                 ? (prices.mediumSize + prices.mediumWeight)
                     .toString()
                     .substring(0, 5)
-                : "test"
+                : "21.99"
             }}
           </td>
           <td>
@@ -123,7 +123,7 @@ onBeforeMount(async () => {
                 ? (prices.largeSize + prices.mediumWeight)
                     .toString()
                     .substring(0, 5)
-                : "test"
+                : "26.99"
             }}
           </td>
         </tr>
@@ -135,7 +135,7 @@ onBeforeMount(async () => {
                 ? (prices.verySmallSize + prices.heavyWeight)
                     .toString()
                     .substring(0, 5)
-                : "test"
+                : "15.99"
             }}
           </td>
           <td>
@@ -144,7 +144,7 @@ onBeforeMount(async () => {
                 ? (prices.smallSize + prices.heavyWeight)
                     .toString()
                     .substring(0, 5)
-                : "test"
+                : "20.99"
             }}
           </td>
           <td>
@@ -153,7 +153,7 @@ onBeforeMount(async () => {
                 ? (prices.mediumSize + prices.heavyWeight)
                     .toString()
                     .substring(0, 5)
-                : "test"
+                : "25.99"
             }}
           </td>
           <td>
@@ -162,7 +162,7 @@ onBeforeMount(async () => {
                 ? (prices.largeSize + prices.heavyWeight)
                     .toString()
                     .substring(0, 5)
-                : "test"
+                : "30.99"
             }}
           </td>
         </tr>

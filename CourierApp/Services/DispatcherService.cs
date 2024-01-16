@@ -270,6 +270,10 @@ public partial class DispatcherService : IUserService<AddDispatcherDto, LoginDto
                 {
                     prop.SetValue(user, toValue, null);
                     _context.Entry(user).Property(prop.Name).IsModified = true;
+                    if (prop.Name == "Email")
+                    {
+                        user.NormalizedEmail = toValue?.ToString()?.ToUpper();
+                    }
                 }
             }
             await _context.SaveChangesAsync();

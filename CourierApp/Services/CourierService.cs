@@ -16,7 +16,7 @@ public class CourierService : IUserService<AddCourierDto, LoginDto, Courier>
     private readonly UserManager<Courier> _userManager;
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _environment;
-    private ApplicationDbContext _context;
+    private readonly ApplicationDbContext _context;
 
     public CourierService(UserManager<Courier> userManager,
         IConfiguration configuration, IWebHostEnvironment environment,
@@ -140,7 +140,7 @@ public class CourierService : IUserService<AddCourierDto, LoginDto, Courier>
 
         string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-        ApiUserResponse response = new ApiUserResponse
+        ApiUserResponse response = new()
         {
             Message = "Logged in",
             IsSuccess = true,
@@ -258,7 +258,7 @@ public class CourierService : IUserService<AddCourierDto, LoginDto, Courier>
             foreach (var prop in typeof(Courier).GetProperties())
             {
                 var fromProp = typeof(UpdateUserDto).GetProperty(prop.Name);
-                var toValue = fromProp != null ? fromProp.GetValue(dto, null) : null;
+                var toValue = fromProp?.GetValue(dto, null);
                 if (toValue != null)
                 {
                     prop.SetValue(user, toValue, null);
@@ -268,11 +268,19 @@ public class CourierService : IUserService<AddCourierDto, LoginDto, Courier>
             foreach (var prop in typeof(IdentityUser).GetProperties())
             {
                 var fromProp = typeof(UpdateUserDto).GetProperty(prop.Name);
-                var toValue = fromProp != null ? fromProp.GetValue(dto, null) : null;
+                var toValue = fromProp?.GetValue(dto, null);
                 if (toValue != null)
                 {
                     prop.SetValue(user, toValue, null);
                     _context.Entry(user).Property(prop.Name).IsModified = true;
+                    if (prop.Name == "UserName")
+                    {
+                        user.NormalizedUserName = toValue?.ToString()?.ToUpper();
+                    }
+                    else if (prop.Name == "Email")
+                    {
+                        user.NormalizedEmail = toValue?.ToString()?.ToUpper();
+                    }
                 }
             }
             await _context.SaveChangesAsync();

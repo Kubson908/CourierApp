@@ -1,17 +1,25 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
+import { Shipment } from "../../typings/shipment";
 
 const emit = defineEmits(["cancel", "submit"]);
 const props = defineProps<{
-  xs: number;
-  s: any;
-  m: number;
-  l: number;
+  shipments: Array<Shipment>;
+  price: string;
 }>();
+
+const xs = ref<number>(0);
+const s = ref<number>(0);
+const m = ref<number>(0);
+const l = ref<number>(0);
+
+onBeforeMount(() => {
+  xs.value = props.shipments.filter((s) => s.size == 0).length;
+  s.value = props.shipments.filter((s) => s.size == 1).length;
+  m.value = props.shipments.filter((s) => s.size == 2).length;
+  l.value = props.shipments.filter((s) => s.size == 3).length;
+});
 const loading = ref<boolean>(false);
-//TODO: dodac jakies lepsze podsumowanie
-// TODO: dodac mozliwosc przegladania cennika dla klienta (moze gdzies na stronie glownej)
-// TODO: ekran zmiany hasła u kuriera
 </script>
 
 <template>
@@ -19,15 +27,18 @@ const loading = ref<boolean>(false);
     <div v-if="!loading">
       <h2 class="pigment-green-text">Podsumowanie zamówienia</h2>
       <div class="flex-col black-text">
-        <div v-if="props.xs > 0">Przesyłki bardzo małe: {{ props.xs }}</div>
-        <div v-if="props.s > 0">Przesyłki małe: {{ props.xs }}</div>
-        <div v-if="props.m > 0">Przesyłki średnie: {{ props.xs }}</div>
-        <div v-if="props.l > 0">Przesyłki duże: {{ props.xs }}</div>
+        <div v-if="xs > 0">Przesyłki bardzo małe: {{ xs }}</div>
+        <div v-if="s > 0">Przesyłki małe: {{ s }}</div>
+        <div v-if="m > 0">Przesyłki średnie: {{ m }}</div>
+        <div v-if="l > 0">Przesyłki duże: {{ l }}</div>
+        <div>Kwota zamówienia: {{ props.price }}</div>
       </div>
       <div>
-        <button class="black" @click="emit('cancel')">Wróć do edycji</button>
+        <button class="black space" @click="emit('cancel')">
+          Wróć do edycji
+        </button>
         <button
-          class="submit pigment-green"
+          class="submit pigment-green space"
           @click="
             emit('submit');
             loading = true;
@@ -65,5 +76,9 @@ const loading = ref<boolean>(false);
   left: 50%;
   transform: translate(-50%, -50%);
   height: 150px;
+}
+.space {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 </style>

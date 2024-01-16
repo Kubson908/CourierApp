@@ -160,8 +160,8 @@ const resetPassword = async () => {
                 }}: {{ firstName + " " + lastName }}
               </span>
               <div>
-                <button class="black" @click="remove = false">Anuluj</button>
-                <button class="red" @click="deleteWorker">Usuń</button>
+                <button class="black space mt-10" @click="remove = false">Anuluj</button>
+                <button class="red space mt-10" @click="deleteWorker">Usuń</button>
               </div>
             </div>
             <div v-if="passwordEdit" class="cover">
@@ -190,10 +190,10 @@ const resetPassword = async () => {
                 errorMessage
               }}</span>
               <div>
-                <button class="black" @click="passwordEdit = false">
+                <button class="black space" @click="passwordEdit = false">
                   Anuluj
                 </button>
-                <button class="pigment-green" @click="resetPassword">
+                <button class="pigment-green space" @click="resetPassword">
                   Zapisz
                 </button>
               </div>
@@ -323,5 +323,10 @@ const resetPassword = async () => {
 }
 .spacing {
   margin: 0 20px !important;
+}
+.space {
+  margin-left: 10px;
+  margin-right: 10px;
+  color: white;
 }
 </style>

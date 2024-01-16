@@ -65,14 +65,14 @@ const redirect = () => {
         <h2 class="pigment-green-text mt-0">Zamówienie zarejestrowane</h2>
         <div class="spacing">
           <button
-            class="submit pigment-green"
+            class="submit pigment-green space"
             @click="generateLabels"
             v-if="!errorMessage"
           >
             Pobierz etykietę
           </button>
           <span class="red-text" v-else>{{ errorMessage }}</span>
-          <button class="submit end" @click="redirect">Strona główna</button>
+          <button class="submit black space" @click="redirect">Strona główna</button>
         </div>
       </div>
     </div>
@@ -103,10 +103,12 @@ button {
   margin-top: 0;
 }
 .spacing {
-  display: flex;
-  flex-direction: column;
-  width: 70%;
+  width: 100%;
   margin: 0 auto;
+}
+.space {
+  margin-right: 10px;
+  margin-left: 10px
 }
 .loading-icon {
   position: absolute;

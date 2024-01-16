@@ -16,13 +16,15 @@ const replaceSrc = (e: any) => {
 };
 
 const formatPhoneNumber = () => {
-  return (
-    props.courier.phoneNumber.slice(0, 3) +
-    " " +
-    props.courier.phoneNumber.slice(3, 6) +
-    " " +
-    props.courier.phoneNumber.slice(6)
-  );
+  if (props.courier.phoneNumber.length == 9)
+    return (
+      props.courier.phoneNumber.slice(0, 3) +
+      " " +
+      props.courier.phoneNumber.slice(3, 6) +
+      " " +
+      props.courier.phoneNumber.slice(6)
+    );
+  return props.courier.phoneNumber;
 };
 </script>
 

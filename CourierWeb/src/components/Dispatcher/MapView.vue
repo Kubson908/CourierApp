@@ -57,7 +57,7 @@ const emit = defineEmits(["submit"]);
             <td>{{ info.postalCode }}</td>
           </tr>
           <tr>
-            <td>Miasto:</td>
+            <td>Miejscowość:</td>
             <td>{{ info.city }}</td>
           </tr>
         </table>
@@ -120,6 +120,9 @@ const emit = defineEmits(["submit"]);
         </draggable>
       </div>
       <div>
+        <button v-if="route.length >= 2" class="submit space" @click="sort">
+          Sortuj
+        </button>
         <button
           v-if="route.length >= 2"
           class="submit pigment-green space"
@@ -129,9 +132,6 @@ const emit = defineEmits(["submit"]);
           "
         >
           Zatwierdź
-        </button>
-        <button v-if="route.length >= 2" class="submit space" @click="sort">
-          Sortuj
         </button>
       </div>
     </div>

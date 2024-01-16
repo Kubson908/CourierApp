@@ -212,13 +212,6 @@ const submit = async () => {
         select-text="Wybierz"
         cancel-text="Anuluj"
       />
-      <!-- <input
-        type="date"
-        v-model="selectedDate"
-        @input="validateDate"
-        class="rounded-input"
-        onkeydown="return false"
-      /> -->
     </div>
     <h2 class="black-text" v-if="shipments.length == 0 && !loading && !showMap">
       Brak nowych przesyłek
@@ -226,17 +219,42 @@ const submit = async () => {
     <div class="shipments-list" v-if="!showMap">
       <div v-for="shipment in shipments">
         <div class="list-element">
-          <img :src="iconSource(shipment)" />
-          {{
-            shipment.status == 0 || shipment.status == 7
-              ? shipment.pickupAddress
-              : shipment.recipientAddress
-          }}
-          {{
-            shipment.status == 0 || shipment.status == 7
-              ? shipment.pickupCity
-              : shipment.recipientCity
-          }}
+          <span class="col1">
+            <img :src="iconSource(shipment)" />
+            <span
+              :class="
+                shipment.status == 0
+                  ? 'type gray-text'
+                  : shipment.status == 3
+                  ? 'type pigment-green-text'
+                  : 'orange-text type'
+              "
+            >
+              {{
+                shipment.status == 0
+                  ? "Odbiór"
+                  : shipment.status == 3
+                  ? "Dostawa"
+                  : "Zwrot"
+              }}
+            </span>
+          </span>
+          <div class="col2">
+            <span class="city">
+              {{
+                shipment.status == 0 || shipment.status == 7
+                  ? shipment.pickupCity
+                  : shipment.recipientCity
+              }}
+            </span>
+            <span class="address">
+              {{
+                shipment.status == 0 || shipment.status == 7
+                  ? shipment.pickupAddress
+                  : shipment.recipientAddress
+              }}
+            </span>
+          </div>
         </div>
         <hr v-if="shipments[shipments.length - 1] != shipment" />
       </div>
@@ -263,6 +281,30 @@ const submit = async () => {
 </template>
 
 <style scoped>
+.type {
+  display: inline-flex;
+  margin: auto 10%;
+  height: fit-content;
+  font-weight: bold;
+  font-size: 20px;
+}
+.city {
+  width: 40%;
+  display: inline-flex;
+}
+.address {
+  width: 60%;
+  display: inline-flex;
+}
+.col1 {
+  width: 40%;
+  display: inline-flex;
+}
+.col2 {
+  width: 60%;
+  display: inline-block;
+  text-align: start;
+}
 .gray {
   color: gray;
 }
@@ -311,8 +353,10 @@ const submit = async () => {
   background: #129448;
 }
 .list-element {
-  width: 20vw;
+  width: 40vw;
   margin: auto;
+  display: flex;
+  align-items: center;
 }
 .const-width {
   width: 20% !important;

@@ -6,9 +6,9 @@ const emit = defineEmits(["cancel", "confirm"]);
   <div class="fog">
     <div class="modal">
       <h2 class="pigment-green-text">Czy ponowić zamówienie?</h2>
-      <div>
-        <button class="submit black" @click="emit('cancel')">Anuluj</button>
-        <button class="submit pigment-green" @click="emit('confirm')">
+      <div style="margin-bottom: 20px;">
+        <button class="submit black space" @click="emit('cancel')">Anuluj</button>
+        <button class="submit pigment-green space" @click="emit('confirm')">
           Ponów
         </button>
       </div>
@@ -30,5 +30,9 @@ const emit = defineEmits(["cancel", "confirm"]);
   display: flex;
   max-height: 75vh;
   overflow-y: auto;
+}
+.space {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 </style>

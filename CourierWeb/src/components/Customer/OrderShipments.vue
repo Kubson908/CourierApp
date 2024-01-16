@@ -61,17 +61,19 @@ const verifyShipment: () => boolean = () => {
     "deliveryAttempts",
   ];
   let shipment = shipments[shipments.length - 1];
-  let status: boolean = true;
+  console.log(shipment);
+  let verified: boolean = true;
   Object.keys(shipment)
     .filter((property) => !excludedFields.includes(property))
     .forEach((property) => {
       const value = shipment[property as keyof Shipment];
+      if (value == 0) return;
       if (value == null || value == "") {
-        status = false;
+        verified = false;
         return;
       }
     });
-  if (!status) return false;
+  if (!verified) return false;
   return true;
 };
 
@@ -119,11 +121,13 @@ const m = ref<number>(0);
 const l = ref<number>(0);
 const submitPage = ref<boolean>(false);
 const submitShipments = () => {
+  xs.value = s.value = m.value = l.value = 0;
   if (!verifyShipment()) return;
-  shipments = shipments.map((x) => {
+  shipments.map((x) => {
     x.size = parseInt(x.size!.toString(), 10);
-    x.weight = parseInt(x.weight!.toString(), 10);
-    switch (x.size) {
+    x.weight = parseInt(x.weight!.toString(), 10); });
+  shipments.forEach(shipment => {
+    switch (shipment.size) {
       case 0:
         xs.value++;
         break;
@@ -137,7 +141,6 @@ const submitShipments = () => {
         l.value++;
         break;
     }
-    return x;
   });
   submitPage.value = true;
 };
@@ -371,18 +374,16 @@ const removeShipment = () => {
         }} zł</span>
       </div>
       <br />
-      <button @click="addShipment">Dodaj</button>
-      <button class="submit pigment-green" @click="submitShipments">
+      <button @click="addShipment" class="submit black space">Dodaj</button>
+      <button class="submit pigment-green space" @click="submitShipments">
         Zatwierdź
       </button>
     </div>
   </div>
   <SubmitOrder
     v-else
-    :xs="xs"
-    :s="s"
-    :m="m"
-    :l="l"
+    :shipments="shipments"
+    :price="(shipments.map((s) => s.price).filter((p) => p != undefined) as Array<number>).reduce((a, b) => a + b, 0).toString().substring(0, 6)"
     @cancel="submitPage = false"
     @submit="submitOrder"
   />
@@ -509,5 +510,10 @@ select {
 .right {
   margin-right: 15px;
   float: right;
+}
+
+.space {
+  margin-right: 10px;
+  margin-left: 10px;
 }
 </style>

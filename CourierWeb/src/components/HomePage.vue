@@ -26,7 +26,7 @@ onBeforeMount(async () => {
         rejestrowana przez system, który ułatwia proces odbioru i dostawy, więc
         nie ma mowy o pomyłkach.
       </p>
-      <img src="../../public/kurier2.png" class="home-page-image" />
+      <img src="/kurier2.png" class="home-page-image" />
     </div>
     <div class="section">
       <button

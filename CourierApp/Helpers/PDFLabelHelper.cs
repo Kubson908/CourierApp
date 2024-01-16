@@ -99,16 +99,24 @@ public static class PDFLabelHelper
 
         XTextFormatter tf = new(gfx);
 
-        XRect rect = new(10, 10, 450, 220);
-        gfx.DrawRectangle(XBrushes.Transparent, rect);
-        string text = "Nadawca: " + shipment.CustomerEmail + "\n" + "Tel: " + FormatPhoneNumber(shipment.CustomerPhone ?? "Brak");
+        XRect rect = new(10, 10, 400, 210);
+        gfx.DrawRectangle(new XPen(XColor.FromArgb(000000)), XBrushes.Transparent, rect);
+        rect.X = 15;
+        string text = "Nadawca: " + shipment.CustomerEmail + "\n" + 
+            "Tel: " + FormatPhoneNumber(shipment.CustomerPhone ?? "Brak") + "\n" +
+            "Adres: " + shipment.CustomerAddress;
         tf.DrawString(text, font, XBrushes.Black, rect, XStringFormats.TopLeft);
 
-        XRect rect2 = new(10, 240, 450, 220);
-        gfx.DrawRectangle(XBrushes.Transparent, rect2);
-        text = "Odbiorca: " + shipment.RecipientEmail + "\n" + "Tel: " + FormatPhoneNumber(shipment.RecipientPhone ?? "Brak");
+        XRect rect2 = new(10, 220, 400, 210);
+        gfx.DrawRectangle(new XPen(XColor.FromArgb(000000)), XBrushes.Transparent, rect2);
+        rect2.X = 15;
+        text = "Odbiorca: " + shipment.RecipientEmail + "\n" + 
+            "Tel: " + FormatPhoneNumber(shipment.RecipientPhone ?? "Brak") + "\n" + 
+            "Adres: " + shipment.RecipientAddress;
         tf.DrawString(text, font, XBrushes.Black, rect2, XStringFormats.TopLeft);
 
+        XRect rect3 = new(10, 430, 400, 150);
+        gfx.DrawRectangle(new XPen(XColor.FromArgb(000000)), XBrushes.Transparent, rect3);
         return document;
     }
 

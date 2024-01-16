@@ -398,8 +398,10 @@ public class ShipmentController : ControllerBase
             Weight = s.Weight,
             CustomerEmail = s.Customer!.Email,
             CustomerPhone = s.Customer!.PhoneNumber,
+            CustomerAddress = s.PickupAddress + (s.PickupApartmentNumber != null ? "/" + s.PickupApartmentNumber : "") + ", " + s.PickupCity,
             RecipientEmail = s.RecipientEmail,
             RecipientPhone = s.RecipientPhoneNumber,
+            RecipientAddress = s.RecipientAddress + (s.RecipientApartmentNumber != null ? "/" + s.RecipientApartmentNumber : "") + ", " + s.RecipientCity,
         }).ToList();
         if (shipments.Count == 0) return BadRequest();
         FileInfoDto result = PDFLabelHelper.GenerateLabels(shipments);

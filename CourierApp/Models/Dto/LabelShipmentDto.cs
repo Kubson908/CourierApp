@@ -7,6 +7,8 @@ public class LabelShipmentDto
     public Weight Weight { get; set; }
     public string? CustomerEmail { get; set; }
     public string? CustomerPhone { get; set; }
+    public string? CustomerAddress { get; set; }
     public string? RecipientEmail { get; set;}
     public string? RecipientPhone { get;set; }
+    public string? RecipientAddress { get; set; }
 }

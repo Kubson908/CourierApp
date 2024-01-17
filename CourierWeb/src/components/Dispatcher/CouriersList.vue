@@ -51,7 +51,7 @@ watch(message, (newMessage) => {
 });
 
 const replaceSrc = (e: any) => {
-  e.target.src = "/src/assets/account-circle.svg";
+  e.target.src = "/account-circle.svg";
 };
 
 const showInfo = ref<boolean>(false);

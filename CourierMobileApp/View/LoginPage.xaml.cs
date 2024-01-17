@@ -1,5 +1,3 @@
-using CommunityToolkit.Maui.Behaviors;
-
 namespace CourierMobileApp.View;
 
 public partial class LoginPage : ContentPage

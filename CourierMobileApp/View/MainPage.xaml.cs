@@ -1,5 +1,4 @@
-﻿using CourierMobileApp.Services;
-using CourierMobileApp.View.Components;
+﻿using CourierMobileApp.View.Components;
 
 namespace CourierMobileApp.View;
 

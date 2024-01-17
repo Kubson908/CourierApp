@@ -1,4 +1,3 @@
-using CourierMobileApp.Services;
 using ZXing.Net.Maui;
 
 namespace CourierMobileApp.View;

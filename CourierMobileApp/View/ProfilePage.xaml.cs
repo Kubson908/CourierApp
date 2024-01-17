@@ -1,5 +1,3 @@
-using CourierMobileApp.Services;
-
 namespace CourierMobileApp.View;
 
 public partial class ProfilePage : ContentPage

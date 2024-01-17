@@ -2,7 +2,7 @@ using CourierMobileApp.Services;
 using Maui.Plugins.PageResolver;
 
 namespace CourierMobileApp.View.Components;
-
+[XamlCompilation(XamlCompilationOptions.Skip)]
 public partial class NavBar : ContentView
 {
     public EventHandler MenuClicked;

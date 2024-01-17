@@ -1,8 +1,4 @@
-using CourierMobileApp.Platforms;
-using CourierMobileApp.Services;
 using CourierMobileApp.View.Components;
-using Maui.Plugins.PageResolver;
-using Microsoft.Maui.Handlers;
 
 namespace CourierMobileApp.View;
 

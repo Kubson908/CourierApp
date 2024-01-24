@@ -211,7 +211,7 @@ onBeforeMount(async () => {
           <td>5 - 15 kg</td>
         </tr>
         <tr>
-          <td>Średni</td>
+          <td>Ciężka</td>
           <td>powyżej 15 kg</td>
         </tr>
       </table>

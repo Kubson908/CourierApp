@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/Kubson908/CourierApp">
     <img src="CourierWeb/public/delivery.svg" alt="Logo" width="80" height="80">
   </a>
 

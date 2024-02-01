@@ -46,3 +46,76 @@ This is a project of a delivery management system for a courier company. The sys
 [TypeScript-url]: https://www.typescriptlang.org
 [DotnetMAUI]: https://img.shields.io/badge/.NET_MAUI-5C2D91?style=for-the-badge&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEABAMAAACuXLVVAAAAGFBMVEUAAAD29vZRK9T29vajkOXVze+Od+FwUdrZkDGoAAAAAnRSTlMAYDshrGAAAAKdSURBVHja7NvBicMwFITh5w4E7sAH5ywEW8FCKtgG4g5M+mdPy8i+ONYPVjbM3Ad/47Ne/GUsp5JjE94fyskk2gcDNIH0wQBNQH0wQBNIHwzQBNQHAzSB9MEATUB9MEATSB8M0ATU1wAwgfQ1AExAfQ0AE2h/KCCJ9jWgLZn3h4KSaL8e8DW9mKWaQPtRlMf0Yuai0H5sBjRMoP3YDGiYQPtRD2iZQPtRD2iZQPtRDWiaQPtRDWiaAPsCTCdTlKa+AQYY8L6A74McAA77BhhggAEGGGCAAQYYYIABBhhgwL8E3KfGPBFAWVsBNwjQDyC/gAPWdsANAfQDyC/ggJUAbhxwn1CeGLAywA0DJhgDDDDgcwE/uxhggAEGGGCAAZ8D2IcC9jHAAAPeF/C4FjCzJ50csKBHrRwws2e9HLCgh80cMLOn3Ryw1ADlcRVgLkrD834OqJ/3Hx446INnItDxjcfYE5AjYugJSDrT6QLIOnTqA0g61eoCyDp26wNIOtfrAsg6eOwDSNXJZg9ADmXoAUhRZbwekKPOcD0gxSbj1YAc2wxXA1LsMl4LyPFugN/27u0EQiCIgujmsPnnagqCMucK5b9Q4mO6W6/FTwG4CLduQ/IgWnoUo8VoZzlmBclKSQaL0o2ynDYmC60Zbk59e84HFHxEMzSkOjqmWxxUHh7V7g2r+biev7AIIIAAZgD4BwwBBBBAAAEEEMBnAHjAIYAAAri7fT/wyCOfPPTqY788+Oyj3zz87uP//AcIAQQQQAABBBBAAAEEEEAAAQQQwKsA+wKFAAII4BTAnlCJK6W4VMtrxbhYzavljFzP6wW5YJErJr1kk2tGvWiVq2a9bJfrhr1wmSunvXSba8e9eJ2r5718//d/cABP9r8ABmVt9Rqvi1MAAAAASUVORK5CYII=
 [DotnetMAUI-url]: https://learn.microsoft.com/pl-pl/dotnet/maui/?view=net-maui-7.0
+
+## Screenshots
+
+### Mobile application
+<div align="center">
+  <img src="screenshots/mobile/login.png" width="40%"/> &nbsp;
+  <img src="screenshots/mobile/main-page.png" width="40%"/>
+  <img src="screenshots/mobile/schedule.png" width="40%"/> &nbsp;
+  <img src="screenshots/mobile/shipment-page.png" width="40%"/>
+  <img src="screenshots/mobile/scanner.png" width="40%"/>
+</div>
+
+
+### Web application
+
+#### Customer
+<div align="center">
+  <img src="screenshots/web/home-page.png" />
+  
+  *Home page*
+
+  <img src="screenshots/web/login-page.png" />
+    
+  *Login page*
+
+  <img src="screenshots/web/order-page.png" />
+    
+  *Order page*
+
+  <img src="screenshots/web/order-multiple-shipments.png" />
+    
+  *Multiple shipments in one order*
+
+  <img src="screenshots/web/orders-archive.png" />
+    
+  *Orders archive*
+
+  <img src="screenshots/web/order-details.png" />
+    
+  *Order details*
+</div>
+
+#### Admin
+<div align="center">
+  <img src="screenshots/web/admin-page.png" />
+    
+  *Admin page*
+
+  <img src="screenshots/web/edit-worker.png" />
+    
+  *Edit worker data*
+
+</div>
+
+#### Dispatcher
+<div align="center">
+  <img src="screenshots/web/awaiting-shipments-list.png" />
+    
+  *Awaiting shipments list*
+
+  <img src="screenshots/web/assign-route.png" />
+    
+  *Asigning route to courier*
+
+  <img src="screenshots/web/sort-route.png" />
+    
+  *Sorting route*
+
+  <img src="screenshots/web/couriers-list.png" />
+    
+  *Couriers list*
+
+</div>

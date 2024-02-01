@@ -34,9 +34,6 @@ This is a project of a delivery management system for a courier company. The sys
  [![MAUI][DotnetMAUI]][DotnetMAUI-url]
  [![MSSQL][MSSQLServer]][MSSQLServer-url]
 
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-
 [DotnetCore]: https://img.shields.io/badge/.NET_Core-5C2D91?style=for-the-badge&logo=.net&logoColor=white
 [Dotnet-url]: https://learn.microsoft.com/en-us/aspnet/core/?view=aspnetcore-7.0
 [Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D

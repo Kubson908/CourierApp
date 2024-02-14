@@ -479,6 +479,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# .NET MAUI
-Config.cs
 /CourierApp/.config

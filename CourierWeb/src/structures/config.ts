@@ -1,4 +1,4 @@
-const prefix: string = "https://courier-app.azurewebsites.net"; //https://courier-app.azurewebsites.net | https://localhost:7119 | http://localhost:5274 | published local: https://localhost:5000
+const prefix: string = "https://localhost:7119";
 const geocodingKey: string = "AIzaSyDeqlvcFnk9C6KlHhw4G5NohIZyOAyucMg";
 const googleApi: string = "https://maps.googleapis.com/maps/api/geocode/json";
 const openServiceKey: string =
@@ -9,7 +9,7 @@ const warehouseCoordinates: Array<number> = [
   20.456084839809897, 53.744143291594206,
 ];
 
-const webSocketUrl = "wss://courier-app.azurewebsites.net"; //wss://courier-app.azurewebsites.net | wss://localhost:7119 | ws://localhost:5274
+const webSocketUrl = "wss://localhost:7119";
 export {
   prefix,
   geocodingKey,

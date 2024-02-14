@@ -9,7 +9,9 @@ onBeforeMount(async () => {
   try {
     const res = await unauthorized.get("/shipment/get-price-list");
     prices.value = res.data;
-  } catch {}
+  } catch (error: any) {
+    if (error.status >= 400) console.log(error);
+  }
 });
 </script>
 

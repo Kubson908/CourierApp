@@ -1,4 +1,3 @@
-using CourierMobileApp.Services;
 using Maui.Plugins.PageResolver;
 
 namespace CourierMobileApp.View.Components;
@@ -7,6 +6,7 @@ public partial class NavBar : ContentView
 {
     public EventHandler MenuClicked;
     public bool menuOpened = false;
+
 	public NavBar()
 	{
 		InitializeComponent();
@@ -31,7 +31,6 @@ public partial class NavBar : ContentView
 
     private async void ProfileClicked(object sender, EventArgs e)
     {
-        /*await profileService.GetProfileData();*/
         await Shell.Current.Navigation.PushAsync<ProfilePage>();
     }
 

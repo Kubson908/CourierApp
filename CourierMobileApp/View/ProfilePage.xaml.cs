@@ -3,6 +3,7 @@ namespace CourierMobileApp.View;
 public partial class ProfilePage : ContentPage
 {
 	private readonly ProfileViewModel viewModel;
+
 	public ProfilePage(ProfileViewModel profileViewModel)
 	{
 		InitializeComponent();

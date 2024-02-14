@@ -6,6 +6,7 @@ public partial class ShipmentPage : ContentPage
 {
     readonly ShipmentViewModel viewModel;
     private readonly MenuAnimation animation;
+
     public ShipmentPage(ShipmentViewModel shipmentViewModel)
     {
         InitializeComponent();

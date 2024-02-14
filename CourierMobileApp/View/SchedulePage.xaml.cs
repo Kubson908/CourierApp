@@ -7,6 +7,7 @@ public partial class SchedulePage : ContentPage
     readonly ScheduleViewModel viewModel;
     private readonly MenuAnimation animation;
     bool isButtonPressed = false;
+
     public SchedulePage(ScheduleViewModel viewModel)
     {
         InitializeComponent();

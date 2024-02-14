@@ -7,6 +7,7 @@ public partial class Scanner : ContentPage
     private readonly ScannerViewModel viewModel;
     private event EventHandler Top;
     private event EventHandler Bottom;
+
     public Scanner(ScannerViewModel viewModel)
     {
         InitializeComponent();

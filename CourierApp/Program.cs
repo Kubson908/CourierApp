@@ -19,9 +19,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "AllowSpecificOrigins",
         policy =>
         {
-            /*policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
-            policy.WithOrigins("http://localhost:4173").AllowAnyHeader().AllowAnyMethod();*/
-            policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
+            // change if needed
+            policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+            policy.WithOrigins("http://localhost:4173").AllowAnyHeader().AllowAnyMethod();
         });
 });
 
@@ -40,7 +40,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     options.JsonSerializerOptions.WriteIndented = true;
 });
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
